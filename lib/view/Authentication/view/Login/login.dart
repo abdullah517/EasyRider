@@ -10,6 +10,7 @@ import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
 import 'package:ridemate/view/Authentication/view/Signup/signup.dart';
+import 'package:ridemate/view/Authentication/view/sendverification/sendverification.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -21,27 +22,29 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Appcolors.scaffoldbgcolor,
         body: Form(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                addVerticalspace(height: 10.h),
+                addVerticalspace(height: 24.h),
                 const Backappbar(),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 30),
                 CustomText(
                   title: 'Sign in ',
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
                   color: Appcolors.contentPrimary,
                 ),
-                addVerticalspace(height: 20),
+                addVerticalspace(height: 24),
                 Authtextform(
                   hinttext: 'Email or Phone Number',
                 ),
-                addVerticalspace(height: 10),
+                addVerticalspace(height: 20),
                 Consumer<LoginProvider>(
                   builder: (context, loginprovider, child) => Authtextform(
                     hinttext: 'Enter Your Password',
@@ -58,24 +61,27 @@ class Login extends StatelessWidget {
                     ),
                   ),
                 ),
-                addVerticalspace(height: 5),
+                addVerticalspace(height: 10),
                 Align(
                   alignment: Alignment.topRight,
-                  child: CustomText(
-                    title: 'Forget password?',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Appcolors.errorColor,
+                  child: InkWell(
+                    onTap: () => Get.to(() => const Sendverification()),
+                    child: CustomText(
+                      title: 'Forget password?',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors.errorColor,
+                    ),
                   ),
                 ),
-                addVerticalspace(height: 20),
+                addVerticalspace(height: 40),
                 Custombutton(
                   text: 'Sign In',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
                 ),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 20),
                 Row(
                   children: [
                     const Expanded(
@@ -99,7 +105,7 @@ class Login extends StatelessWidget {
                     )),
                   ],
                 ),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -108,7 +114,7 @@ class Login extends StatelessWidget {
                     Socialbutton(path: AppImages.applelogo),
                   ],
                 ),
-                addVerticalspace(height: 10),
+                addVerticalspace(height: 20),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Customrichtext(

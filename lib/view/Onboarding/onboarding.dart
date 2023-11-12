@@ -25,6 +25,7 @@ class Onboarding extends StatelessWidget {
     final onboardprovider =
         Provider.of<Onboardingprovider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Appcolors.scaffoldbgcolor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -34,11 +35,7 @@ class Onboarding extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: InkWell(
-                  onTap: () => _pageController.animateToPage(
-                    activepage + 1,
-                    duration: const Duration(microseconds: 300),
-                    curve: Curves.easeIn,
-                  ),
+                  onTap: () => Get.to(() => const Welcomescreen()),
                   child: CustomText(
                     title: 'Skip',
                     fontSize: 16,
@@ -76,8 +73,9 @@ class Onboarding extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               addVerticalspace(height: 85),
-              SizedBox(
+              Customcontainer(
                 height: 80.h,
+                width: 86.w,
                 child: Stack(
                   children: [
                     Customcontainer(
@@ -102,9 +100,9 @@ class Onboarding extends StatelessWidget {
                             fontColor: Appcolors.contentTertiary,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            height: 60,
+                            height: 65,
                             width: 70,
-                            borderRadius: 30,
+                            borderRadius: 50,
                             ontap: activepage == 2
                                 ? () => Get.to(() => const Welcomescreen())
                                 : () {
@@ -112,7 +110,7 @@ class Onboarding extends StatelessWidget {
                                       activepage + 1,
                                       duration:
                                           const Duration(microseconds: 300),
-                                      curve: Curves.easeIn,
+                                      curve: Curves.bounceIn,
                                     );
                                   },
                           );

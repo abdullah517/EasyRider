@@ -9,6 +9,7 @@ import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/components/dropdownfield.dart';
 import 'package:ridemate/view/Authentication/components/phonefield.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
+import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
 import 'package:ridemate/view/Authentication/view/Login/login.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
@@ -22,16 +23,18 @@ class Signup extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Appcolors.scaffoldbgcolor,
         body: Form(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                addVerticalspace(height: 10.h),
+                addVerticalspace(height: 24.h),
                 const Backappbar(),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 30),
                 CustomText(
                   title: 'Sign up ',
                   fontSize: 24,
@@ -42,15 +45,15 @@ class Signup extends StatelessWidget {
                 Authtextform(
                   hinttext: 'Name',
                 ),
-                addVerticalspace(height: 10),
+                addVerticalspace(height: 20),
                 Authtextform(
                   hinttext: 'Email',
                 ),
-                addVerticalspace(height: 10),
+                addVerticalspace(height: 20),
                 const Phonefield(),
-                addVerticalspace(height: 10),
+                addVerticalspace(height: 20),
                 const Dropdownfield(mylist: ['Male', 'Female']),
-                addVerticalspace(height: 12),
+                addVerticalspace(height: 20),
                 Row(
                   children: [
                     RoundCheckBox(
@@ -67,22 +70,28 @@ class Signup extends StatelessWidget {
                     ),
                     addHorizontalspace(width: 8),
                     Expanded(
-                        child: Customrichtext(texts: const [
-                      'By signing up. you agree to',
-                      'Terms of service',
-                      ' and ',
-                      'Privacy policy.'
-                    ])),
+                        child: Customrichtext(
+                      texts: const [
+                        'By signing up. you agree to',
+                        'Terms of service',
+                        ' and ',
+                        'Privacy policy.'
+                      ],
+                      color: Appcolors.contentDisbaled,
+                    )),
                   ],
                 ),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 20),
                 Custombutton(
                   text: 'Sign Up',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
+                  ontap: () {
+                    Get.to(() => const Completeprofile());
+                  },
                 ),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 20),
                 Row(
                   children: [
                     const Expanded(
@@ -106,7 +115,7 @@ class Signup extends StatelessWidget {
                     )),
                   ],
                 ),
-                addVerticalspace(height: 15),
+                addVerticalspace(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -115,7 +124,7 @@ class Signup extends StatelessWidget {
                     Socialbutton(path: AppImages.applelogo),
                   ],
                 ),
-                addVerticalspace(height: 10),
+                addVerticalspace(height: 20),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Customrichtext(
@@ -123,7 +132,8 @@ class Signup extends StatelessWidget {
                       onTap: () {
                         Get.to(() => const Login());
                       },
-                    ))
+                    )),
+                addVerticalspace(height: 10),
               ],
             ),
           ),

@@ -4,9 +4,9 @@ import 'package:ridemate/utils/appcolors.dart';
 
 TextStyle gethintstyle() {
   return TextStyle(
-    fontSize: 16.sp,
+    fontSize: 15.sp,
     fontWeight: FontWeight.w500,
-    color: Appcolors.neutralgrey,
+    color: Appcolors.neutralgrey200,
     fontFamily: 'Poppins',
   );
 }

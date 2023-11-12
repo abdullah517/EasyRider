@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/view/Authentication/components/hinttextstyle.dart';
+
+import '../../../utils/appcolors.dart';
 
 // ignore: must_be_immutable
 class Authtextform extends StatelessWidget {
@@ -12,19 +13,19 @@ class Authtextform extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 362.w,
-      height: 60.h,
-      child: TextFormField(
-        obscureText: visibility,
-        decoration: InputDecoration(
-          hintText: hinttext,
-          hintStyle: gethintstyle(),
-          suffixIcon: suffixIcon,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          border: OutlineInputBorder(),
-        ),
+    return TextFormField(
+      cursorColor: Appcolors.primaryColor,
+      obscureText: visibility,
+      decoration: InputDecoration(
+        hintText: hinttext,
+        hintStyle: gethintstyle(),
+        suffixIcon: suffixIcon,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        border: const OutlineInputBorder(
+            borderSide: BorderSide(color: Appcolors.neutralgrey200)),
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Appcolors.primaryColor)),
       ),
     );
   }

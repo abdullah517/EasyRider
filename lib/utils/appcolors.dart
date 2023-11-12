@@ -12,4 +12,7 @@ class Appcolors {
   static const Color contentPrimary = Color(0xff2A2A2A);
   static const Color splashbgColor = Color(0xffFEC400);
   static const Color neutralgrey = Color(0xffA0A0A0);
+  static const Color neutralgrey700 = Color(0xff5A5A5A);
+  static const Color neutralgrey200 = Color(0xffD0D0D0);
+  static const Color scaffoldbgcolor = Color(0xffffffff);
 }

@@ -9,8 +9,8 @@ import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/components/dropdownfield.dart';
 import 'package:ridemate/view/Authentication/components/phonefield.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
-import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
 import 'package:ridemate/view/Authentication/view/Login/login.dart';
+import 'package:ridemate/view/Authentication/view/phoneverifyotp/phoneverifyotp.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -88,7 +88,7 @@ class Signup extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
                   ontap: () {
-                    Get.to(() => const Completeprofile());
+                    Get.to(() => const Phoneverifyotp());
                   },
                 ),
                 addVerticalspace(height: 20),

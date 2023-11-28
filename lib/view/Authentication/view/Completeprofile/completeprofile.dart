@@ -4,6 +4,7 @@ import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/phonefield.dart';
+import 'package:ridemate/view/Dialogueboxes/congratdialogue.dart';
 import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
@@ -77,6 +78,7 @@ class Completeprofile extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 borderRadius: 8,
+                ontap: () => congratdialogue(context),
               ),
               addVerticalspace(height: 10),
             ],

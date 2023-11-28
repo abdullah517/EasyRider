@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/customtext.dart';
-import 'package:ridemate/widgets/spacing.dart';
 
 class Backappbar extends StatelessWidget {
   final String title;
@@ -11,28 +10,35 @@ class Backappbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-            onPressed: () => Get.back(),
-            icon: Icon(
-              Icons.arrow_back_ios,
-              size: 20.sp,
-            )),
-        CustomText(
-          title: 'Back',
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          color: Appcolors.contentSecondary,
-        ),
-        addHorizontalspace(width: 55.w),
-        CustomText(
-          title: title,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-          color: Appcolors.contentPrimary,
-        ),
-      ],
-    );
+    return title == ''
+        ? Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+                onPressed: () => goback(context),
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 20.sp,
+                )),
+          )
+        : Row(
+            children: [
+              IconButton(
+                  onPressed: () => goback(context),
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20.sp,
+                  )),
+              Expanded(
+                child: Center(
+                  child: CustomText(
+                    title: title,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Appcolors.contentPrimary,
+                  ),
+                ),
+              ),
+            ],
+          );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Loginprovider/loginprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
@@ -11,9 +10,12 @@ import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
 import 'package:ridemate/view/Authentication/view/Signup/signup.dart';
 import 'package:ridemate/view/Authentication/view/sendverification/sendverification.dart';
+import 'package:ridemate/view/Homepage/homepage.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
+
+import '../../../../routing/routing.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -65,7 +67,8 @@ class Login extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
-                    onTap: () => Get.to(() => const Sendverification()),
+                    onTap: () =>
+                        navigateToScreen(context, const Sendverification()),
                     child: CustomText(
                       title: 'Forget password?',
                       fontSize: 14,
@@ -80,6 +83,7 @@ class Login extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
+                  ontap: () => navigateToScreen(context, const Homepage()),
                 ),
                 addVerticalspace(height: 20),
                 Row(
@@ -120,7 +124,7 @@ class Login extends StatelessWidget {
                   child: Customrichtext(
                     texts: const ["Don't have an account?", "Sign Up"],
                     onTap: () {
-                      Get.to(() => const Signup());
+                      navigateToScreen(context, const Signup());
                     },
                   ),
                 )

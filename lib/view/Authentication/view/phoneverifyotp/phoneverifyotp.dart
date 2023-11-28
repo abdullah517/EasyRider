@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/custompinput.dart';
@@ -60,7 +60,7 @@ class Phoneverifyotp extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
                   ontap: () {
-                    Get.to(() => const Completeprofile());
+                    navigateToScreen(context, Completeprofile());
                   },
                 ),
               ],

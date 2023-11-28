@@ -14,7 +14,7 @@ class Splashscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(
-        const Duration(seconds: 3),
+        const Duration(seconds: 2),
         (() => Navigator.push(
             context,
             MaterialPageRoute(
@@ -47,6 +47,7 @@ class Splashscreen extends StatelessWidget {
               AppImages.splashlogo2,
               height: 100.h,
               width: 100.w,
+              color: Appcolors.scaffoldbgcolor,
             ),
           ],
         ),

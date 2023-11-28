@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appconstants.dart';
 import 'package:ridemate/utils/appimages.dart';
@@ -35,7 +35,7 @@ class Onboarding extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: InkWell(
-                  onTap: () => Get.to(() => const Welcomescreen()),
+                  onTap: () => navigateToScreen(context, const Welcomescreen()),
                   child: CustomText(
                     title: 'Skip',
                     fontSize: 16,
@@ -104,7 +104,8 @@ class Onboarding extends StatelessWidget {
                             width: 70,
                             borderRadius: 50,
                             ontap: activepage == 2
-                                ? () => Get.to(() => const Welcomescreen())
+                                ? () => navigateToScreen(
+                                    context, const Welcomescreen())
                                 : () {
                                     _pageController.animateToPage(
                                       activepage + 1,

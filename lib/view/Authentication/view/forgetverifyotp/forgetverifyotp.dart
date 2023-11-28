@@ -5,9 +5,12 @@ import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/custompinput.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
+import 'package:ridemate/view/Authentication/view/setnewpassword/setnewpassword.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
+
+import '../../../../routing/routing.dart';
 
 class Forgetverifyotp extends StatelessWidget {
   const Forgetverifyotp({super.key});
@@ -57,6 +60,7 @@ class Forgetverifyotp extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
+                  ontap: () => navigateToScreen(context, Setnewpassword()),
                 ),
               ],
             ),

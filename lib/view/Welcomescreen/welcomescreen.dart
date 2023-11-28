@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Authentication/view/Login/login.dart';
@@ -9,6 +8,8 @@ import 'package:ridemate/view/Authentication/view/Signup/signup.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
+
+import '../../routing/routing.dart';
 
 class Welcomescreen extends StatelessWidget {
   const Welcomescreen({super.key});
@@ -48,7 +49,7 @@ class Welcomescreen extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
-                  ontap: () => Get.to(() => const Signup()),
+                  ontap: () => navigateToScreen(context, const Signup()),
                 ),
                 addVerticalspace(height: 20),
                 Custombutton(
@@ -59,7 +60,7 @@ class Welcomescreen extends StatelessWidget {
                   bordercolor: Appcolors.primaryColor,
                   borderRadius: 8,
                   haveborder: true,
-                  ontap: () => Get.to(() => const Login()),
+                  ontap: () => navigateToScreen(context, const Login()),
                 )
               ],
             ),

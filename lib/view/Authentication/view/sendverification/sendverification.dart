@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:ridemate/view/Authentication/view/forgetverifyotp/forgetverifyotp.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
+import '../../../../routing/routing.dart';
 import '../../../../utils/appcolors.dart';
 import '../../../../widgets/customtext.dart';
 import '../../components/authtextform.dart';
@@ -41,12 +41,12 @@ class Sendverification extends StatelessWidget {
                   ),
                   addVerticalspace(height: 350.h),
                   Custombutton(
-                    text: 'Send OTP ',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    borderRadius: 8,
-                    ontap: () => Get.to(() => const Forgetverifyotp()),
-                  ),
+                      text: 'Send OTP ',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      borderRadius: 8,
+                      ontap: () =>
+                          navigateToScreen(context, const Forgetverifyotp())),
                 ],
               ),
             ),

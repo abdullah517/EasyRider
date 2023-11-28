@@ -86,7 +86,10 @@ class Setnewpassword extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: const Color(0xffA6A6A6),
                 ),
-                addVerticalspace(height: 40),
+                addVerticalspace(
+                    height: MediaQuery.of(context).viewInsets.bottom == 0.0
+                        ? 220.h
+                        : 260.h - MediaQuery.of(context).viewInsets.bottom),
                 Custombutton(
                   text: 'Save',
                   fontSize: 16,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/Homeprovider/homeprovider.dart';
 import 'package:ridemate/Providers/Loginprovider/loginprovider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
+import 'package:ridemate/Providers/newpasswordprovider/newpasswordprovider.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
 
 void main() {
@@ -26,8 +27,14 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (context) => LoginProvider(),
             ),
+            ChangeNotifierProvider(
+              create: (context) => Newpasswordprovider(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Homeprovider(),
+            ),
           ],
-          child: GetMaterialApp(
+          child: MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'RideMate',
             theme: ThemeData(

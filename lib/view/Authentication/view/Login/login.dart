@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Loginprovider/loginprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
@@ -110,13 +109,8 @@ class Login extends StatelessWidget {
                   ],
                 ),
                 addVerticalspace(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Socialbutton(path: AppImages.googlelogo),
-                    Socialbutton(path: AppImages.facebooklogo),
-                    Socialbutton(path: AppImages.applelogo),
-                  ],
+                const Socialbutton(
+                  text: 'Login with Google',
                 ),
                 addVerticalspace(height: 20),
                 Align(

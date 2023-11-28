@@ -9,7 +9,6 @@ import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Onboarding/components/onboardingcomponent.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
 import 'package:ridemate/widgets/custombutton.dart';
-import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
@@ -73,12 +72,12 @@ class Onboarding extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               addVerticalspace(height: 85),
-              Customcontainer(
+              SizedBox(
                 height: 80.h,
                 width: 86.w,
                 child: Stack(
                   children: [
-                    Customcontainer(
+                    SizedBox(
                         width: 86.w,
                         height: 80.h,
                         child: Consumer<Onboardingprovider>(

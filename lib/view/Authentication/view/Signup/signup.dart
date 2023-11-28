@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
@@ -116,13 +115,8 @@ class Signup extends StatelessWidget {
                       ],
                     ),
                     addVerticalspace(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Socialbutton(path: AppImages.googlelogo),
-                        Socialbutton(path: AppImages.facebooklogo),
-                        Socialbutton(path: AppImages.applelogo),
-                      ],
+                    const Socialbutton(
+                      text: 'Signup with Google',
                     ),
                     addVerticalspace(height: 20),
                     Align(

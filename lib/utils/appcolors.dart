@@ -15,4 +15,5 @@ class Appcolors {
   static const Color neutralgrey700 = Color(0xff5A5A5A);
   static const Color neutralgrey200 = Color(0xffD0D0D0);
   static const Color scaffoldbgcolor = Color(0xffffffff);
+  static const Color primary100 = Color(0xffFFF1B1);
 }

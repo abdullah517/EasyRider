@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/Signupprovider/signupprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
@@ -13,7 +15,6 @@ import 'package:ridemate/view/Authentication/view/phoneverifyotp/phoneverifyotp.
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
-import 'package:roundcheckbox/roundcheckbox.dart';
 
 class Signup extends StatelessWidget {
   const Signup({super.key});
@@ -55,19 +56,19 @@ class Signup extends StatelessWidget {
                     addVerticalspace(height: 20),
                     Row(
                       children: [
-                        RoundCheckBox(
-                          size: 24.sp,
-                          border: Border.all(color: Appcolors.successColor),
-                          checkedWidget: Icon(
-                            Icons.check,
-                            size: 14.sp,
-                            color: Appcolors.successColor,
+                        Consumer<Signupprovider>(
+                          builder: (context, checkstate, child) => Checkbox(
+                            value: checkstate.ischecked,
+                            fillColor: MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) =>
+                                    Appcolors.successColor),
+                            onChanged: (value) {
+                              checkstate.setcheckstate(value);
+                            },
+                            checkColor: Appcolors.scaffoldbgcolor,
+                            shape: const CircleBorder(),
                           ),
-                          checkedColor: Colors.white,
-                          isChecked: true,
-                          onTap: (p0) {},
                         ),
-                        addHorizontalspace(width: 8),
                         Expanded(
                             child: Customrichtext(
                           texts: const [

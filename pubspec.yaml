@@ -40,7 +40,6 @@ dependencies:
   provider: ^6.0.5
   intl_phone_field: ^3.2.0
   pinput: ^3.0.1
-  roundcheckbox: ^2.0.5
   google_maps_flutter: ^2.5.0
   location: ^5.0.3
   

@@ -7,7 +7,6 @@ import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
-import 'package:ridemate/view/Authentication/components/dropdownfield.dart';
 import 'package:ridemate/view/Authentication/components/phonefield.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
 import 'package:ridemate/view/Authentication/view/Login/login.dart';
@@ -43,16 +42,10 @@ class Signup extends StatelessWidget {
                     ),
                     addVerticalspace(height: 20),
                     Authtextform(
-                      hinttext: 'Name',
-                    ),
-                    addVerticalspace(height: 20),
-                    Authtextform(
-                      hinttext: 'Email',
+                      hinttext: 'Enter your email',
                     ),
                     addVerticalspace(height: 20),
                     const Phonefield(),
-                    addVerticalspace(height: 20),
-                    const Dropdownfield(mylist: ['Male', 'Female']),
                     addVerticalspace(height: 20),
                     Row(
                       children: [

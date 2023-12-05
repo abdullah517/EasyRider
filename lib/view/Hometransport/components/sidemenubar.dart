@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
+import 'package:ridemate/view/Hometransport/components/menubarcomp.dart';
 import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 

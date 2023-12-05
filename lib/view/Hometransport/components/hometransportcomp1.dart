@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/customcontainer.dart';
 
-class Homecomp1 extends StatelessWidget {
+class Hometransportcomp1 extends StatelessWidget {
   final IconData? icon;
-  const Homecomp1({super.key, this.icon});
+  const Hometransportcomp1({super.key, this.icon});
 
   @override
   Widget build(BuildContext context) {

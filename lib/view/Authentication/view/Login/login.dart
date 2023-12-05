@@ -9,11 +9,10 @@ import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
 import 'package:ridemate/view/Authentication/view/Signup/signup.dart';
 import 'package:ridemate/view/Authentication/view/sendverification/sendverification.dart';
-import 'package:ridemate/view/Homepage/homepage.dart';
+import 'package:ridemate/view/Homepage/home.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
-
 import '../../../../routing/routing.dart';
 
 class Login extends StatelessWidget {

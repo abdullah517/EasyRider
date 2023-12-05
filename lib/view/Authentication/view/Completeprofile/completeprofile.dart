@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
-import 'package:ridemate/view/Authentication/components/phonefield.dart';
 import 'package:ridemate/view/Dialogueboxes/congratdialogue.dart';
 import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -59,19 +58,14 @@ class Completeprofile extends StatelessWidget {
               addVerticalspace(height: 30),
               Authtextform(hinttext: 'Full Name'),
               addVerticalspace(height: 20),
-              const Phonefield(),
+              Authtextform(hinttext: 'Cnic no'),
               addVerticalspace(height: 20),
-              Authtextform(hinttext: 'Email'),
-              addVerticalspace(height: 20),
-              Authtextform(hinttext: 'Street'),
+              Authtextform(hinttext: 'Gender'),
               addVerticalspace(height: 20),
               const Dropdownfield(
                 mylist: ['Rawalpindi', 'Islamabad'],
                 hinttext: 'City',
               ),
-              addVerticalspace(height: 20),
-              const Dropdownfield(
-                  mylist: ['Punjab', 'Sindh'], hinttext: 'District'),
               addVerticalspace(height: 30),
               Custombutton(
                 text: 'Save',

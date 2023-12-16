@@ -3,12 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
-import 'package:ridemate/view/Authentication/view/Login/login.dart';
-import 'package:ridemate/view/Authentication/view/Signup/signup.dart';
+import 'package:ridemate/view/Authentication/components/socialbutton.dart';
+import 'package:ridemate/view/Authentication/view/joinviaphone/joinviaphone.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
-
 import '../../routing/routing.dart';
 
 class Welcomescreen extends StatelessWidget {
@@ -45,23 +44,14 @@ class Welcomescreen extends StatelessWidget {
                 ),
                 addVerticalspace(height: 100),
                 Custombutton(
-                  text: 'Create an account',
+                  text: 'Continue with phone number',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
-                  ontap: () => navigateToScreen(context, const Signup()),
+                  ontap: () => navigateToScreen(context, const Joinviaphone()),
                 ),
                 addVerticalspace(height: 20),
-                Custombutton(
-                  text: 'Log In',
-                  fontColor: Appcolors.primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  bordercolor: Appcolors.primaryColor,
-                  borderRadius: 8,
-                  haveborder: true,
-                  ontap: () => navigateToScreen(context, const Login()),
-                )
+                const Socialbutton(text: 'Continue with Google'),
               ],
             ),
           ),

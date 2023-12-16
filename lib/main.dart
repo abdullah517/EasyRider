@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -6,9 +7,12 @@ import 'package:ridemate/Providers/Loginprovider/loginprovider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
 import 'package:ridemate/Providers/Signupprovider/signupprovider.dart';
 import 'package:ridemate/Providers/newpasswordprovider/newpasswordprovider.dart';
+import 'package:ridemate/firebase_options.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 

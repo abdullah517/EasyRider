@@ -8,7 +8,6 @@ import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
 import '../../../../widgets/custombutton.dart';
-import '../../components/dropdownfield.dart';
 
 class Completeprofile extends StatelessWidget {
   const Completeprofile({super.key});
@@ -60,12 +59,11 @@ class Completeprofile extends StatelessWidget {
               addVerticalspace(height: 20),
               Authtextform(hinttext: 'Cnic no'),
               addVerticalspace(height: 20),
+              Authtextform(hinttext: 'Date of birth'),
+              addVerticalspace(height: 20),
               Authtextform(hinttext: 'Gender'),
               addVerticalspace(height: 20),
-              const Dropdownfield(
-                mylist: ['Rawalpindi', 'Islamabad'],
-                hinttext: 'City',
-              ),
+              Authtextform(hinttext: 'City'),
               addVerticalspace(height: 30),
               Custombutton(
                 text: 'Save',

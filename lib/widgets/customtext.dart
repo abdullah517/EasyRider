@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// ignore: must_be_immutable
 class CustomText extends StatelessWidget {
-  String title;
-  double letterSpacing;
-  TextOverflow? overflow;
-  int? maxlines;
-  Color color;
-  TextAlign textAlign;
-  double fontSize = 12;
-  FontWeight fontWeight;
+  final String title;
+  final double letterSpacing;
+  final TextOverflow? overflow;
+  final int? maxlines;
+  final Color color;
+  final TextAlign textAlign;
+  final double fontSize;
+  final FontWeight fontWeight;
 
-  CustomText({
+  const CustomText({
     super.key,
     required this.title,
     this.letterSpacing = 0.3,

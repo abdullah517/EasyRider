@@ -35,7 +35,7 @@ class Onboarding extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: InkWell(
                   onTap: () => navigateToScreen(context, const Welcomescreen()),
-                  child: CustomText(
+                  child: const CustomText(
                     title: 'Skip',
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -64,11 +64,11 @@ class Onboarding extends StatelessWidget {
                 ),
               ),
               addVerticalspace(height: 10),
-              CustomText(
+              const CustomText(
                 title: Appconstants.onboardtxt,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: const Color(0xffA0A0A0),
+                color: Color(0xffA0A0A0),
                 textAlign: TextAlign.center,
               ),
               addVerticalspace(height: 85),

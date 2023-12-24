@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Homeprovider/homeprovider.dart';
-import 'package:ridemate/Providers/Loginprovider/loginprovider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
-import 'package:ridemate/Providers/Signupprovider/signupprovider.dart';
-import 'package:ridemate/Providers/newpasswordprovider/newpasswordprovider.dart';
+import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
+import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
 import 'package:ridemate/firebase_options.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
 
@@ -30,16 +29,13 @@ class MyApp extends StatelessWidget {
               create: (context) => Onboardingprovider(),
             ),
             ChangeNotifierProvider(
-              create: (context) => LoginProvider(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => Newpasswordprovider(),
-            ),
-            ChangeNotifierProvider(
               create: (context) => Homeprovider(),
             ),
             ChangeNotifierProvider(
-              create: (context) => Signupprovider(),
+              create: (context) => Joinviaphoneprovider(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Verifyotpprovider(),
             ),
           ],
           child: MaterialApp(

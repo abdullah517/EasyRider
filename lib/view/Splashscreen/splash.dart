@@ -37,7 +37,7 @@ class Splashscreen extends StatelessWidget {
               ),
             ),
             addVerticalspace(height: 15),
-            CustomText(
+            const CustomText(
               title: 'Easy Rider',
               fontSize: 45,
               fontWeight: FontWeight.w800,

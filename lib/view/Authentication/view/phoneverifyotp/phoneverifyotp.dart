@@ -1,10 +1,10 @@
-// ignore_for_file: file_names, prefer_const_constructors
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/backappbar.dart';
-import 'package:ridemate/view/Authentication/components/custompinput.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
 import 'package:ridemate/widgets/custombutton.dart';
@@ -12,61 +12,123 @@ import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
 class Phoneverifyotp extends StatelessWidget {
-  const Phoneverifyotp({super.key});
+  final String phoneNo;
+  Phoneverifyotp({super.key, required this.phoneNo});
+
+  final otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final myprovider = Provider.of<Verifyotpprovider>(context, listen: false);
+    final formkey = GlobalKey<FormState>();
+    final defaultPinTheme = PinTheme(
+      width: 50,
+      height: 48,
+      textStyle: const TextStyle(
+          fontSize: 24,
+          color: Color.fromRGBO(65, 65, 65, 1),
+          fontWeight: FontWeight.w600),
+      decoration: BoxDecoration(
+        color: const Color(0xffffffff),
+        borderRadius: BorderRadius.circular(7.1),
+        border: Border.all(color: const Color.fromRGBO(208, 208, 208, 1)),
+      ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      borderRadius: BorderRadius.circular(7.1),
+      border: Border.all(color: const Color.fromRGBO(246, 205, 86, 1)),
+    );
+
+    final errorPinTheme = defaultPinTheme.copyDecorationWith(
+      borderRadius: BorderRadius.circular(7.1),
+      border: Border.all(color: Appcolors.errorColor),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration!.copyWith(
+        color: const Color.fromRGBO(255, 253, 231, 1),
+        borderRadius: BorderRadius.circular(7.1),
+        border: Border.all(color: const Color.fromRGBO(246, 205, 86, 1)),
+      ),
+    );
     return SafeArea(
       child: Scaffold(
         body: Form(
+            key: formkey,
             child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                addVerticalspace(height: 10.h),
-                const Backappbar(),
-                addVerticalspace(height: 15),
-                CustomText(
-                  title: 'Phone verification',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  color: Appcolors.contentPrimary,
-                ),
-                addVerticalspace(height: 12),
-                CustomText(
-                  title: 'Enter your OTP code',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Appcolors.neutralgrey,
-                ),
-                addVerticalspace(height: 40),
-                Custompinput(),
-                addVerticalspace(height: 20),
-                Customrichtext(
-                  texts: const [
-                    'Didn’t receive code?',
-                    ' Resend again',
-                  ],
-                ),
-                addVerticalspace(
-                    height: MediaQuery.of(context).viewInsets.bottom == 0.0
-                        ? 270.h
-                        : 330.h - MediaQuery.of(context).viewInsets.bottom),
-                Custombutton(
-                  text: 'Verify ',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  borderRadius: 8,
-                  ontap: () {
-                    navigateToScreen(context, Completeprofile());
-                  },
-                ),
-              ],
-            ),
-          ),
-        )),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Backappbar(),
+                  addVerticalspace(height: 15),
+                  const CustomText(
+                    title: 'Phone verification',
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: Appcolors.contentPrimary,
+                  ),
+                  addVerticalspace(height: 12),
+                  const CustomText(
+                    title: 'Enter your OTP code',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Appcolors.neutralgrey,
+                  ),
+                  addVerticalspace(height: 40),
+                  Pinput(
+                    controller: otpController,
+                    cursor: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 9),
+                        width: 22,
+                        height: 1,
+                        color: const Color.fromRGBO(246, 205, 86, 1),
+                      ),
+                    ),
+                    defaultPinTheme: defaultPinTheme,
+                    errorPinTheme: errorPinTheme,
+                    length: 5,
+                    separatorBuilder: (index) => addHorizontalspace(width: 8),
+                    validator: (value) {
+                      return myprovider.errormessage == ''
+                          ? null
+                          : myprovider.errormessage;
+                    },
+                    focusedPinTheme: focusedPinTheme,
+                    submittedPinTheme: submittedPinTheme,
+                  ),
+                  addVerticalspace(height: 20),
+                  Customrichtext(
+                    texts: const [
+                      "Didn't receive code?",
+                      ' Resend again',
+                    ],
+                  ),
+                  const Spacer(),
+                  Consumer<Verifyotpprovider>(
+                    builder: (context, verify, child) => Custombutton(
+                      text: 'Verify ',
+                      loading: verify.loading,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      borderRadius: 8,
+                      ontap: () {
+                        verify
+                            .verifyOTP(phoneNo, otpController.text)
+                            .then((value) {
+                          if (formkey.currentState!.validate()) {
+                            navigateToScreen(context, const Completeprofile());
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )),
       ),
     );
   }

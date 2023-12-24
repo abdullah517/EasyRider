@@ -20,13 +20,13 @@ class Sidemenubar extends StatelessWidget {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              accountName: CustomText(
+              accountName: const CustomText(
                 title: 'Nate Samson',
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: Appcolors.contentSecondary,
               ),
-              accountEmail: CustomText(
+              accountEmail: const CustomText(
                 title: 'nate@email.con',
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

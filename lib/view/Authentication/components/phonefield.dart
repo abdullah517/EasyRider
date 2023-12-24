@@ -5,11 +5,13 @@ import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/hinttextstyle.dart';
 
 class Phonefield extends StatelessWidget {
-  const Phonefield({super.key});
+  final TextEditingController controller;
+  const Phonefield({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return IntlPhoneField(
+      controller: controller,
       cursorColor: Appcolors.primaryColor,
       dropdownTextStyle: TextStyle(
         fontSize: 16.sp,
@@ -28,7 +30,6 @@ class Phonefield extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
       initialCountryCode: 'PK',
-      onChanged: (phone) {},
     );
   }
 }

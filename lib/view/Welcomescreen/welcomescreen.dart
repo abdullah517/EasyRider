@@ -30,13 +30,13 @@ class Welcomescreen extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
                 addVerticalspace(height: 29),
-                CustomText(
+                const CustomText(
                   title: 'Welcome',
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
                   color: Appcolors.contentPrimary,
                 ),
-                CustomText(
+                const CustomText(
                   title: 'Have a better sharing experience',
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -48,7 +48,7 @@ class Welcomescreen extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
-                  ontap: () => navigateToScreen(context, const Joinviaphone()),
+                  ontap: () => navigateToScreen(context, Joinviaphone()),
                 ),
                 addVerticalspace(height: 20),
                 const Socialbutton(text: 'Continue with Google'),

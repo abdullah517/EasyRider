@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// ignore: must_be_immutable
 class Customcontainer extends StatelessWidget {
-  double borderRadius;
-  EdgeInsetsGeometry? padding;
-  EdgeInsetsGeometry? margin;
-  BoxBorder? border;
-  Color color;
-  Widget? child;
-  double height;
-  double width;
-  Customcontainer({
+  final double borderRadius;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final BoxBorder? border;
+  final Color color;
+  final Widget? child;
+  final double height;
+  final double width;
+  final String imagepath;
+  const Customcontainer({
     super.key,
     this.borderRadius = 0.0,
     this.color = const Color(0xffffffff),
@@ -21,6 +21,7 @@ class Customcontainer extends StatelessWidget {
     this.padding,
     this.margin,
     this.border,
+    this.imagepath = '',
   });
 
   @override
@@ -31,10 +32,12 @@ class Customcontainer extends StatelessWidget {
       height: height.h,
       width: width.w,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius.r),
-        color: color,
-        border: border,
-      ),
+          borderRadius: BorderRadius.circular(borderRadius.r),
+          color: color,
+          border: border,
+          image: imagepath != ''
+              ? DecorationImage(image: AssetImage(imagepath), fit: BoxFit.cover)
+              : null),
       child: child,
     );
   }

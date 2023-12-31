@@ -5,7 +5,6 @@ class AppImages {
   static String splashlogo1 = 'assets/image4.png';
   static String splashlogo2 = 'assets/image5.png';
   static String welcomeimg = 'assets/welcome.svg';
-  static String applelogo = 'assets/Apple.png';
   static String googlelogo = 'assets/google.png';
-  static String facebooklogo = 'assets/Facebook.png';
+  static String camerapic = 'assets/camerapic.png';
 }

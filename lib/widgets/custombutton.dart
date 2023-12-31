@@ -1,24 +1,25 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/customtext.dart';
 
-// ignore: must_be_immutable
 class Custombutton extends StatelessWidget {
-  double height;
-  double width;
-  String text;
-  double fontSize;
-  FontWeight fontWeight;
-  Color fontColor;
-  Color buttoncolor;
-  Color bordercolor;
-  double borderRadius;
-  Function? ontap;
-  bool haveborder;
-  IconData icon;
+  final double height;
+  final double width;
+  final String text;
+  final double fontSize;
+  final FontWeight fontWeight;
+  final Color fontColor;
+  final Color buttoncolor;
+  final Color bordercolor;
+  final double borderRadius;
+  final void Function()? ontap;
+  final bool haveborder;
+  final IconData icon;
+  final bool loading;
 
-  Custombutton({
+  const Custombutton({
     super.key,
     this.height = 54,
     this.width = 362,
@@ -32,6 +33,7 @@ class Custombutton extends StatelessWidget {
     this.ontap,
     this.haveborder = false,
     this.icon = Icons.arrow_forward,
+    this.loading = false,
   });
 
   @override
@@ -40,7 +42,7 @@ class Custombutton extends StatelessWidget {
       height: height.h,
       width: width.w,
       child: ElevatedButton(
-        onPressed: ontap != null ? () => ontap!() : () {},
+        onPressed: ontap,
         style: ElevatedButton.styleFrom(
           backgroundColor: haveborder ? Colors.white : buttoncolor,
           shape: RoundedRectangleBorder(
@@ -54,12 +56,14 @@ class Custombutton extends StatelessWidget {
                 size: 25.sp,
                 color: Appcolors.contentTertiary,
               )
-            : CustomText(
-                title: text,
-                fontSize: fontSize,
-                color: fontColor,
-                fontWeight: fontWeight,
-              ),
+            : loading
+                ? const CupertinoActivityIndicator(radius: 16)
+                : CustomText(
+                    title: text,
+                    fontSize: fontSize,
+                    color: fontColor,
+                    fontWeight: fontWeight,
+                  ),
       ),
     );
   }

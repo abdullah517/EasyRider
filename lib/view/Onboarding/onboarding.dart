@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appconstants.dart';
 import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Onboarding/components/onboardingcomponent.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
 import 'package:ridemate/widgets/custombutton.dart';
-import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
@@ -25,6 +24,7 @@ class Onboarding extends StatelessWidget {
     final onboardprovider =
         Provider.of<Onboardingprovider>(context, listen: false);
     return Scaffold(
+      backgroundColor: Appcolors.scaffoldbgcolor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -34,12 +34,8 @@ class Onboarding extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: InkWell(
-                  onTap: () => _pageController.animateToPage(
-                    activepage + 1,
-                    duration: const Duration(microseconds: 300),
-                    curve: Curves.easeIn,
-                  ),
-                  child: CustomText(
+                  onTap: () => navigateToScreen(context, const Welcomescreen()),
+                  child: const CustomText(
                     title: 'Skip',
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -68,19 +64,20 @@ class Onboarding extends StatelessWidget {
                 ),
               ),
               addVerticalspace(height: 10),
-              CustomText(
+              const CustomText(
                 title: Appconstants.onboardtxt,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: const Color(0xffA0A0A0),
+                color: Color(0xffA0A0A0),
                 textAlign: TextAlign.center,
               ),
               addVerticalspace(height: 85),
               SizedBox(
                 height: 80.h,
+                width: 86.w,
                 child: Stack(
                   children: [
-                    Customcontainer(
+                    SizedBox(
                         width: 86.w,
                         height: 80.h,
                         child: Consumer<Onboardingprovider>(
@@ -102,17 +99,18 @@ class Onboarding extends StatelessWidget {
                             fontColor: Appcolors.contentTertiary,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            height: 60,
+                            height: 65,
                             width: 70,
-                            borderRadius: 30,
+                            borderRadius: 50,
                             ontap: activepage == 2
-                                ? () => Get.to(() => const Welcomescreen())
+                                ? () => navigateToScreen(
+                                    context, const Welcomescreen())
                                 : () {
                                     _pageController.animateToPage(
                                       activepage + 1,
                                       duration:
                                           const Duration(microseconds: 300),
-                                      curve: Curves.easeIn,
+                                      curve: Curves.bounceIn,
                                     );
                                   },
                           );

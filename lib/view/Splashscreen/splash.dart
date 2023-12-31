@@ -1,25 +1,34 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
+import 'package:ridemate/view/Homepage/home.dart';
 import 'package:ridemate/view/Onboarding/onboarding.dart';
 import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Splashscreen extends StatelessWidget {
   const Splashscreen({super.key});
 
+  Future<void> checkloginstatus(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool islogin = prefs.getBool('isLogin') ?? false;
+    if (islogin) {
+// ignore: use_build_context_synchronously
+      navigateToScreen(context, Onboarding());
+    } else {
+      // ignore: use_build_context_synchronously
+      navigateandremove(context, const Homepage());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Timer(
-        const Duration(seconds: 3),
-        (() => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Onboarding(),
-            ))));
+    Timer(const Duration(seconds: 2), (() => checkloginstatus(context)));
     return Scaffold(
       backgroundColor: Appcolors.splashbgColor,
       body: Center(
@@ -37,7 +46,7 @@ class Splashscreen extends StatelessWidget {
               ),
             ),
             addVerticalspace(height: 15),
-            CustomText(
+            const CustomText(
               title: 'Easy Rider',
               fontSize: 45,
               fontWeight: FontWeight.w800,
@@ -47,6 +56,7 @@ class Splashscreen extends StatelessWidget {
               AppImages.splashlogo2,
               height: 100.h,
               width: 100.w,
+              color: Appcolors.scaffoldbgcolor,
             ),
           ],
         ),

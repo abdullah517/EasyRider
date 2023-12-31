@@ -1,30 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/view/Authentication/components/hinttextstyle.dart';
 
-// ignore: must_be_immutable
+import '../../../utils/appcolors.dart';
+
 class Authtextform extends StatelessWidget {
-  String? hinttext;
-  Widget? suffixIcon;
-  bool visibility;
-  Authtextform(
-      {super.key, this.hinttext, this.suffixIcon, this.visibility = false});
+  final String? hinttext;
+  final Widget? suffixIcon;
+  final bool readonly;
+  final TextEditingController? controller;
+  const Authtextform({
+    super.key,
+    this.hinttext,
+    this.suffixIcon,
+    this.readonly = false,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 362.w,
-      height: 60.h,
-      child: TextFormField(
-        obscureText: visibility,
-        decoration: InputDecoration(
-          hintText: hinttext,
-          hintStyle: gethintstyle(),
-          suffixIcon: suffixIcon,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          border: OutlineInputBorder(),
-        ),
+    return TextFormField(
+      cursorColor: Appcolors.primaryColor,
+      readOnly: readonly,
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hinttext,
+        hintStyle: gethintstyle(),
+        suffixIcon: suffixIcon,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        border: const OutlineInputBorder(
+            borderSide: BorderSide(color: Appcolors.neutralgrey200)),
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Appcolors.primaryColor)),
       ),
     );
   }

@@ -6,7 +6,13 @@ import 'package:ridemate/utils/appcolors.dart';
 class Customrichtext extends StatelessWidget {
   List<String> texts;
   void Function()? onTap;
-  Customrichtext({super.key, required this.texts, this.onTap});
+  Color color;
+  Customrichtext({
+    super.key,
+    required this.texts,
+    this.onTap,
+    this.color = Appcolors.neutralgrey700,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +23,7 @@ class Customrichtext extends StatelessWidget {
               (index) => TextSpan(
                     text: texts[index],
                     style: TextStyle(
-                      color: index % 2 != 0
-                          ? Appcolors.primaryColor
-                          : Appcolors.contentDisbaled,
+                      color: index % 2 != 0 ? Appcolors.primaryColor : color,
                     ),
                     recognizer: onTap != null && index == 1
                         ? (TapGestureRecognizer()..onTap = onTap)

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
 import 'package:ridemate/Providers/Homeprovider/homeprovider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
 import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
             ),
             ChangeNotifierProvider(
               create: (context) => Verifyotpprovider(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Completeprofileprovider(),
             ),
           ],
           child: MaterialApp(

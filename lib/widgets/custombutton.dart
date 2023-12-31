@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/utils/appcolors.dart';
@@ -13,7 +14,7 @@ class Custombutton extends StatelessWidget {
   final Color buttoncolor;
   final Color bordercolor;
   final double borderRadius;
-  final Function? ontap;
+  final void Function()? ontap;
   final bool haveborder;
   final IconData icon;
   final bool loading;
@@ -41,7 +42,7 @@ class Custombutton extends StatelessWidget {
       height: height.h,
       width: width.w,
       child: ElevatedButton(
-        onPressed: ontap != null ? () => ontap!() : () {},
+        onPressed: ontap,
         style: ElevatedButton.styleFrom(
           backgroundColor: haveborder ? Colors.white : buttoncolor,
           shape: RoundedRectangleBorder(
@@ -56,7 +57,7 @@ class Custombutton extends StatelessWidget {
                 color: Appcolors.contentTertiary,
               )
             : loading
-                ? const CircularProgressIndicator(color: Colors.white)
+                ? const CupertinoActivityIndicator(radius: 16)
                 : CustomText(
                     title: text,
                     fontSize: fontSize,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/Googleauthprovider/googleauthprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
@@ -51,7 +53,12 @@ class Welcomescreen extends StatelessWidget {
                   ontap: () => navigateToScreen(context, Joinviaphone()),
                 ),
                 addVerticalspace(height: 20),
-                const Socialbutton(text: 'Continue with Google'),
+                Consumer<Googleloginprovider>(
+                  builder: (context, value, child) => Socialbutton(
+                    text: 'Continue with Google',
+                    loading: value.loading,
+                  ),
+                ),
               ],
             ),
           ),

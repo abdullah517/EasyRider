@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '701088545317',
     projectId: 'ridemate-7d7f7',
     storageBucket: 'ridemate-7d7f7.appspot.com',
+    androidClientId: '701088545317-av7friaptdorhcdev1i5fppd1uh4o16v.apps.googleusercontent.com',
+    iosClientId: '701088545317-qcub8ddh7pqcnijrb3n4ej2hi5vv8ole.apps.googleusercontent.com',
     iosBundleId: 'com.example.ridemate',
   );
 }

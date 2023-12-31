@@ -6,10 +6,16 @@ import '../../phoneotp/phoneotp.dart';
 class Joinviaphoneprovider extends ChangeNotifier {
   bool? ischecked = true;
   bool loading = false;
+  bool enabled = false;
   final _phoneotp = PhoneOtp();
 
   void setcheckstate(bool? value) {
     ischecked = value;
+    notifyListeners();
+  }
+
+  void changebuttonstate(bool btnstate) {
+    enabled = btnstate;
     notifyListeners();
   }
 

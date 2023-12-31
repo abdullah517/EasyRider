@@ -3,19 +3,25 @@ import 'package:ridemate/view/Authentication/components/hinttextstyle.dart';
 
 import '../../../utils/appcolors.dart';
 
-// ignore: must_be_immutable
 class Authtextform extends StatelessWidget {
-  String? hinttext;
-  Widget? suffixIcon;
-  bool visibility;
-  Authtextform(
-      {super.key, this.hinttext, this.suffixIcon, this.visibility = false});
+  final String? hinttext;
+  final Widget? suffixIcon;
+  final bool readonly;
+  final TextEditingController? controller;
+  const Authtextform({
+    super.key,
+    this.hinttext,
+    this.suffixIcon,
+    this.readonly = false,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       cursorColor: Appcolors.primaryColor,
-      obscureText: visibility,
+      readOnly: readonly,
+      controller: controller,
       decoration: InputDecoration(
         hintText: hinttext,
         hintStyle: gethintstyle(),

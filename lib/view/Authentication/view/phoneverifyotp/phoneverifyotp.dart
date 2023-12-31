@@ -4,9 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/view/Authentication/components/backappbar.dart';
+import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
 import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
+import 'package:ridemate/view/Homepage/home.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -52,84 +53,94 @@ class Phoneverifyotp extends StatelessWidget {
         border: Border.all(color: const Color.fromRGBO(246, 205, 86, 1)),
       ),
     );
-    return SafeArea(
-      child: Scaffold(
-        body: Form(
-            key: formkey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Backappbar(),
-                  addVerticalspace(height: 15),
-                  const CustomText(
-                    title: 'Phone verification',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Appcolors.contentPrimary,
+    return Scaffold(
+      appBar: customappbar(context),
+      body: Form(
+          key: formkey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                addVerticalspace(height: 15),
+                const CustomText(
+                  title: 'Phone verification',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: Appcolors.contentPrimary,
+                ),
+                addVerticalspace(height: 12),
+                const CustomText(
+                  title: 'Enter your OTP code',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Appcolors.neutralgrey,
+                ),
+                addVerticalspace(height: 40),
+                Pinput(
+                  controller: otpController,
+                  cursor: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 9),
+                      width: 22,
+                      height: 1,
+                      color: const Color.fromRGBO(246, 205, 86, 1),
+                    ),
                   ),
-                  addVerticalspace(height: 12),
-                  const CustomText(
-                    title: 'Enter your OTP code',
+                  defaultPinTheme: defaultPinTheme,
+                  errorPinTheme: errorPinTheme,
+                  length: 5,
+                  separatorBuilder: (index) => addHorizontalspace(width: 8),
+                  validator: (value) {
+                    return myprovider.errormessage == ''
+                        ? null
+                        : myprovider.errormessage;
+                  },
+                  onChanged: (value) {
+                    value.length == 5
+                        ? myprovider.changebuttonstate(true)
+                        : myprovider.changebuttonstate(false);
+                  },
+                  focusedPinTheme: focusedPinTheme,
+                  submittedPinTheme: submittedPinTheme,
+                ),
+                addVerticalspace(height: 20),
+                Customrichtext(
+                  texts: const [
+                    "Didn't receive code?",
+                    ' Resend again',
+                  ],
+                ),
+                const Spacer(),
+                Consumer<Verifyotpprovider>(
+                  builder: (context, verifyprovider, child) => Custombutton(
+                    text: 'Verify ',
+                    loading: verifyprovider.loading,
                     fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Appcolors.neutralgrey,
-                  ),
-                  addVerticalspace(height: 40),
-                  Pinput(
-                    controller: otpController,
-                    cursor: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 9),
-                        width: 22,
-                        height: 1,
-                        color: const Color.fromRGBO(246, 205, 86, 1),
-                      ),
-                    ),
-                    defaultPinTheme: defaultPinTheme,
-                    errorPinTheme: errorPinTheme,
-                    length: 5,
-                    separatorBuilder: (index) => addHorizontalspace(width: 8),
-                    validator: (value) {
-                      return myprovider.errormessage == ''
-                          ? null
-                          : myprovider.errormessage;
-                    },
-                    focusedPinTheme: focusedPinTheme,
-                    submittedPinTheme: submittedPinTheme,
-                  ),
-                  addVerticalspace(height: 20),
-                  Customrichtext(
-                    texts: const [
-                      "Didn't receive code?",
-                      ' Resend again',
-                    ],
-                  ),
-                  const Spacer(),
-                  Consumer<Verifyotpprovider>(
-                    builder: (context, verify, child) => Custombutton(
-                      text: 'Verify ',
-                      loading: verify.loading,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      borderRadius: 8,
-                      ontap: () {
-                        verify
-                            .verifyOTP(phoneNo, otpController.text)
-                            .then((value) {
-                          if (formkey.currentState!.validate()) {
-                            navigateToScreen(context, const Completeprofile());
+                    fontWeight: FontWeight.w500,
+                    borderRadius: 8,
+                    ontap: verifyprovider.enabled
+                        ? () {
+                            verifyprovider
+                                .verifyOTP(phoneNo, otpController.text)
+                                .then((value) {
+                              if (formkey.currentState!.validate()) {
+                                if (myprovider.haveuser) {
+                                  navigateandremove(context, const Homepage());
+                                } else {
+                                  navigateToScreen(context,
+                                      Completeprofile(phoneNumber: phoneNo));
+                                }
+                              }
+                            });
                           }
-                        });
-                      },
-                    ),
+                        : null,
                   ),
-                ],
-              ),
-            )),
-      ),
+                ),
+              ],
+            ),
+          )),
     );
   }
 }

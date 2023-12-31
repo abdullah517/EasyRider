@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
-Future<void> cnicscannerdialogue(BuildContext context, String phoneNumber) {
-  final cnicprovider =
-      Provider.of<Completeprofileprovider>(context, listen: false);
+Future<void> cnicscannerdialogue(
+  BuildContext context,
+  void Function()? onPressed1,
+  void Function()? onPressed2,
+) {
   return showDialog(
       barrierDismissible: false,
       context: context,
@@ -59,11 +58,7 @@ Future<void> cnicscannerdialogue(BuildContext context, String phoneNumber) {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              cnicprovider.scanCnic(
-                                  ImageSource.camera, phoneNumber, context);
-                            },
+                            onPressed: onPressed1,
                             child: const CustomText(
                               title: 'CAMERA',
                               fontSize: 18,
@@ -71,11 +66,7 @@ Future<void> cnicscannerdialogue(BuildContext context, String phoneNumber) {
                               fontWeight: FontWeight.w600,
                             )),
                         TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              cnicprovider.scanCnic(
-                                  ImageSource.gallery, phoneNumber, context);
-                            },
+                            onPressed: onPressed2,
                             child: const CustomText(
                               title: 'GALLERY',
                               fontSize: 18,

@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
-import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
-import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
-import 'package:ridemate/view/Homepage/home.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -126,12 +123,8 @@ class Phoneverifyotp extends StatelessWidget {
                                 .verifyOTP(phoneNo, otpController.text)
                                 .then((value) {
                               if (formkey.currentState!.validate()) {
-                                if (myprovider.haveuser) {
-                                  navigateandremove(context, const Homepage());
-                                } else {
-                                  navigateToScreen(context,
-                                      Completeprofile(phoneNumber: phoneNo));
-                                }
+                                verifyprovider.checkuserexistance(
+                                    context, phoneNo);
                               }
                             });
                           }

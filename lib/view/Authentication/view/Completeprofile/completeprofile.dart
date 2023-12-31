@@ -12,8 +12,9 @@ import 'package:ridemate/widgets/spacing.dart';
 import '../../../../widgets/custombutton.dart';
 
 class Completeprofile extends StatelessWidget {
-  final String phoneNumber;
-  const Completeprofile({super.key, required this.phoneNumber});
+  final void Function()? onPressed1;
+  final void Function()? onPressed2;
+  const Completeprofile({super.key, this.onPressed1, this.onPressed2});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,9 @@ class Completeprofile extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
-                  ontap: () => cnicscannerdialogue(context, phoneNumber),
+                  ontap: () {
+                    cnicscannerdialogue(context, onPressed1, onPressed2);
+                  },
                 ),
               ],
             ),

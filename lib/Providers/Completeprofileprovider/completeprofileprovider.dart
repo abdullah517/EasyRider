@@ -16,7 +16,11 @@ class Completeprofileprovider extends ChangeNotifier {
   String url = '';
 
   Future<void> scanCnic(
-      ImageSource imageSource, String mobileNo, var context) async {
+    ImageSource imageSource,
+    BuildContext context,
+    CollectionReference collectionName,
+    String docid,
+  ) async {
     CnicModel cnicModel =
         await CnicScanner().scanImage(imageSource: imageSource);
     genderController.text = cnicModel.cnicHolderGender;
@@ -25,11 +29,8 @@ class Completeprofileprovider extends ChangeNotifier {
     Future.delayed(const Duration(seconds: 1)).then((value) async {
       loading = true;
       notifyListeners();
-      CollectionReference mobileUsers =
-          FirebaseFirestore.instance.collection('mobileusers');
 
-      String asciiPhoneNumber = mobileNo.codeUnits.join('-');
-      await mobileUsers.doc(asciiPhoneNumber).set({
+      await collectionName.doc(docid).set({
         'Gender': cnicModel.cnicHolderGender,
         'Username': cnicModel.cnicHolderName,
         'Profileimage': url,

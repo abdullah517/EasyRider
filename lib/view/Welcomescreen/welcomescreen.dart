@@ -57,6 +57,7 @@ class Welcomescreen extends StatelessWidget {
                   builder: (context, value, child) => Socialbutton(
                     text: 'Continue with Google',
                     loading: value.loading,
+                    onPressed: () => value.signInWithGoogle(context),
                   ),
                 ),
               ],

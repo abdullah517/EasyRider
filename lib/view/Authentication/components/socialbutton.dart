@@ -8,7 +8,9 @@ import 'package:ridemate/widgets/customtext.dart';
 class Socialbutton extends StatelessWidget {
   final String text;
   final bool loading;
-  const Socialbutton({super.key, required this.text, this.loading = false});
+  final void Function()? onPressed;
+  const Socialbutton(
+      {super.key, required this.text, this.loading = false, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class Socialbutton extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: Appcolors.primaryColor,
               ),
-        onPressed: () {},
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(

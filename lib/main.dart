@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
+import 'package:ridemate/Providers/Googleauthprovider/googleauthprovider.dart';
 import 'package:ridemate/Providers/Homeprovider/homeprovider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
 import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
             ),
             ChangeNotifierProvider(
               create: (context) => Completeprofileprovider(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Googleloginprovider(),
             ),
           ],
           child: MaterialApp(

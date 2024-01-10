@@ -23,6 +23,7 @@ class Verifyotpprovider extends ChangeNotifier {
     if (response == 'Success') {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLogin', true);
+      await prefs.setString('phoneuserid', phoneNo.codeUnits.join('-'));
       addUserToFirestore(phoneNo);
       loading = false;
       errormessage = '';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/routing/routing.dart';
@@ -17,12 +18,18 @@ class Splashscreen extends StatelessWidget {
   Future<void> checkloginstatus(BuildContext context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool islogin = prefs.getBool('isLogin') ?? false;
+    final String phoneuserid = prefs.getString('phoneuserid') ?? '';
     if (islogin) {
-// ignore: use_build_context_synchronously
-      navigateToScreen(context, Onboarding());
+      if (FirebaseAuth.instance.currentUser != null) {
+        // ignore: use_build_context_synchronously
+        navigateandremove(context, const Homepage());
+      } else {
+        // ignore: use_build_context_synchronously
+        navigateandremove(context, Homepage(phoneno: phoneuserid));
+      }
     } else {
       // ignore: use_build_context_synchronously
-      navigateandremove(context, const Homepage());
+      navigateToScreen(context, Onboarding());
     }
   }
 

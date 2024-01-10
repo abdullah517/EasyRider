@@ -34,7 +34,7 @@ class Completeprofileprovider extends ChangeNotifier {
         'Gender': cnicModel.cnicHolderGender,
         'Username': cnicModel.cnicHolderName,
         'Profileimage': url,
-      }).then((value) {
+      }, SetOptions(merge: true)).then((value) {
         loading = false;
         notifyListeners();
         navigateandremove(context, const Homepage());

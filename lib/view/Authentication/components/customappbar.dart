@@ -8,14 +8,16 @@ PreferredSizeWidget customappbar(BuildContext context, {String title = ''}) {
   return AppBar(
     elevation: 0.0,
     backgroundColor: Colors.transparent,
-    leading: IconButton(
-      onPressed: () => goback(context),
-      icon: Icon(
-        Icons.arrow_back_ios,
-        size: 20.sp,
-        color: Appcolors.contentPrimary,
-      ),
-    ),
+    leading: title == 'Profile'
+        ? null
+        : IconButton(
+            onPressed: () => goback(context),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 20.sp,
+              color: Appcolors.contentPrimary,
+            ),
+          ),
     centerTitle: true,
     title: CustomText(
       title: title,

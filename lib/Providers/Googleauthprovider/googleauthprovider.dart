@@ -39,7 +39,7 @@ class Googleloginprovider extends ChangeNotifier {
 
       if (!documentExists) {
         await googleUsers.doc(userid).set({
-          'email': userCredential.user!.email,
+          'Email': userCredential.user!.email,
         }).then((value) {
           loading = false;
           notifyListeners();
@@ -49,10 +49,12 @@ class Googleloginprovider extends ChangeNotifier {
             context,
             Completeprofile(
               onPressed1: () {
+                Navigator.pop(context);
                 cnicprovider.scanCnic(
                     ImageSource.camera, context, googleUsers, userid);
               },
               onPressed2: () {
+                Navigator.pop(context);
                 cnicprovider.scanCnic(
                     ImageSource.gallery, context, googleUsers, userid);
               },

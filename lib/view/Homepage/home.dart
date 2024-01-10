@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/view/Hometransport/hometransport.dart';
 import '../../Providers/Homeprovider/homeprovider.dart';
 import '../../utils/appcolors.dart';
-import '../Dialogueboxes/locationdialogue.dart';
 import '../Hometransport/components/sidemenubar.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  final String? phoneno;
+  const Homepage({super.key, this.phoneno});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -22,12 +22,10 @@ class _HomepageState extends State<Homepage> {
     Container(),
   ];
   final _scaffoldState = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      await locationdialogue(context);
-    });
   }
 
   @override
@@ -35,8 +33,7 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       body: Consumer<Homeprovider>(
         builder: (context, index, child) => index.currentpage == 0
-            ? Hometransport(
-                ontap: () => _scaffoldState.currentState!.openDrawer())
+            ? Hometransport(ontap: _scaffoldState.currentState!.openDrawer)
             : pages[index.currentpage - 1],
       ),
       extendBody: true,

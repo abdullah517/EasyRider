@@ -40,6 +40,7 @@ class Googleloginprovider extends ChangeNotifier {
       if (!documentExists) {
         await googleUsers.doc(userid).set({
           'Email': userCredential.user!.email,
+          'role': 'User',
         }).then((value) {
           loading = false;
           notifyListeners();

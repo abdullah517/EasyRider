@@ -7,11 +7,13 @@ import '../../../utils/appcolors.dart';
 class Menubarcomp extends StatelessWidget {
   final String text;
   final IconData? icon;
-  const Menubarcomp({super.key, required this.text, this.icon});
+  final void Function()? onTap;
+  const Menubarcomp({super.key, required this.text, this.icon, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       title: CustomText(
         title: text,
         fontSize: 12,

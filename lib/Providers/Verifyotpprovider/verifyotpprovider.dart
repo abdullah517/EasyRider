@@ -47,6 +47,7 @@ class Verifyotpprovider extends ChangeNotifier {
     if (!documentExists) {
       await mobileUsers.doc(asciiPhoneNumber).set({
         'phoneNumber': mobileNo,
+        'role': 'User',
       });
     } else {
       haveuser = true;

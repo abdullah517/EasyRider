@@ -39,7 +39,7 @@ class Splashscreen extends StatelessWidget {
       } else {
         final cnicprovider =
             Provider.of<Completeprofileprovider>(context, listen: false);
-        navigateToScreen(
+        navigateandremove(
           context,
           Completeprofile(
             onPressed1: () {
@@ -65,7 +65,7 @@ class Splashscreen extends StatelessWidget {
       if (document['Gender'] != null && document['Username'] != null) {
         navigateandremove(context, const Homepage());
       } else {
-        navigateToScreen(
+        navigateandremove(
           context,
           Completeprofile(
             onPressed1: () {

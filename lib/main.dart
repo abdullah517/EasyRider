@@ -9,6 +9,7 @@ import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
 import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
 import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
 import 'package:ridemate/firebase_options.dart';
+import 'package:ridemate/view/Hometransport/components/search.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
 
 Future<void> main() async {
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
               // This is the theme of your application.
               useMaterial3: false,
             ),
-            home: const Splashscreen(),
+            home: Search(),
           ),
         );
       },

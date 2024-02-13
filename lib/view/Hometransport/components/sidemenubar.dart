@@ -37,10 +37,11 @@ class Sidemenubar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<void> logout() async {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLogin', false);
       if (FirebaseAuth.instance.currentUser != null) {
         await GoogleSignIn().disconnect();
+      } else {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLogin', false);
       }
       // ignore: use_build_context_synchronously
       navigateandremove(context, const Welcomescreen());

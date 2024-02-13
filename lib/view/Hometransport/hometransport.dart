@@ -27,7 +27,6 @@ class Hometransport extends StatelessWidget {
             zoom: 13.5,
           ),
           zoomControlsEnabled: false,
-          cloudMapId: 'c28ce90f6f3fda60',
           markers: {
             const Marker(
                 markerId: MarkerId('source'), position: sourceLocation),
@@ -64,7 +63,7 @@ class Hometransport extends StatelessWidget {
               child: TextField(
                 onTap: () {
                   _focusNode.unfocus();
-                  navigateToScreen(context, const Search());
+                  navigateToScreen(context, Search());
                 },
                 readOnly: true,
                 focusNode: _focusNode,

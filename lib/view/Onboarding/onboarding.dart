@@ -12,9 +12,7 @@ import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
-// ignore: must_be_immutable
 class Onboarding extends StatelessWidget {
-  int activepage = 0;
   final PageController _pageController = PageController(initialPage: 0);
 
   Onboarding({super.key});
@@ -49,7 +47,6 @@ class Onboarding extends StatelessWidget {
                 child: PageView(
                   controller: _pageController,
                   onPageChanged: (value) {
-                    activepage = value;
                     onboardprovider.setprogressvalue(value);
                   },
                   children: [
@@ -95,19 +92,19 @@ class Onboarding extends StatelessWidget {
                       child: Center(child: Consumer<Onboardingprovider>(
                         builder: (context, onboardprovider, child) {
                           return Custombutton(
-                            text: activepage == 2 ? 'Go' : '',
+                            text: onboardprovider.activepage == 2 ? 'Go' : '',
                             fontColor: Appcolors.contentTertiary,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
                             height: 65,
                             width: 70,
                             borderRadius: 50,
-                            ontap: activepage == 2
+                            ontap: onboardprovider.activepage == 2
                                 ? () => navigateToScreen(
                                     context, const Welcomescreen())
                                 : () {
                                     _pageController.animateToPage(
-                                      activepage + 1,
+                                      onboardprovider.activepage + 1,
                                       duration:
                                           const Duration(microseconds: 300),
                                       curve: Curves.bounceIn,

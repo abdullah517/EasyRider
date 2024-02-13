@@ -5,7 +5,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../routing/routing.dart';
 import '../../view/Homepage/home.dart';
 import '../Completeprofileprovider/completeprofileprovider.dart';
@@ -29,8 +28,6 @@ class Googleloginprovider extends ChangeNotifier {
     await FirebaseAuth.instance
         .signInWithCredential(credential)
         .then((userCredential) async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLogin', true);
       final userid = FirebaseAuth.instance.currentUser!.uid;
       CollectionReference googleUsers =
           FirebaseFirestore.instance.collection('googleusers');

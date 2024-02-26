@@ -54,7 +54,7 @@ class Transport extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0), // Adjust padding as needed
                       child: CustomListTile(
-                        title: 'Basic Info',
+                        title: 'CNIC',
                         icon: null,
                         onTap: () {},
                       ),
@@ -67,7 +67,7 @@ class Transport extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0), // Adjust padding as needed
                       child: CustomListTile(
-                        title: 'Basic Info',
+                        title: 'Selfie with ID',
                         icon: null,
                         onTap: () {},
                       ),
@@ -80,7 +80,7 @@ class Transport extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0), // Adjust padding as needed
                       child: CustomListTile(
-                        title: 'Basic Info',
+                        title: 'Vehicle Info',
                         icon: null,
                         onTap: () {},
                       ),

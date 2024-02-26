@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/basicinfo.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/cnic.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/selfiewithid.dart';
 
 class Transport extends StatelessWidget {
   final String title;
@@ -43,7 +47,10 @@ class Transport extends StatelessWidget {
                       child: CustomListTile(
                         title: 'Basic Info',
                         icon: null,
-                        onTap: () {},
+                        onTap: () {
+                          navigateToScreen(
+                              context, const basicinfo(title: 'Basic Info'));
+                        },
                       ),
                     ),
                     const Divider(
@@ -56,7 +63,12 @@ class Transport extends StatelessWidget {
                       child: CustomListTile(
                         title: 'CNIC',
                         icon: null,
-                        onTap: () {},
+                        onTap: () {
+                          navigateToScreen(
+                            context,
+                            const CNIC(title: 'CNIC'),
+                          );
+                        },
                       ),
                     ),
                     const Divider(
@@ -69,7 +81,12 @@ class Transport extends StatelessWidget {
                       child: CustomListTile(
                         title: 'Selfie with ID',
                         icon: null,
-                        onTap: () {},
+                        onTap: () {
+                          navigateToScreen(
+                            context,
+                            const Selfiewithid(title: 'Selfie with ID'),
+                          );
+                        },
                       ),
                     ),
                     const Divider(

@@ -1,39 +1,75 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Hometransport/components/hometransportcomp1.dart';
 import 'package:ridemate/view/Hometransport/components/search.dart';
 import 'package:ridemate/widgets/customcontainer.dart';
 
-class Hometransport extends StatelessWidget {
+class Hometransport extends StatefulWidget {
   final void Function()? ontap;
-  final Completer<GoogleMapController> _controller = Completer();
-  static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
-  static const LatLng destination = LatLng(37.33429383, -122.06600055);
-  final FocusNode _focusNode = FocusNode();
+  final String? phoneno;
+  const Hometransport({super.key, this.ontap, this.phoneno});
 
-  Hometransport({super.key, this.ontap});
+  @override
+  State<Hometransport> createState() => _HometransportState();
+}
+
+class _HometransportState extends State<Hometransport> {
+  final Completer<GoogleMapController> _controller = Completer();
+
+  final CameraPosition _kGooglePlex =
+      const CameraPosition(target: LatLng(33.6941, 72.9734), zoom: 14.4746);
+
+  final FocusNode _focusNode = FocusNode();
+  final Set<Marker> markers = {};
+
+  Future<Position> getuserCurrentLocation() async {
+    await Geolocator.requestPermission();
+    return await Geolocator.getCurrentPosition();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<Userdataprovider>(context, listen: false)
+        .loaduserdata(widget.phoneno);
+  }
+
+  void setposition() {
+    getuserCurrentLocation().then((value) async {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('1'),
+          position: LatLng(value.latitude, value.longitude),
+          infoWindow: const InfoWindow(title: 'userlocation'),
+        ),
+      );
+      CameraPosition cameraPosition = CameraPosition(
+          target: LatLng(value.latitude, value.longitude), zoom: 14.4746);
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         GoogleMap(
-          initialCameraPosition: const CameraPosition(
-            target: sourceLocation,
-            zoom: 13.5,
-          ),
+          initialCameraPosition: _kGooglePlex,
           zoomControlsEnabled: false,
-          markers: {
-            const Marker(
-                markerId: MarkerId('source'), position: sourceLocation),
-            const Marker(
-                markerId: MarkerId('destination'), position: destination),
+          onMapCreated: (mapcontroller) {
+            _controller.complete(mapcontroller);
+            setposition();
           },
-          onMapCreated: (mapcontroller) => _controller.complete(mapcontroller),
+          markers: Set<Marker>.of(markers),
         ),
         Positioned(
           left: 15,
@@ -43,7 +79,7 @@ class Hometransport extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                  onTap: ontap,
+                  onTap: widget.ontap,
                   child: const Hometransportcomp1(icon: Icons.menu)),
               const Hometransportcomp1(icon: Icons.notifications),
             ],
@@ -63,7 +99,7 @@ class Hometransport extends StatelessWidget {
               child: TextField(
                 onTap: () {
                   _focusNode.unfocus();
-                  navigateToScreen(context, Search());
+                  navigateToScreen(context, const Search());
                 },
                 readOnly: true,
                 focusNode: _focusNode,

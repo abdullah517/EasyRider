@@ -33,12 +33,15 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       body: Consumer<Homeprovider>(
         builder: (context, index, child) => index.currentpage == 0
-            ? Hometransport(ontap: _scaffoldState.currentState!.openDrawer)
+            ? Hometransport(
+                ontap: _scaffoldState.currentState!.openDrawer,
+                phoneno: widget.phoneno,
+              )
             : pages[index.currentpage - 1],
       ),
       extendBody: true,
       key: _scaffoldState,
-      drawer: Sidemenubar(phoneno: widget.phoneno),
+      drawer: const Sidemenubar(),
       bottomNavigationBar: Consumer<Homeprovider>(
         builder: (context, homeprovider, child) => Container(
           decoration: const BoxDecoration(

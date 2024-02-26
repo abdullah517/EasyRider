@@ -8,8 +8,8 @@ import 'package:ridemate/Providers/Homeprovider/homeprovider.dart';
 import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
 import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
 import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
+import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/firebase_options.dart';
-import 'package:ridemate/view/Hometransport/components/search.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
 
 Future<void> main() async {
@@ -46,6 +46,9 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (context) => Googleloginprovider(),
             ),
+            ChangeNotifierProvider(
+              create: (context) => Userdataprovider(),
+            ),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -54,7 +57,7 @@ class MyApp extends StatelessWidget {
               // This is the theme of your application.
               useMaterial3: false,
             ),
-            home: Search(),
+            home: const Splashscreen(),
           ),
         );
       },

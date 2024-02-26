@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,7 +17,6 @@ import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../Providers/Completeprofileprovider/completeprofileprovider.dart';
 
 class Splashscreen extends StatelessWidget {
@@ -30,16 +28,16 @@ class Splashscreen extends StatelessWidget {
     final String phoneuserid = prefs.getString('phoneuserid') ?? '';
 
     if (FirebaseAuth.instance.currentUser != null) {
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('googleusers');
-      DocumentSnapshot document =
+      final users = FirebaseFirestore.instance.collection('googleusers');
+      final document =
           await users.doc(FirebaseAuth.instance.currentUser!.uid).get();
-      if (document['Gender'] != null && document['Username'] != null) {
-        navigateandremove(context, const Homepage());
+      final data = document.data() as Map<String, dynamic>;
+      if (data['Gender'] != null && data['Username'] != null) {
+        navigateToScreen(context, const Homepage());
       } else {
         final cnicprovider =
             Provider.of<Completeprofileprovider>(context, listen: false);
-        navigateandremove(
+        navigateToScreen(
           context,
           Completeprofile(
             onPressed1: () {
@@ -58,11 +56,11 @@ class Splashscreen extends StatelessWidget {
     } else if (islogin) {
       final verifyprovider =
           Provider.of<Verifyotpprovider>(context, listen: false);
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('mobileusers');
+      final users = FirebaseFirestore.instance.collection('mobileusers');
       String asciiPhoneNumber = phoneuserid.codeUnits.join('-');
       DocumentSnapshot document = await users.doc(asciiPhoneNumber).get();
-      if (document['Gender'] != null && document['Username'] != null) {
+      final data = document.data() as Map<String, dynamic>;
+      if (data['Gender'] != null && data['Username'] != null) {
         navigateandremove(context, const Homepage());
       } else {
         navigateandremove(

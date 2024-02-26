@@ -8,6 +8,7 @@ class Homeprovider extends ChangeNotifier {
   int currentpage = 0;
   bool showicon = false;
   List suggestionlist = [];
+  String message = '';
   void changecurrentpage(int index) {
     currentpage = index;
     notifyListeners();
@@ -35,12 +36,13 @@ class Homeprovider extends ChangeNotifier {
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
       if (result['status'] == 'OK') {
+        message = '';
         suggestionlist =
             result['predictions'].map((p) => p['description']).toList();
         notifyListeners();
       }
       if (result['status'] == 'ZERO_RESULTS') {
-        suggestionlist = [];
+        message = 'nothingfound';
         notifyListeners();
       }
     } else {

@@ -6,6 +6,7 @@ import 'package:ridemate/view/Authentication/view/Driver_regis/basicinfo.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/cnic.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/selfiewithid.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/vehicleinfo.dart';
 
 class Transport extends StatelessWidget {
   final String title;
@@ -99,7 +100,12 @@ class Transport extends StatelessWidget {
                       child: CustomListTile(
                         title: 'Vehicle Info',
                         icon: null,
-                        onTap: () {},
+                        onTap: () {
+                          navigateToScreen(
+                            context,
+                            const vehicleinfo(title: 'Vehicle Info'),
+                          );
+                        },
                       ),
                     ),
                     const Divider(

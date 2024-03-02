@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ridemate/routing/routing.dart';
-import 'package:ridemate/view/Homepage/home.dart';
+import '../../view/Homepage/homepage.dart';
 
 class Completeprofileprovider extends ChangeNotifier {
   TextEditingController genderController = TextEditingController();
@@ -15,12 +15,9 @@ class Completeprofileprovider extends ChangeNotifier {
   File? image;
   String url = '';
 
-  Future<void> scanCnic(
-    ImageSource imageSource,
-    BuildContext context,
-    CollectionReference collectionName,
-    String docid,
-  ) async {
+  Future<void> scanCnic(ImageSource imageSource, BuildContext context,
+      CollectionReference collectionName, String docid,
+      {String phoneno = ''}) async {
     CnicModel cnicModel =
         await CnicScanner().scanImage(imageSource: imageSource);
     genderController.text = cnicModel.cnicHolderGender;
@@ -37,7 +34,11 @@ class Completeprofileprovider extends ChangeNotifier {
       }, SetOptions(merge: true)).then((value) {
         loading = false;
         notifyListeners();
-        navigateandremove(context, const Homepage());
+        if (phoneno == '') {
+          navigateandremove(context, const Homepage());
+        } else {
+          navigateandremove(context, Homepage(phoneno: phoneno));
+        }
       });
     });
   }

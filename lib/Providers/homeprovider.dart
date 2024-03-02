@@ -1,18 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:ridemate/models/placepredmodel.dart';
+import 'package:ridemate/utils/api_credential.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
 class Homeprovider extends ChangeNotifier {
-  int currentpage = 0;
   bool showicon = false;
-  List suggestionlist = [];
+  List<Placepredmodel> suggestionlist = [];
   String message = '';
-  void changecurrentpage(int index) {
-    currentpage = index;
-    notifyListeners();
-  }
+  String address = '';
+  String destination = 'Destination';
 
   void changeiconvisibility(int length) {
     if (length > 0) {
@@ -25,20 +26,34 @@ class Homeprovider extends ChangeNotifier {
     }
   }
 
+  void changedest(String dest) {
+    destination = dest;
+    notifyListeners();
+  }
+
+  Future<void> convertlatlngtoaddress(Position position) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    address =
+        "${placemarks.reversed.last.street}(${placemarks.reversed.last.subLocality})";
+    notifyListeners();
+  }
+
   Future<void> getsuggesstion(String input) async {
-    String apikey = 'AIzaSyDoCmnLSTMCBPnbqrG3_71ZztjLItFsnfk';
     String baseurl =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String sessiontoken = const Uuid().v4();
     String request =
-        '$baseurl?input=$input&key=$apikey&sessiontoken=$sessiontoken&components=country:pk';
+        '$baseurl?input=$input&key=$mapapikey&sessiontoken=$sessiontoken&components=country:pk';
+
     var response = await http.get(Uri.parse(request));
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
       if (result['status'] == 'OK') {
         message = '';
+        List predictions = result['predictions'];
         suggestionlist =
-            result['predictions'].map((p) => p['description']).toList();
+            (predictions).map((j) => Placepredmodel.fromjson(j)).toList();
         notifyListeners();
       }
       if (result['status'] == 'ZERO_RESULTS') {

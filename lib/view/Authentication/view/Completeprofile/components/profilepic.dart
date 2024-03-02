@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
+
+import '../../../../../Providers/completeprofileprovider.dart';
 
 class Profilepic extends StatelessWidget {
   const Profilepic({super.key});

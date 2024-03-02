@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/completeprofileprovider.dart';
 import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
 import '../../routing/routing.dart';
-import '../../view/Homepage/home.dart';
-import '../Completeprofileprovider/completeprofileprovider.dart';
+import '../../view/Homepage/homepage.dart';
 
 class Googleloginprovider extends ChangeNotifier {
   bool loading = false;

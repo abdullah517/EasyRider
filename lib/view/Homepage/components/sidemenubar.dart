@@ -6,7 +6,7 @@ import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/goingtoworkas.dart';
-import 'package:ridemate/view/Hometransport/components/menubarcomp.dart';
+import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';

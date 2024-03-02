@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
+import 'package:ridemate/Providers/completeprofileprovider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../phoneotp/phoneotp.dart';
 import '../../routing/routing.dart';
 import '../../view/Authentication/view/Completeprofile/completeprofile.dart';
-import '../../view/Homepage/home.dart';
+import '../../view/Homepage/homepage.dart';
 
 class Verifyotpprovider extends ChangeNotifier {
   bool loading = false;
@@ -68,12 +68,13 @@ class Verifyotpprovider extends ChangeNotifier {
 
     String asciiPhoneNumber = mobileNo.codeUnits.join('-');
     Navigator.pop(context);
-    cnicprovider.scanCnic(imageSource, context, mobileUsers, asciiPhoneNumber);
+    cnicprovider.scanCnic(imageSource, context, mobileUsers, asciiPhoneNumber,
+        phoneno: mobileNo);
   }
 
   void checkuserexistance(BuildContext context, String phoneNo) {
     if (haveuser) {
-      navigateandremove(context, const Homepage());
+      navigateandremove(context, Homepage(phoneno: phoneNo));
     } else {
       navigateToScreen(
         context,

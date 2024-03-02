@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
+import 'package:ridemate/Providers/completeprofileprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/authtextform.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';

@@ -2,15 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
-import 'package:ridemate/Providers/Googleauthprovider/googleauthprovider.dart';
-import 'package:ridemate/Providers/Homeprovider/homeprovider.dart';
-import 'package:ridemate/Providers/Onboardingprovider/onboardingprovider.dart';
-import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
-import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
+import 'package:ridemate/Providers/completeprofileprovider.dart';
+import 'package:ridemate/Providers/googleauthprovider.dart';
+import 'package:ridemate/Providers/homeprovider.dart';
+import 'package:ridemate/Providers/joinviaphoneprovider.dart';
+import 'package:ridemate/Providers/mapprovider.dart';
+import 'package:ridemate/Providers/onboardingprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
+import 'package:ridemate/Providers/verifyotpprovider.dart';
 import 'package:ridemate/firebase_options.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
+
+import 'Providers/useraddressprovider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +51,15 @@ class MyApp extends StatelessWidget {
             ),
             ChangeNotifierProvider(
               create: (context) => Userdataprovider(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Pickupaddress(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Destinationaddress(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => Mapprovider(),
             ),
           ],
           child: MaterialApp(

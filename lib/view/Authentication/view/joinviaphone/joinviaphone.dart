@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Joinviaphoneprovider/joinviaphoneprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/components/customrichtext.dart';
@@ -9,6 +8,8 @@ import 'package:ridemate/view/Authentication/components/phonefield.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
+
+import '../../../../Providers/joinviaphoneprovider.dart';
 
 class Joinviaphone extends StatelessWidget {
   Joinviaphone({super.key});

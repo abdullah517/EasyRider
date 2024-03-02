@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/widgets/customcontainer.dart';
 
-class Hometransportcomp1 extends StatelessWidget {
+class Homecomp1 extends StatelessWidget {
   final IconData? icon;
-  const Hometransportcomp1({super.key, this.icon});
+  const Homecomp1({super.key, this.icon});
 
   @override
   Widget build(BuildContext context) {
-    return Customcontainer(
+    return Container(
       width: 32.w,
       height: 28.h,
-      borderRadius: 8,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Appcolors.primary100,
+      ),
       padding: const EdgeInsets.all(4),
-      color: Appcolors.primary100,
       child: Icon(
         icon,
         size: 24.sp,

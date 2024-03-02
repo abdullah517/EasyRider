@@ -6,18 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Verifyotpprovider/verifyotpprovider.dart';
+import 'package:ridemate/Providers/verifyotpprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Authentication/view/Completeprofile/completeprofile.dart';
-import 'package:ridemate/view/Homepage/home.dart';
 import 'package:ridemate/view/Onboarding/onboarding.dart';
-import 'package:ridemate/widgets/customcontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../Providers/Completeprofileprovider/completeprofileprovider.dart';
+import '../../Providers/completeprofileprovider.dart';
+import '../Homepage/homepage.dart';
 
 class Splashscreen extends StatelessWidget {
   const Splashscreen({super.key});
@@ -61,7 +60,7 @@ class Splashscreen extends StatelessWidget {
       DocumentSnapshot document = await users.doc(asciiPhoneNumber).get();
       final data = document.data() as Map<String, dynamic>;
       if (data['Gender'] != null && data['Username'] != null) {
-        navigateandremove(context, const Homepage());
+        navigateandremove(context, Homepage(phoneno: phoneuserid));
       } else {
         navigateandremove(
           context,
@@ -91,10 +90,11 @@ class Splashscreen extends StatelessWidget {
         child: Column(
           children: [
             addVerticalspace(height: 240),
-            Customcontainer(
+            Container(
               height: 120,
               width: 125.76,
-              borderRadius: 34,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(34), color: Colors.white),
               child: Image.asset(
                 AppImages.splashlogo1,
                 width: 71.w,

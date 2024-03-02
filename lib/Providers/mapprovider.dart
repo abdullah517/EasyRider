@@ -11,9 +11,17 @@ import 'package:ridemate/utils/api_credential.dart';
 class Mapprovider extends ChangeNotifier {
   List<LatLng> plineCoordinates = [];
   Set<Polyline> polylineset = {};
+  late GoogleMapController newgooglemapcontroller;
+  final Set<Marker> markers = {};
   Future<void> obtainplacedirection(BuildContext context) async {
     final pickup = Provider.of<Pickupaddress>(context, listen: false);
     final destination = Provider.of<Destinationaddress>(context, listen: false);
+    markers.add(
+      Marker(
+        markerId: const MarkerId('3'),
+        position: LatLng(destination.latitude, destination.longitude),
+      ),
+    );
     String url =
         'https://maps.googleapis.com/maps/api/directions/json?destination=${destination.latitude},${destination.longitude}&origin=${pickup.latitude},${pickup.longitude}&key=$mapapikey';
     var response = await http.get(Uri.parse(url));
@@ -52,5 +60,30 @@ class Mapprovider extends ChangeNotifier {
         notifyListeners();
       }
     }
+    LatLngBounds latLngBounds;
+    if (pickup.latitude > destination.latitude &&
+        pickup.longitude > destination.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(destination.latitude, destination.longitude),
+        northeast: LatLng(pickup.latitude, pickup.longitude),
+      );
+    } else if (pickup.longitude > destination.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(pickup.latitude, destination.longitude),
+        northeast: LatLng(destination.latitude, pickup.longitude),
+      );
+    } else if (pickup.latitude > destination.latitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(destination.latitude, pickup.longitude),
+        northeast: LatLng(pickup.latitude, destination.longitude),
+      );
+    } else {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(pickup.latitude, pickup.longitude),
+        northeast: LatLng(destination.latitude, destination.longitude),
+      );
+    }
+    newgooglemapcontroller
+        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
   }
 }

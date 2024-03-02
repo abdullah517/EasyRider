@@ -28,8 +28,6 @@ class _HomepageState extends State<Homepage> {
   final CameraPosition _kGooglePlex =
       const CameraPosition(target: LatLng(33.6941, 72.9734), zoom: 14.4746);
 
-  final Set<Marker> markers = {};
-
   Future<Position> getuserCurrentLocation() async {
     await Geolocator.requestPermission();
     return await Geolocator.getCurrentPosition();
@@ -48,13 +46,13 @@ class _HomepageState extends State<Homepage> {
           .convertlatlngtoaddress(value);
       Provider.of<Pickupaddress>(context, listen: false)
           .updateaddress(value.latitude, value.longitude);
-      markers.add(
-        Marker(
-          markerId: const MarkerId('1'),
-          position: LatLng(value.latitude, value.longitude),
-          infoWindow: const InfoWindow(title: 'userlocation'),
-        ),
-      );
+      Provider.of<Mapprovider>(context, listen: false).markers.add(
+            Marker(
+              markerId: const MarkerId('1'),
+              position: LatLng(value.latitude, value.longitude),
+              infoWindow: const InfoWindow(title: 'userlocation'),
+            ),
+          );
       CameraPosition cameraPosition = CameraPosition(
           target: LatLng(value.latitude, value.longitude), zoom: 14.4746);
       final GoogleMapController controller = await _controller.future;
@@ -75,9 +73,10 @@ class _HomepageState extends State<Homepage> {
               zoomControlsEnabled: false,
               onMapCreated: (mapcontroller) {
                 _controller.complete(mapcontroller);
+                value.newgooglemapcontroller = mapcontroller;
                 setposition();
               },
-              markers: Set<Marker>.of(markers),
+              markers: Set<Marker>.of(value.markers),
               polylines: value.polylineset,
             ),
           ),

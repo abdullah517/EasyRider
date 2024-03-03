@@ -11,6 +11,7 @@ import 'package:ridemate/Providers/onboardingprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/Providers/verifyotpprovider.dart';
 import 'package:ridemate/firebase_options.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/goingtoworkas.dart';
 import 'package:ridemate/view/Splashscreen/splash.dart';
 
 import 'Providers/useraddressprovider.dart';
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
               // This is the theme of your application.
               useMaterial3: false,
             ),
-            home: const Splashscreen(),
+            home: const GoingtoWorkAs(),
           ),
         );
       },

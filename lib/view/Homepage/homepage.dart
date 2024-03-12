@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
-import 'package:ridemate/Providers/useraddressprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Homepage/components/homecomp1.dart';
 import 'package:ridemate/view/Homepage/components/search.dart';
+import 'package:ridemate/view/Homepage/components/sidemenubar.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
+import 'package:image/image.dart' as images;
+import 'package:ridemate/widgets/spacing.dart';
 
 class Homepage extends StatefulWidget {
   final String? phoneno;
@@ -21,17 +24,49 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 
+Future<Uint8List> makeReceiptImage() async {
+  // Load avatar image
+  ByteData imageData = await rootBundle.load('assets/personimage.jpg');
+  var bytes = Uint8List.view(imageData.buffer);
+  var avatarImage = images.decodeImage(bytes);
+
+  // Load marker image
+  imageData = await rootBundle.load('assets/ma.png');
+  bytes = Uint8List.view(imageData.buffer);
+  var markerImage = images.decodeImage(bytes);
+
+  // Resize the marker image to the desired dimensions
+  markerImage = images.copyResize(markerImage!, width: 96, height: 122);
+
+  // Resize the avatar image to fit inside the marker image
+  avatarImage = images.copyResize(avatarImage!,
+      width: markerImage.width ~/ 1.1, height: markerImage.height ~/ 1.4);
+
+  var radius = 40;
+  int originX = avatarImage.width ~/ 2, originY = avatarImage.height ~/ 2;
+
+  // Draw the avatar image cropped as a circle inside the marker image
+  for (int y = -radius; y <= radius; y++) {
+    for (int x = -radius; x <= radius; x++) {
+      if (originX + x + 8 >= 0 &&
+          originX + x < avatarImage.width &&
+          originY + y + 10 >= 0 &&
+          originY + y < avatarImage.height &&
+          x * x + y * y <= radius * radius) {
+        markerImage.setPixel(originX + x + 8, originY + y + 10,
+            avatarImage.getPixelSafe(originX + x, originY + y));
+      }
+    }
+  }
+
+  return images.encodePng(markerImage);
+}
+
 class _HomepageState extends State<Homepage> {
-  final Completer<GoogleMapController> _controller = Completer();
   final _scaffoldState = GlobalKey<ScaffoldState>();
 
   final CameraPosition _kGooglePlex =
       const CameraPosition(target: LatLng(33.6941, 72.9734), zoom: 14.4746);
-
-  Future<Position> getuserCurrentLocation() async {
-    await Geolocator.requestPermission();
-    return await Geolocator.getCurrentPosition();
-  }
 
   @override
   void initState() {
@@ -40,31 +75,11 @@ class _HomepageState extends State<Homepage> {
         .loaduserdata(widget.phoneno);
   }
 
-  void setposition() {
-    getuserCurrentLocation().then((value) async {
-      Provider.of<Homeprovider>(context, listen: false)
-          .convertlatlngtoaddress(value);
-      Provider.of<Pickupaddress>(context, listen: false)
-          .updateaddress(value.latitude, value.longitude);
-      Provider.of<Mapprovider>(context, listen: false).markers.add(
-            Marker(
-              markerId: const MarkerId('1'),
-              position: LatLng(value.latitude, value.longitude),
-              infoWindow: const InfoWindow(title: 'userlocation'),
-            ),
-          );
-      CameraPosition cameraPosition = CameraPosition(
-          target: LatLng(value.latitude, value.longitude), zoom: 14.4746);
-      final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      setState(() {});
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldState,
+      drawer: const Sidemenubar(),
       body: Stack(
         children: [
           Consumer<Mapprovider>(
@@ -72,9 +87,9 @@ class _HomepageState extends State<Homepage> {
               initialCameraPosition: _kGooglePlex,
               zoomControlsEnabled: false,
               onMapCreated: (mapcontroller) {
-                _controller.complete(mapcontroller);
+                value.controller.complete(mapcontroller);
                 value.newgooglemapcontroller = mapcontroller;
-                setposition();
+                value.setposition(context);
               },
               markers: Set<Marker>.of(value.markers),
               polylines: value.polylineset,
@@ -102,7 +117,7 @@ class _HomepageState extends State<Homepage> {
                     right: 0,
                     bottom: 0,
                     child: Container(
-                      height: 250,
+                      height: 250.h,
                       padding: const EdgeInsets.only(
                           bottom: 20, top: 15, left: 15, right: 10),
                       decoration: const BoxDecoration(
@@ -119,8 +134,9 @@ class _HomepageState extends State<Homepage> {
                             title: 'Where to?',
                             fontSize: 21,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.primaryColor,
+                            color: Appcolors.contentTertiary,
                           ),
+                          addVerticalspace(height: 10),
                           ListTile(
                             leading: const Icon(Icons.location_on),
                             title: CustomText(

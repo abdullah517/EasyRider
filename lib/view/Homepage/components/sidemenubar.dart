@@ -59,7 +59,7 @@ class Sidemenubar extends StatelessWidget {
                 currentAccountPicture: CircleAvatar(
                   radius: 40,
                   backgroundImage: usermap.userData['Profileimage'] == ''
-                      ? const AssetImage('assets/personimage.png')
+                      ? const AssetImage('assets/personimage.jpg')
                           as ImageProvider
                       : NetworkImage(usermap.userData['Profileimage']),
                 )),

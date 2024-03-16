@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
-import 'package:ridemate/view/Authentication/components/customtextfield.dart';
+//import 'package:ridemate/view/Authentication/components/customtextfield.dart';
 //import 'package:ridemate/view/Authentication/view/Completeprofile/components/profilepic.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/cnicpic.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 
 // ignore: camel_case_types
-class CNIC extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
+class driverlicence extends StatelessWidget {
+  //final TextEditingController _controller = TextEditingController();
   final String title;
-  CNIC({super.key, required this.title});
+  const driverlicence({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class CNIC extends StatelessWidget {
                         top: 15,
                       ),
                       child: Text(
-                        "CNIC (Front Side)",
+                        "Driver Licence (Front Side)",
                         style: TextStyle(
                           // Making text bold
                           color: Colors.black, // Changing text color
@@ -109,7 +109,7 @@ class CNIC extends StatelessWidget {
                         top: 15,
                       ),
                       child: Text(
-                        "CNIC (Back Side)",
+                        "Driver Licence (Back Side)",
                         style: TextStyle(
                           // Making text bold
                           color: Colors.black, // Changing text color
@@ -135,64 +135,6 @@ class CNIC extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               borderRadius: 8,
                               ontap: () {}),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 10,
-                right: 10,
-              ),
-              child: Container(
-                height: 150,
-                width: 450,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 3,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        top: 15,
-                      ),
-                      child: Text(
-                        "CNIC",
-                        style: TextStyle(
-                          // Making text bold
-                          color: Colors.black, // Changing text color
-                          fontSize: 18, // Changing text size
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            top: 0,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: CustomTextField(
-                            controller: _controller,
-                            hintText: 'Enter CNIC',
-                            isNumericOnly:
-                                true, // Set to true if you want only numbers
-                          ),
                         ),
                       ],
                     ),

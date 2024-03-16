@@ -67,7 +67,7 @@ class Transport extends StatelessWidget {
                         onTap: () {
                           navigateToScreen(
                             context,
-                            const CNIC(title: 'CNIC'),
+                            CNIC(title: 'CNIC'),
                           );
                         },
                       ),

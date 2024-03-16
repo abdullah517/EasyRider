@@ -9,6 +9,7 @@ import 'package:ridemate/Providers/mapprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Homepage/components/homecomp1.dart';
+import 'package:ridemate/view/Homepage/components/ridecomponent.dart';
 import 'package:ridemate/view/Homepage/components/search.dart';
 import 'package:ridemate/view/Homepage/components/sidemenubar.dart';
 import 'package:ridemate/widgets/custombutton.dart';
@@ -23,6 +24,13 @@ class Homepage extends StatefulWidget {
   @override
   State<Homepage> createState() => _HomepageState();
 }
+
+final ridemap = [
+  {'image': 'assets/ridemini.png', 'text': 'RideMini'},
+  {'image': 'assets/ridego.png', 'text': 'RideGo'},
+  {'image': 'assets/ridebusiness.png', 'text': 'RideGo+'},
+  {'image': 'assets/bike.png', 'text': 'Bike'},
+];
 
 Future<Uint8List> makeReceiptImage() async {
   // Load avatar image
@@ -84,6 +92,7 @@ class _HomepageState extends State<Homepage> {
         children: [
           Consumer<Mapprovider>(
             builder: (context, value, child) => GoogleMap(
+              padding: EdgeInsets.only(bottom: 300.h),
               initialCameraPosition: _kGooglePlex,
               zoomControlsEnabled: false,
               onMapCreated: (mapcontroller) {
@@ -117,7 +126,7 @@ class _HomepageState extends State<Homepage> {
                     right: 0,
                     bottom: 0,
                     child: Container(
-                      height: 250.h,
+                      height: 390.h,
                       padding: const EdgeInsets.only(
                           bottom: 20, top: 15, left: 15, right: 10),
                       decoration: const BoxDecoration(
@@ -130,35 +139,39 @@ class _HomepageState extends State<Homepage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CustomText(
-                            title: 'Where to?',
-                            fontSize: 21,
-                            fontWeight: FontWeight.w700,
-                            color: Appcolors.contentTertiary,
-                          ),
-                          addVerticalspace(height: 10),
-                          ListTile(
-                            leading: const Icon(Icons.location_on),
-                            title: CustomText(
-                              title: value.address,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: Appcolors.contentDisbaled,
+                          SizedBox(
+                            height: 85.h,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => Ridecomponent(
+                                  imagepath: ridemap[index]['image'].toString(),
+                                  ind: index,
+                                  text: ridemap[index]['text'].toString()),
+                              separatorBuilder: (context, index) =>
+                                  addHorizontalspace(width: 4),
+                              itemCount: 4,
                             ),
                           ),
+                          addVerticalspace(height: 6),
+                          ListTile(
+                              leading: const Icon(Icons.location_on),
+                              title: gettext(value.address),
+                              onTap: () =>
+                                  showbottomsheet(context, ispickup: true)),
+                          const Divider(color: Appcolors.contentDisbaled),
                           ListTile(
                             leading: const Icon(Icons.location_on),
-                            title: CustomText(
-                              title: value.destination,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: Appcolors.contentDisbaled,
-                            ),
+                            title: gettext(value.destination),
                             onTap: () => showbottomsheet(context),
                           ),
+                          const Divider(color: Appcolors.contentDisbaled),
+                          ListTile(
+                              leading: const Icon(Icons.money),
+                              title: gettext(value.faretext)),
+                          const Divider(color: Appcolors.contentDisbaled),
                           const Spacer(),
                           Custombutton(
-                            text: 'Confirm destination',
+                            text: 'Request Ride',
                             ontap: () {},
                             fontSize: 16,
                             borderRadius: 8,
@@ -172,4 +185,13 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
+}
+
+Widget gettext(String txt) {
+  return CustomText(
+    title: txt,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: Appcolors.contentDisbaled,
+  );
 }

@@ -6,7 +6,7 @@ import 'package:ridemate/widgets/spacing.dart';
 import '../../../Providers/homeprovider.dart';
 import '../../../widgets/customtext.dart';
 
-void showbottomsheet(BuildContext context) {
+void showbottomsheet(BuildContext context, {bool ispickup = false}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -19,14 +19,15 @@ void showbottomsheet(BuildContext context) {
       maxChildSize: 0.9,
       builder: (context, scrollController) => SingleChildScrollView(
         controller: scrollController,
-        child: const Search(),
+        child: Search(ispickup: ispickup),
       ),
     ),
   );
 }
 
 class Search extends StatefulWidget {
-  const Search({super.key});
+  final bool ispickup;
+  const Search({super.key, required this.ispickup});
 
   @override
   State<Search> createState() => _SearchState();
@@ -39,6 +40,7 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     final myprovider = Provider.of<Homeprovider>(context, listen: false);
+    controller.text = widget.ispickup ? myprovider.address : '';
     controller.addListener(() {
       myprovider.changeiconvisibility(controller.text.length);
       myprovider.getsuggesstion(controller.text);
@@ -69,7 +71,9 @@ class _SearchState extends State<Search> {
                   controller: controller,
                   autofocus: true,
                   decoration: InputDecoration(
-                    hintText: 'Search your destination',
+                    hintText: widget.ispickup
+                        ? 'Search Pickup'
+                        : 'Search your destination',
                     prefixIcon: const Icon(Icons.location_on),
                     suffixIcon: myprovider.showicon
                         ? IconButton(
@@ -125,13 +129,21 @@ class _SearchState extends State<Search> {
                             ),
                             leading: const Icon(Icons.location_on),
                             onTap: () {
-                              Provider.of<Destinationaddress>(context,
-                                      listen: false)
-                                  .updateaddress(
-                                      '${value.suggestionlist[index].placeid}',
-                                      context);
-                              Provider.of<Homeprovider>(context, listen: false)
-                                  .changedest(
+                              widget.ispickup
+                                  ? Provider.of<Pickupaddress>(context,
+                                          listen: false)
+                                      .updatebyapi(
+                                          '${value.suggestionlist[index].placeid}',
+                                          context)
+                                  : Provider.of<Destinationaddress>(context,
+                                          listen: false)
+                                      .updateaddress(
+                                          '${value.suggestionlist[index].placeid}',
+                                          context);
+                              widget.ispickup
+                                  ? value.changepickup(
+                                      '${value.suggestionlist[index].maintext}')
+                                  : value.changedest(
                                       '${value.suggestionlist[index].maintext}');
                             },
                           );

@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ridemate/models/directiondetails.dart';
 import 'package:ridemate/models/placepredmodel.dart';
 import 'package:ridemate/utils/api_credential.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +14,34 @@ class Homeprovider extends ChangeNotifier {
   String message = '';
   String address = '';
   String destination = 'Destination';
+  int selectedindex = 0;
+  String faretext = 'Fare';
+  Directiondetails directiondetails = Directiondetails();
+
+  void changecategory(int ind) {
+    selectedindex = ind;
+    notifyListeners();
+  }
+
+  void calculatefare() {
+    if (directiondetails.distancetext != '') {
+      double timeTraveledFare = (directiondetails.durationvalue / 60) * 0.10;
+      double distanceTraveledFare =
+          (directiondetails.distancevalue / 1000) * 0.10;
+      int totalfare =
+          ((timeTraveledFare + distanceTraveledFare) * 278).truncate();
+      if (selectedindex == 1) {
+        faretext = "${totalfare + 200} PKR";
+      } else if (selectedindex == 2) {
+        faretext = "${totalfare + 350} PKR";
+      } else if (selectedindex == 3) {
+        faretext = "${totalfare / 2} PKR";
+      } else {
+        faretext = "$totalfare PKR";
+      }
+      notifyListeners();
+    }
+  }
 
   void changeiconvisibility(int length) {
     if (length > 0) {
@@ -28,6 +56,11 @@ class Homeprovider extends ChangeNotifier {
 
   void changedest(String dest) {
     destination = dest;
+    notifyListeners();
+  }
+
+  void changepickup(String pick) {
+    address = pick;
     notifyListeners();
   }
 

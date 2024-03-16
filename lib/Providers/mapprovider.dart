@@ -23,10 +23,18 @@ class Mapprovider extends ChangeNotifier {
   Future<void> obtainplacedirection(BuildContext context) async {
     final pickup = Provider.of<Pickupaddress>(context, listen: false);
     final destination = Provider.of<Destinationaddress>(context, listen: false);
+    final direction = Provider.of<Homeprovider>(context, listen: false);
+    markers.removeWhere((element) => element.markerId.value == '1');
     markers.add(
       Marker(
         markerId: const MarkerId('3'),
         position: LatLng(destination.latitude, destination.longitude),
+      ),
+    );
+    markers.add(
+      Marker(
+        markerId: const MarkerId('2'),
+        position: LatLng(pickup.latitude, pickup.longitude),
       ),
     );
     String url =
@@ -42,6 +50,7 @@ class Mapprovider extends ChangeNotifier {
           durationvalue: res['routes'][0]['legs'][0]['duration']['value'],
           encodedpoints: res['routes'][0]['overview_polyline']['points'],
         );
+        direction.directiondetails = directiondetails;
         PolylinePoints polylinePoints = PolylinePoints();
         List<PointLatLng> decodedPolylinePointsResult =
             polylinePoints.decodePolyline(directiondetails.encodedpoints);
@@ -91,7 +100,8 @@ class Mapprovider extends ChangeNotifier {
       );
     }
     newgooglemapcontroller
-        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
+        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 140));
+    direction.calculatefare();
   }
 
   Future<Position> getuserCurrentLocation() async {

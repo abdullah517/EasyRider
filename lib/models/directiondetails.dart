@@ -5,10 +5,10 @@ class Directiondetails {
   String durationtext;
   String encodedpoints;
   Directiondetails({
-    required this.distancevalue,
-    required this.distancetext,
-    required this.durationtext,
-    required this.durationvalue,
-    required this.encodedpoints,
+    this.distancevalue = 0,
+    this.distancetext = '',
+    this.durationtext = '',
+    this.durationvalue = 0,
+    this.encodedpoints = '',
   });
 }

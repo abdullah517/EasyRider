@@ -26,7 +26,7 @@ class driverdrawer extends StatelessWidget {
           children: [
             Menubarcomp(
               text: 'Registration',
-              icon: Icons.person_outline,
+              icon: Icons.app_registration_outlined,
               onTap: () {
                 navigateToScreen(context, const GoingtoWorkAs());
               },

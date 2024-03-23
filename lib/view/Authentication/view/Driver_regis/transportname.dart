@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/components/customtextfield.dart';
-//import 'package:ridemate/view/Authentication/view/Completeprofile/components/profilepic.dart';
-//import 'package:ridemate/view/Authentication/view/Driver_regis/cnicpic.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 
 // ignore: camel_case_types
@@ -68,8 +66,7 @@ class transportname extends StatelessWidget {
                           child: CustomTextField(
                             controller: _controller,
                             hintText: 'Enter Vehicle Name',
-                            isNumericOnly:
-                                false, // Set to true if you want only numbers
+                            isNumericOnly: false,
                           ),
                         ),
                       ],

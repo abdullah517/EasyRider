@@ -1,16 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
-import 'package:ridemate/view/Authentication/view/Completeprofile/components/profilepic.dart';
+import 'package:ridemate/view/Dialogueboxes/errordialogue.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 
+import '../../../../Providers/userdataprovider.dart';
+
 // ignore: camel_case_types
-class basicinfo extends StatelessWidget {
+class basicinfo<T extends Driverregprovider2> extends StatelessWidget {
   final String title;
   const basicinfo({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
+    final myprovider = Provider.of<T>(context, listen: false);
     return Scaffold(
       appBar: customappbar(context,
           title: title, backgroundColor: Appcolors.primaryColor),
@@ -58,7 +64,19 @@ class basicinfo extends StatelessWidget {
                         top: 50,
                       ),
                     ),
-                    const Profilepic(),
+                    Center(
+                      child: Consumer<T>(
+                        builder: (context, value, child) => CircleAvatar(
+                            backgroundColor: Appcolors.neutralgrey200,
+                            radius: 70,
+                            backgroundImage: value.image != null
+                                ? Image.file(
+                                    value.image!,
+                                    fit: BoxFit.cover,
+                                  ).image
+                                : null),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 50),
                       child: Custombutton(
@@ -68,7 +86,7 @@ class basicinfo extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           borderRadius: 8,
-                          ontap: () {}),
+                          ontap: () => myprovider.updateimage()),
                     ),
                   ],
                 ),
@@ -85,7 +103,21 @@ class basicinfo extends StatelessWidget {
               fontSize: 20,
               fontWeight: FontWeight.w500,
               borderRadius: 8,
-              ontap: () {}),
+              ontap: () {
+                if (myprovider.checkisempty()) {
+                  errordialogue(context);
+                } else {
+                  if (FirebaseAuth.instance.currentUser != null) {
+                    myprovider.saveImage(
+                        FirebaseAuth.instance.currentUser!.uid, title);
+                  } else {
+                    final phoneno =
+                        Provider.of<Userdataprovider>(context, listen: false)
+                            .userData['phoneNumber'];
+                    myprovider.saveImage(phoneno.codeUnits.join('-'), title);
+                  }
+                }
+              }),
         ),
       ]),
     );

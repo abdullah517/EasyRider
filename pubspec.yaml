@@ -55,6 +55,8 @@ dependencies:
   geocoding: ^2.2.0
   flutter_polyline_points: ^2.0.0
   image: ^4.1.7
+  camera: ^0.10.5+9
+  
   
   
   

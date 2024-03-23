@@ -1,19 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
-//import 'package:ridemate/view/Authentication/components/customtextfield.dart';
-//import 'package:ridemate/view/Authentication/view/Completeprofile/components/profilepic.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/cnicpic.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 
+import '../../../../Providers/userdataprovider.dart';
+import '../../../Dialogueboxes/errordialogue.dart';
+
 // ignore: camel_case_types
-class vehiclephoto extends StatelessWidget {
-  //final TextEditingController _controller = TextEditingController();
+class vehiclephoto<T extends Driverregprovider2> extends StatelessWidget {
   final String title;
   const vehiclephoto({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
+    final myprovider = Provider.of<T>(context, listen: false);
     return Scaffold(
       appBar: customappbar(context,
           title: title, backgroundColor: Appcolors.primaryColor),
@@ -27,7 +31,7 @@ class vehiclephoto extends StatelessWidget {
                 right: 10,
               ),
               child: Container(
-                height: 350,
+                height: 360,
                 width: 450,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -63,7 +67,24 @@ class vehiclephoto extends StatelessWidget {
                             top: 50,
                           ),
                         ),
-                        const cnicpic(),
+                        Center(
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Consumer<T>(
+                                builder: (context, value, child) => Container(
+                                  decoration: BoxDecoration(
+                                      color: Appcolors.neutralgrey200,
+                                      image: value.image != null
+                                          ? DecorationImage(
+                                              image: FileImage(value.image!),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null),
+                                  width: 240.w,
+                                  height: 140.h,
+                                ),
+                              )),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(top: 50),
                           child: Custombutton(
@@ -73,7 +94,7 @@ class vehiclephoto extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               borderRadius: 8,
-                              ontap: () {}),
+                              ontap: () => myprovider.updateimage()),
                         ),
                       ],
                     ),
@@ -90,7 +111,22 @@ class vehiclephoto extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
                   borderRadius: 8,
-                  ontap: () {}),
+                  ontap: () {
+                    if (myprovider.checkisempty()) {
+                      errordialogue(context);
+                    } else {
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        myprovider.saveImage(
+                            FirebaseAuth.instance.currentUser!.uid, title);
+                      } else {
+                        final phoneno = Provider.of<Userdataprovider>(context,
+                                listen: false)
+                            .userData['phoneNumber'];
+                        myprovider.saveImage(
+                            phoneno.codeUnits.join('-'), title);
+                      }
+                    }
+                  }),
             ),
           ],
         ),

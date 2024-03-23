@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/routing/routing.dart';
-//import 'package:ridemate/view/Authentication/view/Driver_regis/basicinfo.dart';
-//import 'package:ridemate/view/Authentication/view/Driver_regis/cnic.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/driverlicence.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/regdrlcdrcnic.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
-//import 'package:ridemate/view/Authentication/view/Driver_regis/selfiewithid.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/transportname.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/vehiclephoto.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/vehiclereg.dart';
 
-// ignore: camel_case_types
-class vehicleinfo extends StatelessWidget {
+class Vehicleinfo<T extends Driverregprovider1> extends StatelessWidget {
   final String title;
-  const vehicleinfo({super.key, required this.title});
+  final bool ismoto;
+  const Vehicleinfo({super.key, required this.title, this.ismoto = false});
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +46,7 @@ class vehicleinfo extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0), // Adjust padding as needed
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: CustomListTile(
                           title: 'Transport Name',
                           icon: null,
@@ -64,15 +61,14 @@ class vehicleinfo extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0), // Adjust padding as needed
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: CustomListTile(
                           title: 'Driver Licence',
                           icon: null,
                           onTap: () {
                             navigateToScreen(
                               context,
-                              const driverlicence(title: 'Driver Licence'),
+                              Regdrlcdrcnic<T>(title: 'Driver Licence'),
                             );
                           },
                         ),
@@ -82,16 +78,18 @@ class vehicleinfo extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0), // Adjust padding as needed
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: CustomListTile(
                           title: 'Photo of Your Vehicle',
                           icon: null,
                           onTap: () {
                             navigateToScreen(
                               context,
-                              const vehiclephoto(
-                                  title: 'Photo of Your Vehicle'),
+                              ismoto
+                                  ? const vehiclephoto<Motovehiclephoto>(
+                                      title: 'Photo of Your Vehicle')
+                                  : const vehiclephoto<Carvehiclephoto>(
+                                      title: 'Photo of Your Vehicle'),
                             );
                           },
                         ),
@@ -101,15 +99,18 @@ class vehicleinfo extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0), // Adjust padding as needed
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: CustomListTile(
                           title: 'Certificate of Vehicle Registration',
                           icon: null,
                           onTap: () {
                             navigateToScreen(
                               context,
-                              const vehicleregis(title: 'Vehicle Registration'),
+                              ismoto
+                                  ? const Vehicleregis<Motoreg>(
+                                      title: 'Vehicle Registration')
+                                  : const Vehicleregis<Carreg>(
+                                      title: 'Vehicle Registration'),
                             );
                           },
                         ),

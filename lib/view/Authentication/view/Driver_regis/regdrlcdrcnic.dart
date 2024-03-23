@@ -1,19 +1,24 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/driverregprovider.dart';
+import 'package:ridemate/Providers/userdataprovider.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
+import 'package:ridemate/view/Authentication/components/customtextfield.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/overlaycamera.dart';
 import 'package:ridemate/view/Dialogueboxes/errordialogue.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 
-import '../../../../Providers/userdataprovider.dart';
-
-class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
+// ignore: camel_case_types
+class Regdrlcdrcnic<T extends Driverregprovider1> extends StatelessWidget {
+  final TextEditingController _controller = TextEditingController();
   final String title;
-  const Vehicleregis({super.key, required this.title});
+  Regdrlcdrcnic({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,7 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                 right: 10,
               ),
               child: Container(
-                height: 360,
+                height: 350,
                 width: 450,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -47,12 +52,12 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        top: 15,
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
                       child: CustomText(
-                        title: "Vehicle Registration (Front Side)",
+                        title: title == 'Driver Licence'
+                            ? "Driver Licence (Front Side)"
+                            : "CNIC (Front Side)",
                         color: Colors.black,
                         fontSize: 18,
                       ),
@@ -66,22 +71,24 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                         ),
                         Center(
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Consumer<T>(
-                              builder: (context, value, child) => Container(
-                                decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Consumer<T>(
+                                builder: (context, value, child) => Container(
+                                  decoration: BoxDecoration(
                                     color: Appcolors.neutralgrey200,
-                                    image: value.img1 != null
+                                    image: value.frontimage != ''
                                         ? DecorationImage(
-                                            image: FileImage(value.img1!),
-                                            fit: BoxFit.cover,
+                                            image: FileImage(
+                                                File(value.frontimage)),
+                                            fit: BoxFit.fitWidth,
+                                            alignment: FractionalOffset.center,
                                           )
-                                        : null),
-                                width: 240.w,
-                                height: 140.h,
-                              ),
-                            ),
-                          ),
+                                        : null,
+                                  ),
+                                  width: 200.w,
+                                  height: 100.h,
+                                ),
+                              )),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 50),
@@ -92,7 +99,12 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               borderRadius: 8,
-                              ontap: () => myprovider.updateimg1()),
+                              ontap: () => navigateToScreen(
+                                  context,
+                                  OverlayCamera(
+                                    onpressed: myprovider.updatefrontpath,
+                                    type: title,
+                                  ))),
                         ),
                       ],
                     ),
@@ -107,7 +119,7 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                 right: 10,
               ),
               child: Container(
-                height: 360,
+                height: 350,
                 width: 450,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -123,41 +135,39 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        top: 15,
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
                       child: CustomText(
-                        title: "Vehicle Registration (Back Side)",
+                        title: title == 'Driver Licence'
+                            ? "Driver Licence (Back Side)"
+                            : "CNIC (Back Side)",
                         color: Colors.black,
                         fontSize: 18,
                       ),
                     ),
                     Column(
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(
-                            top: 50,
-                          ),
-                        ),
+                        const Padding(padding: EdgeInsets.only(top: 50)),
                         Center(
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Consumer<T>(
-                              builder: (context, value, child) => Container(
-                                decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Consumer<T>(
+                                builder: (context, value, child) => Container(
+                                  decoration: BoxDecoration(
                                     color: Appcolors.neutralgrey200,
-                                    image: value.img2 != null
+                                    image: value.backimage != ''
                                         ? DecorationImage(
-                                            image: FileImage(value.img2!),
-                                            fit: BoxFit.cover,
+                                            image: FileImage(
+                                                File(value.backimage)),
+                                            fit: BoxFit.fitWidth,
+                                            alignment: FractionalOffset.center,
                                           )
-                                        : null),
-                                width: 240.w,
-                                height: 140.h,
-                              ),
-                            ),
-                          ),
+                                        : null,
+                                  ),
+                                  width: 200.w,
+                                  height: 100.h,
+                                ),
+                              )),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 50),
@@ -168,7 +178,12 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               borderRadius: 8,
-                              ontap: () => myprovider.updateimg2()),
+                              ontap: () => navigateToScreen(
+                                  context,
+                                  OverlayCamera(
+                                    onpressed: myprovider.updatebackpath,
+                                    type: title,
+                                  ))),
                         ),
                       ],
                     ),
@@ -176,6 +191,58 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                 ),
               ),
             ),
+            title == 'Driver Licence'
+                ? const SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      left: 10,
+                      right: 10,
+                    ),
+                    child: Container(
+                      height: 150,
+                      width: 450,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(
+                              top: 15,
+                            ),
+                            child: CustomText(
+                              title: "CNIC",
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              const Padding(padding: EdgeInsets.only(top: 0)),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: CustomTextField(
+                                  controller: _controller,
+                                  hintText: 'Enter CNIC',
+                                  isNumericOnly: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.only(top: 50, bottom: 50),
               child: Custombutton(
@@ -188,6 +255,11 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
                   ontap: () {
                     if (myprovider.checkisempty()) {
                       errordialogue(context);
+                    } else if (title == 'CNIC') {
+                      if (_controller.text == '' ||
+                          _controller.text.length < 13) {
+                        errordialogue(context);
+                      }
                     } else {
                       if (FirebaseAuth.instance.currentUser != null) {
                         myprovider.saveImages(

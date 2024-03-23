@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/basicinfo.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/cnic.dart';
+import 'package:ridemate/view/Authentication/view/Driver_regis/regdrlcdrcnic.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/selfiewithid.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/vehicleinfo.dart';
 
-class Transport extends StatelessWidget {
+class Transport<T extends Driverregprovider1> extends StatelessWidget {
   final String title;
-  const Transport({super.key, required this.title});
+  final bool ismoto;
+  const Transport({super.key, required this.title, this.ismoto = false});
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +45,18 @@ class Transport extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0), // Adjust padding as needed
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomListTile(
                         title: 'Basic Info',
                         icon: null,
                         onTap: () {
                           navigateToScreen(
-                              context, const basicinfo(title: 'Basic Info'));
+                              context,
+                              ismoto
+                                  ? const basicinfo<Motobasicinfo>(
+                                      title: 'Basic Info')
+                                  : const basicinfo<Carbasicinfo>(
+                                      title: 'Basic Info'));
                         },
                       ),
                     ),
@@ -59,15 +65,14 @@ class Transport extends StatelessWidget {
                       color: Colors.grey,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0), // Adjust padding as needed
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomListTile(
                         title: 'CNIC',
                         icon: null,
                         onTap: () {
                           navigateToScreen(
                             context,
-                            CNIC(title: 'CNIC'),
+                            Regdrlcdrcnic<T>(title: 'CNIC'),
                           );
                         },
                       ),
@@ -77,15 +82,18 @@ class Transport extends StatelessWidget {
                       color: Colors.grey,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0), // Adjust padding as needed
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomListTile(
                         title: 'Selfie with ID',
                         icon: null,
                         onTap: () {
                           navigateToScreen(
                             context,
-                            const Selfiewithid(title: 'Selfie with ID'),
+                            ismoto
+                                ? const Selfiewithid<Motoselfieid>(
+                                    title: 'Selfie with ID')
+                                : const Selfiewithid<Carselfieid>(
+                                    title: 'Selfie with ID'),
                           );
                         },
                       ),
@@ -95,15 +103,18 @@ class Transport extends StatelessWidget {
                       color: Colors.grey,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0), // Adjust padding as needed
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomListTile(
                         title: 'Vehicle Info',
                         icon: null,
                         onTap: () {
                           navigateToScreen(
                             context,
-                            const vehicleinfo(title: 'Vehicle Info'),
+                            ismoto
+                                ? Vehicleinfo<Motodriverlicence>(
+                                    title: 'Vehicle Info', ismoto: ismoto)
+                                : const Vehicleinfo<Cardriverlicence>(
+                                    title: 'Vehicle Info'),
                           );
                         },
                       ),

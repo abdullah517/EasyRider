@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/transport.dart';
@@ -39,7 +40,9 @@ class GoingtoWorkAs extends StatelessWidget {
                 icon: Icons.car_rental_rounded,
                 onTap: () {
                   navigateToScreen(
-                      context, const Transport(title: 'Car Registration'));
+                      context,
+                      const Transport<Cardrivercnic>(
+                          title: 'Car Registration'));
                 },
               ),
               const Divider(
@@ -51,7 +54,9 @@ class GoingtoWorkAs extends StatelessWidget {
                 icon: Icons.motorcycle_rounded,
                 onTap: () {
                   navigateToScreen(
-                      context, const Transport(title: 'Moto Registration'));
+                      context,
+                      const Transport<Motodrivercnic>(
+                          title: 'Moto Registration', ismoto: true));
                 },
               ),
               const Divider(

@@ -96,7 +96,7 @@ class _HomepageState extends State<Homepage> {
               initialCameraPosition: _kGooglePlex,
               zoomControlsEnabled: false,
               onMapCreated: (mapcontroller) {
-                value.controller.complete(mapcontroller);
+                // value.controller.complete(mapcontroller);
                 value.newgooglemapcontroller = mapcontroller;
                 value.setposition(context);
               },

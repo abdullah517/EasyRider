@@ -6,7 +6,6 @@ import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/driverscreen.dart';
-//import 'package:ridemate/view/Authentication/view/Driver_regis/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
 import 'package:ridemate/widgets/custombutton.dart';
@@ -84,11 +83,7 @@ class Sidemenubar extends StatelessWidget {
             Custombutton(
               buttoncolor: Appcolors.primaryColor,
               ontap: () {
-                navigateToScreen(
-                    context,
-                    const Driverscreen(
-                      title: '',
-                    ));
+                navigateToScreen(context, const Driverscreen());
               },
               text: 'Driver Mode',
             ),

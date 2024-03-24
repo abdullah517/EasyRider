@@ -78,4 +78,7 @@ List<SingleChildWidget> providerlist = [
   ChangeNotifierProvider(
     create: (context) => Motoreg(),
   ),
+  ChangeNotifierProvider(
+    create: (context) => Transportnameprovider(),
+  ),
 ];

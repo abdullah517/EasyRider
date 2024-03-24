@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/components/customtextfield.dart';
+import 'package:ridemate/view/Dialogueboxes/errordialogue.dart';
 import 'package:ridemate/widgets/custombutton.dart';
+
+import '../../../../Providers/userdataprovider.dart';
 
 // ignore: camel_case_types
 class transportname extends StatelessWidget {
@@ -76,16 +81,28 @@ class transportname extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 50, bottom: 50),
-              child: Custombutton(
-                  text: 'Done',
-                  height: 60,
-                  width: 300,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  borderRadius: 8,
-                  ontap: () {}),
-            ),
+                padding: const EdgeInsets.only(top: 50, bottom: 50),
+                child: Consumer<Transportnameprovider>(
+                  builder: (context, value, child) => Custombutton(
+                      text: 'Done',
+                      loading: value.loading,
+                      height: 60,
+                      width: 300,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      borderRadius: 8,
+                      ontap: () {
+                        if (_controller.text == '') {
+                          errordialogue(context);
+                        } else {
+                          String userid = Provider.of<Userdataprovider>(context,
+                                  listen: false)
+                              .userId;
+
+                          value.savedetail(userid, _controller.text, context);
+                        }
+                      }),
+                )),
           ],
         ),
       ),

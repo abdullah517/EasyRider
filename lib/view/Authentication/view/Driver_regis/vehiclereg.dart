@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -177,31 +176,28 @@ class Vehicleregis<T extends Driverregprovider3> extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 50, bottom: 50),
-              child: Custombutton(
-                  text: 'Done',
-                  height: 60,
-                  width: 300,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  borderRadius: 8,
-                  ontap: () {
-                    if (myprovider.checkisempty()) {
-                      errordialogue(context);
-                    } else {
-                      if (FirebaseAuth.instance.currentUser != null) {
-                        myprovider.saveImages(
-                            FirebaseAuth.instance.currentUser!.uid, title);
-                      } else {
-                        final phoneno = Provider.of<Userdataprovider>(context,
-                                listen: false)
-                            .userData['phoneNumber'];
-                        myprovider.saveImages(
-                            phoneno.codeUnits.join('-'), title);
-                      }
-                    }
-                  }),
-            ),
+                padding: const EdgeInsets.only(top: 50, bottom: 50),
+                child: Consumer<T>(
+                  builder: (context, value, child) => Custombutton(
+                      text: 'Done',
+                      loading: value.loading,
+                      height: 60,
+                      width: 300,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      borderRadius: 8,
+                      ontap: () {
+                        if (value.checkisempty()) {
+                          errordialogue(context);
+                        } else {
+                          String userid = Provider.of<Userdataprovider>(context,
+                                  listen: false)
+                              .userId;
+
+                          value.saveImages(userid, title, context);
+                        }
+                      }),
+                )),
           ],
         ),
       ),

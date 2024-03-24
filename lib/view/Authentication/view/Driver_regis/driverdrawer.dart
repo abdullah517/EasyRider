@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/goingtoworkas.dart';
-//import 'package:ridemate/view/Authentication/view/Driver_regis/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/view/Homepage/homepage.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/spacing.dart';
+
+import '../../../../Providers/userdataprovider.dart';
+import '../../../../widgets/customtext.dart';
 
 // ignore: camel_case_types
 class driverdrawer extends StatelessWidget {
@@ -14,6 +17,7 @@ class driverdrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final usermap = Provider.of<Userdataprovider>(context, listen: false);
     return SafeArea(
       child: Drawer(
         shape: const RoundedRectangleBorder(
@@ -24,6 +28,29 @@ class driverdrawer extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           children: [
+            UserAccountsDrawerHeader(
+                accountName: CustomText(
+                  title: usermap.userData['Username'],
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Appcolors.contentSecondary,
+                ),
+                accountEmail: CustomText(
+                  title: usermap.userData['phoneNumber'] ??
+                      usermap.userData['Email'],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Appcolors.contentSecondary,
+                ),
+                decoration:
+                    const BoxDecoration(color: Appcolors.scaffoldbgcolor),
+                currentAccountPicture: CircleAvatar(
+                  radius: 40,
+                  backgroundImage: usermap.userData['Profileimage'] == ''
+                      ? const AssetImage('assets/personimage.jpg')
+                          as ImageProvider
+                      : NetworkImage(usermap.userData['Profileimage']),
+                )),
             Menubarcomp(
               text: 'Registration',
               icon: Icons.app_registration_outlined,

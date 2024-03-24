@@ -11,8 +11,9 @@ import 'package:ridemate/view/Authentication/view/Driver_regis/vehiclereg.dart';
 
 class Vehicleinfo<T extends Driverregprovider1> extends StatelessWidget {
   final String title;
-  final bool ismoto;
-  const Vehicleinfo({super.key, required this.title, this.ismoto = false});
+  final String type;
+  const Vehicleinfo(
+      {super.key, required this.title, this.type = 'Car Registration'});
 
   @override
   Widget build(BuildContext context) {
@@ -80,16 +81,16 @@ class Vehicleinfo<T extends Driverregprovider1> extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: CustomListTile(
-                          title: 'Photo of Your Vehicle',
+                          title: 'Photo of Vehicle',
                           icon: null,
                           onTap: () {
                             navigateToScreen(
                               context,
-                              ismoto
+                              type == 'Moto Registration'
                                   ? const vehiclephoto<Motovehiclephoto>(
-                                      title: 'Photo of Your Vehicle')
+                                      title: 'Photo of Vehicle')
                                   : const vehiclephoto<Carvehiclephoto>(
-                                      title: 'Photo of Your Vehicle'),
+                                      title: 'Photo of Vehicle'),
                             );
                           },
                         ),
@@ -106,7 +107,7 @@ class Vehicleinfo<T extends Driverregprovider1> extends StatelessWidget {
                           onTap: () {
                             navigateToScreen(
                               context,
-                              ismoto
+                              type == 'Moto Registration'
                                   ? const Vehicleregis<Motoreg>(
                                       title: 'Vehicle Registration')
                                   : const Vehicleregis<Carreg>(

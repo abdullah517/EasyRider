@@ -1,11 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ridemate/utils/methods.dart';
 
 class Driverregprovider1 extends ChangeNotifier {
   String frontimage = '';
   String backimage = '';
+  bool loading = false;
+
   void updatefrontpath(String path) {
     frontimage = path;
     notifyListeners();
@@ -20,20 +25,41 @@ class Driverregprovider1 extends ChangeNotifier {
     return frontimage == '' || backimage == '';
   }
 
-  Future<void> saveImages(String userId, String folderName) async {
-    try {
-      final frontImageFile = File(frontimage);
-      final frontImageRef = FirebaseStorage.instance
-          .ref('drivers/$userId/$folderName/frontimage.png');
-      await frontImageRef.putFile(frontImageFile);
+  void savedriverdetails(String userid, String datatype, String url1,
+      String url2, String cnicno) async {
+    final collection = FirebaseFirestore.instance.collection('drivers');
+    cnicno.isEmpty
+        ? await collection.doc(userid).set({
+            '$datatype Frontside': url1,
+            '$datatype Backside': url2,
+          }, SetOptions(merge: true))
+        : await collection.doc(userid).set({
+            '$datatype Frontside': url1,
+            '$datatype Backside': url2,
+            'Cnicno': cnicno,
+          }, SetOptions(merge: true));
+  }
 
-      final backImageFile = File(backimage);
-      final backImageRef = FirebaseStorage.instance
-          .ref('drivers/$userId/$folderName/backimage.png');
-      await backImageRef.putFile(backImageFile);
-    } catch (e) {
-      //
-    }
+  Future<void> saveImages(String userId, String folderName, String cnicno,
+      BuildContext context) async {
+    loading = true;
+    notifyListeners();
+    final frontImageFile = File(frontimage);
+    final frontImageRef = FirebaseStorage.instance
+        .ref('drivers/$userId/$folderName/frontimage.png');
+    await frontImageRef.putFile(frontImageFile);
+
+    final backImageFile = File(backimage);
+    final backImageRef = FirebaseStorage.instance
+        .ref('drivers/$userId/$folderName/backimage.png');
+    await backImageRef.putFile(backImageFile);
+    final url1 = await frontImageRef.getDownloadURL();
+    final url2 = await backImageRef.getDownloadURL();
+
+    savedriverdetails(userId, folderName, url1, url2, cnicno);
+    loading = false;
+    notifyListeners();
+    checkit(userId, context);
   }
 }
 
@@ -47,6 +73,7 @@ class Motodriverlicence extends Driverregprovider1 {}
 
 class Driverregprovider2 extends ChangeNotifier {
   File? image;
+  bool loading = false;
   void updateimage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -60,14 +87,25 @@ class Driverregprovider2 extends ChangeNotifier {
     return image == null;
   }
 
-  Future<void> saveImage(String userId, String folderName) async {
-    try {
-      final imageRef =
-          FirebaseStorage.instance.ref('drivers/$userId/$folderName/image.jpg');
-      await imageRef.putFile(image!);
-    } catch (e) {
-      //
-    }
+  void savedriverdetails(String userid, String datatype, String url1) async {
+    final collection = FirebaseFirestore.instance.collection('drivers');
+    await collection.doc(userid).set({
+      datatype: url1,
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> saveImage(
+      String userId, String folderName, BuildContext context) async {
+    loading = true;
+    notifyListeners();
+    final imageRef =
+        FirebaseStorage.instance.ref('drivers/$userId/$folderName/image.jpg');
+    await imageRef.putFile(image!);
+    final url1 = await imageRef.getDownloadURL();
+    savedriverdetails(userId, folderName, url1);
+    loading = false;
+    notifyListeners();
+    checkit(userId, context);
   }
 }
 
@@ -86,6 +124,7 @@ class Carvehiclephoto extends Driverregprovider2 {}
 class Driverregprovider3 extends ChangeNotifier {
   File? img1;
   File? img2;
+  bool loading = false;
   void updateimg1() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -108,20 +147,50 @@ class Driverregprovider3 extends ChangeNotifier {
     return img1 == null || img2 == null;
   }
 
-  Future<void> saveImages(String userId, String folderName) async {
-    try {
-      final imageRef1 =
-          FirebaseStorage.instance.ref('drivers/$userId/$folderName/img1.jpg');
-      final imageRef2 =
-          FirebaseStorage.instance.ref('drivers/$userId/$folderName/img2.jpg');
-      await imageRef1.putFile(img1!);
-      await imageRef2.putFile(img2!);
-    } catch (e) {
-      //
-    }
+  void savedriverdetails(
+      String userid, String datatype, String url1, String url2) async {
+    final collection = FirebaseFirestore.instance.collection('drivers');
+    await collection.doc(userid).set({
+      '$datatype Frontside': url1,
+      '$datatype Backside': url2,
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> saveImages(
+      String userId, String folderName, BuildContext context) async {
+    loading = true;
+    notifyListeners();
+    final imageRef1 =
+        FirebaseStorage.instance.ref('drivers/$userId/$folderName/img1.jpg');
+    final imageRef2 =
+        FirebaseStorage.instance.ref('drivers/$userId/$folderName/img2.jpg');
+    await imageRef1.putFile(img1!);
+    await imageRef2.putFile(img2!);
+    final url1 = await imageRef1.getDownloadURL();
+    final url2 = await imageRef2.getDownloadURL();
+    savedriverdetails(userId, folderName, url1, url2);
+    loading = false;
+    notifyListeners();
+    checkit(userId, context);
   }
 }
 
 class Carreg extends Driverregprovider3 {}
 
 class Motoreg extends Driverregprovider3 {}
+
+class Transportnameprovider extends ChangeNotifier {
+  bool loading = false;
+  Future<void> savedetail(
+      String userId, String transportname, BuildContext context) async {
+    final collection = FirebaseFirestore.instance.collection('drivers');
+    loading = true;
+    notifyListeners();
+    await collection.doc(userId).set({
+      'Transportname': transportname,
+    });
+    loading = false;
+    notifyListeners();
+    checkit(userId, context);
+  }
+}

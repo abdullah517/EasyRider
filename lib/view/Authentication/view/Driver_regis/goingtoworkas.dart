@@ -56,7 +56,7 @@ class GoingtoWorkAs extends StatelessWidget {
                   navigateToScreen(
                       context,
                       const Transport<Motodrivercnic>(
-                          title: 'Moto Registration', ismoto: true));
+                          title: 'Moto Registration'));
                 },
               ),
               const Divider(

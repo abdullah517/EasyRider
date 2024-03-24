@@ -11,8 +11,7 @@ import 'package:ridemate/view/Authentication/view/Driver_regis/vehicleinfo.dart'
 
 class Transport<T extends Driverregprovider1> extends StatelessWidget {
   final String title;
-  final bool ismoto;
-  const Transport({super.key, required this.title, this.ismoto = false});
+  const Transport({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,7 @@ class Transport<T extends Driverregprovider1> extends StatelessWidget {
                         onTap: () {
                           navigateToScreen(
                               context,
-                              ismoto
+                              title == 'Moto Registration'
                                   ? const basicinfo<Motobasicinfo>(
                                       title: 'Basic Info')
                                   : const basicinfo<Carbasicinfo>(
@@ -89,7 +88,7 @@ class Transport<T extends Driverregprovider1> extends StatelessWidget {
                         onTap: () {
                           navigateToScreen(
                             context,
-                            ismoto
+                            title == 'Moto Registration'
                                 ? const Selfiewithid<Motoselfieid>(
                                     title: 'Selfie with ID')
                                 : const Selfiewithid<Carselfieid>(
@@ -110,9 +109,9 @@ class Transport<T extends Driverregprovider1> extends StatelessWidget {
                         onTap: () {
                           navigateToScreen(
                             context,
-                            ismoto
+                            title == 'Moto Registration'
                                 ? Vehicleinfo<Motodriverlicence>(
-                                    title: 'Vehicle Info', ismoto: ismoto)
+                                    title: 'Vehicle Info', type: title)
                                 : const Vehicleinfo<Cardriverlicence>(
                                     title: 'Vehicle Info'),
                           );

@@ -26,7 +26,7 @@ Future<void> congratdialogue(BuildContext context) {
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                      onPressed: () {},
+                      onPressed: () => Navigator.pop(context),
                       icon: Icon(
                         Icons.close,
                         size: 24.sp,

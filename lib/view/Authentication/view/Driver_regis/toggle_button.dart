@@ -27,10 +27,8 @@ class _ToggleSwitchState extends State<ToggleSwitch> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _value = !_value;
-          widget.onChanged(_value);
-        });
+        _value = !_value;
+        widget.onChanged(_value);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),

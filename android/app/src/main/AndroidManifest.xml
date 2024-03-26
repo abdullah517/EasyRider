@@ -4,6 +4,8 @@
  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+ <uses-permission android:name="android.permission.WAKE_LOCK" />
+ <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:label="EasyRider"
@@ -37,5 +39,8 @@
             android:value="2" />
             <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyDoCmnLSTMCBPnbqrG3_71ZztjLItFsnfk"/>
+            <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_important_channel" />
     </application>
 </manifest>

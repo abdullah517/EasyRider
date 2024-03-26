@@ -1,8 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/userdataprovider.dart';
 import '../routing/routing.dart';
 import '../view/Authentication/view/Driver_regis/driverscreen.dart';
 import '../view/Dialogueboxes/congratdialogue.dart';
@@ -41,5 +47,28 @@ Future<void> checkit(String userId, BuildContext context) async {
     navigateandremove(context, const Driverscreen());
   } else {
     Navigator.pop(context);
+  }
+}
+
+late StreamSubscription<Position> streamSubscription;
+
+void changedriverstatus(BuildContext context, bool isOnline) async {
+  if (isOnline) {
+    String id = Provider.of<Userdataprovider>(context, listen: false).userId;
+    DatabaseReference reference = FirebaseDatabase.instance.ref().child(id);
+    Position position = await Geolocator.getCurrentPosition();
+    Geofire.initialize('availableDrivers');
+    Geofire.setLocation(id, position.latitude, position.longitude);
+    reference.onValue.listen((event) {});
+    streamSubscription = Geolocator.getPositionStream().listen((position) {
+      Geofire.setLocation(id, position.latitude, position.longitude);
+    });
+  } else {
+    String id = Provider.of<Userdataprovider>(context, listen: false).userId;
+    DatabaseReference reference = FirebaseDatabase.instance.ref().child(id);
+    Geofire.removeLocation(id);
+    reference.onDisconnect();
+    reference.remove();
+    streamSubscription.cancel();
   }
 }

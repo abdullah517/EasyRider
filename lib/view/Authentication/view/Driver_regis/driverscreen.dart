@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/Methods/drivermethods.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/bottomnav.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/driverdrawer.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/toggle_button.dart';
@@ -64,6 +65,7 @@ class _DriverscreenState extends State<Driverscreen> {
                             setState(() {
                               isOnline = value;
                             });
+                            changedriverstatus(context, value);
                           } else {
                             showsnackbar(
                                 'Your application status is in Review');

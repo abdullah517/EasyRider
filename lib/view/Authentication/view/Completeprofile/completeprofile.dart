@@ -66,8 +66,8 @@ class Completeprofile extends StatelessWidget {
           )),
         ),
         Consumer<Completeprofileprovider>(
-          builder: (context, profieprovider, child) {
-            return profieprovider.loading
+          builder: (context, profileprovider, child) {
+            return profileprovider.loading
                 ? const Opacity(
                     opacity: 0.80,
                     child: ModalBarrier(

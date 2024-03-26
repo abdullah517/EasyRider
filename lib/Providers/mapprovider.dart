@@ -1,17 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Methods/geofireassistant.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/useraddressprovider.dart';
 import 'package:ridemate/models/directiondetails.dart';
+import 'package:ridemate/models/nearbyavailabledrivers.dart';
 import 'package:ridemate/utils/api_credential.dart';
-
+import 'package:image/image.dart' as images;
 import '../view/Homepage/homepage.dart';
 
 class Mapprovider extends ChangeNotifier {
@@ -130,6 +136,78 @@ class Mapprovider extends ChangeNotifier {
       googleMapController
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
       notifyListeners();
+      initGeofirelistener(context);
     });
+  }
+
+  void initGeofirelistener(BuildContext context) {
+    final currentpos = Provider.of<Pickupaddress>(context, listen: false);
+    Geofire.initialize('availableDrivers');
+    Geofire.queryAtLocation(currentpos.latitude, currentpos.longitude, 10)!
+        .listen((map) {
+      if (map != null) {
+        var callBack = map['callBack'];
+
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            final nearbyavailabledrivers = Nearbyavailabledrivers(
+              key: map['key'],
+              latitude: map['latitude'],
+              longitude: map['longitude'],
+            );
+            Geofireassistant.nearbyavailabledriverslist
+                .add(nearbyavailabledrivers);
+            break;
+
+          case Geofire.onKeyExited:
+            Geofireassistant.removedriverfromlist(map['key']);
+            removedriveronmap(map['key']);
+            break;
+
+          case Geofire.onKeyMoved:
+            final nearbyavailabledrivers = Nearbyavailabledrivers(
+              key: map['key'],
+              latitude: map['latitude'],
+              longitude: map['longitude'],
+            );
+            Geofireassistant.updatedriverlocation(nearbyavailabledrivers);
+            updatedriversonmap();
+            break;
+
+          case Geofire.onGeoQueryReady:
+            updatedriversonmap();
+            break;
+        }
+      }
+    });
+  }
+
+  void removedriveronmap(String key) {
+    markers.removeWhere((element) => element.markerId.value == 'driver$key');
+    notifyListeners();
+  }
+
+  void updatedriversonmap() async {
+    ByteData imageData = await rootBundle.load('assets/mapcar.png');
+    var bytes = Uint8List.view(imageData.buffer);
+    var carmapimg = images.decodeImage(bytes);
+    carmapimg = images.copyResize(carmapimg!, height: 100, width: 100);
+    var bytedata = images.encodePng(carmapimg);
+    for (Nearbyavailabledrivers driver
+        in Geofireassistant.nearbyavailabledriverslist) {
+      markers.removeWhere(
+          (element) => element.markerId.value == 'driver${driver.key}');
+    }
+    for (Nearbyavailabledrivers driver
+        in Geofireassistant.nearbyavailabledriverslist) {
+      Marker marker = Marker(
+        markerId: MarkerId('driver${driver.key}'),
+        position: LatLng(driver.latitude, driver.longitude),
+        rotation: Random().nextInt(360).toDouble(),
+        icon: BitmapDescriptor.fromBytes(bytedata),
+      );
+      markers.add(marker);
+    }
+    notifyListeners();
   }
 }

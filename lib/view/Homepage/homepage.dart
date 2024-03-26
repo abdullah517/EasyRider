@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
+import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Homepage/components/homecomp1.dart';
 import 'package:ridemate/view/Homepage/components/ridecomponent.dart';
@@ -81,6 +82,12 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     Provider.of<Userdataprovider>(context, listen: false)
         .loaduserdata(widget.phoneno);
+    initfcm();
+  }
+
+  void initfcm() async {
+    PushNotificationService service = PushNotificationService();
+    await service.sendNotification();
   }
 
   @override
@@ -96,7 +103,7 @@ class _HomepageState extends State<Homepage> {
               initialCameraPosition: _kGooglePlex,
               zoomControlsEnabled: false,
               onMapCreated: (mapcontroller) {
-                // value.controller.complete(mapcontroller);
+                value.controller.complete(mapcontroller);
                 value.newgooglemapcontroller = mapcontroller;
                 value.setposition(context);
               },

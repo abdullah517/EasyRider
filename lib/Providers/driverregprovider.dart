@@ -188,7 +188,7 @@ class Transportnameprovider extends ChangeNotifier {
     notifyListeners();
     await collection.doc(userId).set({
       'Transportname': transportname,
-    });
+    }, SetOptions(merge: true));
     loading = false;
     notifyListeners();
     checkit(userId, context);

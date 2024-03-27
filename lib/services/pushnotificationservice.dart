@@ -2,32 +2,30 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:ridemate/utils/api_credential.dart';
 
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:googleapis_auth/auth_io.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
-// import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show rootBundle;
 
-// Future<void> getAccessToken() async {
-//   // Load the service account credentials from the JSON key file
-//   final jsonString = await rootBundle.loadString('assets/service-account.json');
-//   final serviceAccountCredentials =
-//       ServiceAccountCredentials.fromJson(jsonString);
+Future<String> getAccessToken() async {
+  // Load the service account credentials from the JSON key file
+  final jsonString = await rootBundle.loadString('assets/service-account.json');
+  final serviceAccountCredentials =
+      ServiceAccountCredentials.fromJson(jsonString);
 
-//   var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+  var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
 
-//   // Create an authorized client
-//   final client =
-//       await clientViaServiceAccount(serviceAccountCredentials, scopes);
+  // Create an authorized client
+  final client =
+      await clientViaServiceAccount(serviceAccountCredentials, scopes);
 
-//   // Obtain the access token
-//   final accessToken = client.credentials.accessToken;
-
-//   // Print the access token value
-//   print('Access token: ${accessToken.data}');
-// }
+  // Obtain the access token
+  final accessToken = client.credentials.accessToken;
+  print('Access token is ${accessToken.data}');
+  return accessToken.data;
+}
 
 class PushNotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -51,12 +49,9 @@ class PushNotificationService {
   }
 
   Future<String?> getToken() async {
-    try {
-      String? token = await _firebaseMessaging.getToken();
-      return token;
-    } catch (e) {
-      return 'Error getting token: $e';
-    }
+    String? token = await _firebaseMessaging.getToken();
+    print('token is $token');
+    return token;
   }
 
   Future<void> displayNotification(RemoteMessage message) async {
@@ -85,8 +80,8 @@ class PushNotificationService {
   }
 
   Future<void> sendNotification() async {
-    await init();
     String? token = await getToken();
+    String oauthid = await getAccessToken();
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $oauthid',
@@ -102,18 +97,21 @@ class PushNotificationService {
         "data": {"status": "processed"}
       }
     });
+    try {
+      var response = await http.post(
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/ridemate-7d7f7/messages:send'),
+        headers: headers,
+        body: body,
+      );
 
-    var response = await http.post(
-      Uri.parse(
-          'https://fcm.googleapis.com/v1/projects/ridemate-7d7f7/messages:send'),
-      headers: headers,
-      body: body,
-    );
-
-    if (response.statusCode == 200) {
-      print(await response.body);
-    } else {
-      print(response.reasonPhrase);
+      if (response.statusCode == 200) {
+        print('_________message sent_______________');
+      } else {
+        print('_________message not sent_______________');
+      }
+    } catch (e) {
+      print('______error is ${e.toString()}_______');
     }
   }
 }

@@ -22,6 +22,7 @@ class Sidemenubar extends StatelessWidget {
     Future<void> logout() async {
       if (FirebaseAuth.instance.currentUser != null) {
         await GoogleSignIn().disconnect();
+        FirebaseAuth.instance.signOut();
       } else {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLogin', false);

@@ -9,7 +9,7 @@ import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/selfiewithid.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/vehicleinfo.dart';
 
-class Transport<T extends Driverregprovider1> extends StatelessWidget {
+class Transport extends StatelessWidget {
   final String title;
   const Transport({super.key, required this.title});
 
@@ -69,10 +69,15 @@ class Transport<T extends Driverregprovider1> extends StatelessWidget {
                         title: 'CNIC',
                         icon: null,
                         onTap: () {
-                          navigateToScreen(
-                            context,
-                            Regdrlcdrcnic<T>(title: 'CNIC'),
-                          );
+                          title == 'Car Registration'
+                              ? navigateToScreen(
+                                  context,
+                                  Regdrlcdrcnic<Cardrivercnic>(title: 'CNIC'),
+                                )
+                              : navigateToScreen(
+                                  context,
+                                  Regdrlcdrcnic<Motodrivercnic>(title: 'CNIC'),
+                                );
                         },
                       ),
                     ),

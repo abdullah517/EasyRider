@@ -87,7 +87,9 @@ class _HomepageState extends State<Homepage> {
 
   void initfcm() async {
     PushNotificationService service = PushNotificationService();
-    await service.sendNotification();
+    await service.init().then((value) async {
+      await service.sendNotification();
+    });
   }
 
   @override

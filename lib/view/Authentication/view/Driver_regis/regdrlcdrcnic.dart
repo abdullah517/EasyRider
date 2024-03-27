@@ -254,18 +254,20 @@ class Regdrlcdrcnic<T extends Driverregprovider1> extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       borderRadius: 8,
                       ontap: () {
+                        String userid = Provider.of<Userdataprovider>(context,
+                                listen: false)
+                            .userId;
                         if (value.checkisempty()) {
                           errordialogue(context);
                         } else if (title == 'CNIC') {
                           if (_controller.text == '' ||
                               _controller.text.length < 13) {
                             errordialogue(context);
+                          } else {
+                            value.saveImages(
+                                userid, title, _controller.text, context);
                           }
                         } else {
-                          String userid = Provider.of<Userdataprovider>(context,
-                                  listen: false)
-                              .userId;
-
                           value.saveImages(
                               userid, title, _controller.text, context);
                         }

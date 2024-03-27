@@ -15,6 +15,11 @@ class Completeprofileprovider extends ChangeNotifier {
   File? image;
   String url = '';
 
+  void cleartextcontroller() {
+    genderController.text = '';
+    usernameController.text = '';
+  }
+
   Future<void> scanCnic(ImageSource imageSource, BuildContext context,
       CollectionReference collectionName, String docid,
       {String phoneno = ''}) async {
@@ -36,8 +41,10 @@ class Completeprofileprovider extends ChangeNotifier {
         notifyListeners();
         if (phoneno == '') {
           navigateandremove(context, const Homepage());
+          cleartextcontroller();
         } else {
           navigateandremove(context, Homepage(phoneno: phoneno));
+          cleartextcontroller();
         }
       });
     });

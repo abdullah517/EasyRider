@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/Methods/drivermethods.dart';
 import 'package:ridemate/view/Authentication/view/Driver_regis/bottomnav.dart';
@@ -30,6 +33,23 @@ class _DriverscreenState extends State<Driverscreen> {
       content: CustomText(title: text),
       behavior: SnackBarBehavior.floating,
     ));
+  }
+
+  Future<void> savetoken(Map driver, bool isOnline) async {
+    if (isOnline) {
+      final service = PushNotificationService();
+      String? token = await service.getToken();
+      final firestore = FirebaseFirestore.instance.collection('drivers');
+      if (driver.containsKey('token')) {
+        firestore
+            .doc(Provider.of<Userdataprovider>(context).userId)
+            .update({'token': '$token'});
+      } else {
+        firestore
+            .doc(Provider.of<Userdataprovider>(context).userId)
+            .set({'token': '$token'}, SetOptions(merge: true));
+      }
+    }
   }
 
   @override
@@ -66,6 +86,7 @@ class _DriverscreenState extends State<Driverscreen> {
                               isOnline = value;
                             });
                             changedriverstatus(context, value);
+                            savetoken(data, value);
                           } else {
                             showsnackbar(
                                 'Your application status is in Review');

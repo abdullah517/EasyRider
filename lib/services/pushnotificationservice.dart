@@ -79,8 +79,7 @@ class PushNotificationService {
     }
   }
 
-  Future<void> sendNotification() async {
-    String? token = await getToken();
+  Future<void> sendNotification(String token) async {
     String oauthid = await getAccessToken();
     var headers = {
       'Content-Type': 'application/json',
@@ -89,7 +88,7 @@ class PushNotificationService {
 
     var body = jsonEncode({
       "message": {
-        "token": "$token",
+        "token": token,
         "notification": {
           "title": "New Ride Request",
           "body": "You have a new ride request."

@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
-import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Homepage/components/homecomp1.dart';
 import 'package:ridemate/view/Homepage/components/ridecomponent.dart';
@@ -82,14 +82,11 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     Provider.of<Userdataprovider>(context, listen: false)
         .loaduserdata(widget.phoneno);
-    initfcm();
   }
 
-  void initfcm() async {
-    PushNotificationService service = PushNotificationService();
-    await service.init().then((value) async {
-      await service.sendNotification();
-    });
+  String getgender() {
+    return Provider.of<Userdataprovider>(context, listen: false)
+        .userData['Gender'];
   }
 
   @override
@@ -179,11 +176,16 @@ class _HomepageState extends State<Homepage> {
                               title: gettext(value.faretext)),
                           const Divider(color: Appcolors.contentDisbaled),
                           const Spacer(),
-                          Custombutton(
-                            text: 'Request Ride',
-                            ontap: () {},
-                            fontSize: 16,
-                            borderRadius: 8,
+                          Consumer<Bookingprovider>(
+                            builder: (context, value, child) => Custombutton(
+                              text: 'Request Ride',
+                              ontap: () {
+                                value.sendRiderequesttonearestdriver(
+                                    getgender(), context);
+                              },
+                              fontSize: 16,
+                              borderRadius: 8,
+                            ),
                           )
                         ],
                       ),

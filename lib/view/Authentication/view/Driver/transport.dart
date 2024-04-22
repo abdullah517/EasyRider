@@ -3,11 +3,11 @@ import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/basicinfo.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/regdrlcdrcnic.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/selfiewithid.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/vehicleinfo.dart';
+import 'package:ridemate/view/Authentication/view/Driver/basicinfo.dart';
+import 'package:ridemate/view/Authentication/view/Driver/regdrlcdrcnic.dart';
+import 'package:ridemate/view/Authentication/view/Driver/listtile.dart';
+import 'package:ridemate/view/Authentication/view/Driver/selfiewithid.dart';
+import 'package:ridemate/view/Authentication/view/Driver/vehicleinfo.dart';
 
 class Transport extends StatelessWidget {
   final String title;

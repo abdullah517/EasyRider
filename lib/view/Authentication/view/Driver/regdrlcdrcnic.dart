@@ -8,7 +8,7 @@ import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/view/Authentication/components/customtextfield.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/overlaycamera.dart';
+import 'package:ridemate/view/Authentication/view/Driver/overlaycamera.dart';
 import 'package:ridemate/view/Dialogueboxes/errordialogue.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';

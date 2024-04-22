@@ -3,14 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/Methods/drivermethods.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/bottomnav.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/driverdrawer.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/toggle_button.dart';
+import 'package:ridemate/view/Authentication/view/Driver/bottomnav.dart';
+import 'package:ridemate/view/Authentication/view/Driver/driverdrawer.dart';
+import 'package:ridemate/view/Authentication/view/Driver/toggle_button.dart';
 import 'package:ridemate/widgets/customtext.dart';
-
 import '../../../../Providers/userdataprovider.dart';
 
 class Driverscreen extends StatefulWidget {
@@ -42,11 +42,11 @@ class _DriverscreenState extends State<Driverscreen> {
       final firestore = FirebaseFirestore.instance.collection('drivers');
       if (driver.containsKey('token')) {
         firestore
-            .doc(Provider.of<Userdataprovider>(context).userId)
+            .doc(Provider.of<Userdataprovider>(context, listen: false).userId)
             .update({'token': '$token'});
       } else {
         firestore
-            .doc(Provider.of<Userdataprovider>(context).userId)
+            .doc(Provider.of<Userdataprovider>(context, listen: false).userId)
             .set({'token': '$token'}, SetOptions(merge: true));
       }
     }
@@ -65,7 +65,8 @@ class _DriverscreenState extends State<Driverscreen> {
               child: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('drivers')
-                    .doc(Provider.of<Userdataprovider>(context).userId)
+                    .doc(Provider.of<Userdataprovider>(context, listen: false)
+                        .userId)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData || !snapshot.data!.exists) {
@@ -114,7 +115,13 @@ class _DriverscreenState extends State<Driverscreen> {
         ),
       ),
       drawer: const driverdrawer(),
-      body: Container(),
+      body: Consumer<Bookingprovider>(
+        builder: (context, value, child) => ListView.separated(
+          itemBuilder: (context, index) => value.ridelist[index],
+          separatorBuilder: (context, index) => const SizedBox(height: 6),
+          itemCount: value.ridelist.length,
+        ),
+      ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,

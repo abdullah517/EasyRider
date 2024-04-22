@@ -5,11 +5,11 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Methods/geofireassistant.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
@@ -110,28 +110,47 @@ class Mapprovider extends ChangeNotifier {
     direction.calculatefare();
   }
 
-  Future<Position> getuserCurrentLocation() async {
-    await Geolocator.requestPermission();
-    return await Geolocator.getCurrentPosition();
+  Future<LocationData> getUserCurrentLocation() async {
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return Future.error('Location services are disabled.');
+      }
+    }
+
+    permissionGranted = await location.requestPermission();
+    if (permissionGranted != PermissionStatus.granted) {
+      return Future.error('Location permissions are denied');
+    }
+
+    locationData = await location.getLocation();
+    return locationData;
   }
 
   void setposition(BuildContext context) {
-    getuserCurrentLocation().then((value) async {
+    getUserCurrentLocation().then((value) async {
       Provider.of<Homeprovider>(context, listen: false)
           .convertlatlngtoaddress(value);
       Provider.of<Pickupaddress>(context, listen: false)
-          .updateaddress(value.latitude, value.longitude);
+          .updateaddress(value.latitude!, value.longitude!);
       Uint8List imagebyte = await makeReceiptImage();
       markers.add(
         Marker(
           markerId: const MarkerId('1'),
-          position: LatLng(value.latitude, value.longitude),
+          position: LatLng(value.latitude!, value.longitude!),
           infoWindow: const InfoWindow(title: 'userlocation'),
           icon: BitmapDescriptor.fromBytes(imagebyte),
         ),
       );
       CameraPosition cameraPosition = CameraPosition(
-          target: LatLng(value.latitude, value.longitude), zoom: 14.4746);
+          target: LatLng(value.latitude!, value.longitude!), zoom: 14.4746);
       final GoogleMapController googleMapController = await controller.future;
       googleMapController
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));

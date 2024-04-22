@@ -1,13 +1,18 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'dart:async';
-
 import 'package:googleapis_auth/auth_io.dart';
-
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/bookingprovider.dart';
+import 'package:ridemate/models/ridedetails.dart';
 
 Future<String> getAccessToken() async {
   // Load the service account credentials from the JSON key file
@@ -29,10 +34,9 @@ Future<String> getAccessToken() async {
 
 class PushNotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  Future<void> init() async {
+  Future<void> init(BuildContext context) async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
@@ -40,12 +44,37 @@ class PushNotificationService {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      retrieveRideRequestDetail(message, context);
       displayNotification(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print("onMessageOpenedApp: $message");
     });
+  }
+
+  Future<void> retrieveRideRequestDetail(
+      RemoteMessage message, BuildContext context) async {
+    final ridedetail = await FirebaseFirestore.instance
+        .collection('RideRequest')
+        .doc(message.data['ride_request_id'])
+        .get();
+    RideDetails rideDetails = RideDetails(
+      rideid: message.data['ride_request_id'],
+      pickupaddress: ridedetail['pickup_address'],
+      destinationaddress: ridedetail['destination_address'],
+      pickup: LatLng(
+        double.parse(ridedetail['pickup']['latitude'].toString()),
+        double.parse(ridedetail['pickup']['longitude'].toString()),
+      ),
+      dropoff: LatLng(
+        double.parse(ridedetail['dropoff']['latitude'].toString()),
+        double.parse(ridedetail['dropoff']['longitude'].toString()),
+      ),
+      ridername: ridedetail['rider_name'],
+    );
+    Provider.of<Bookingprovider>(context, listen: false)
+        .updateridelist(rideDetails);
   }
 
   Future<String?> getToken() async {
@@ -79,7 +108,7 @@ class PushNotificationService {
     }
   }
 
-  Future<void> sendNotification(String token) async {
+  Future<void> sendNotification(String token, String rideid) async {
     String oauthid = await getAccessToken();
     var headers = {
       'Content-Type': 'application/json',
@@ -93,7 +122,7 @@ class PushNotificationService {
           "title": "New Ride Request",
           "body": "You have a new ride request."
         },
-        "data": {"status": "processed"}
+        "data": {"status": "processed", 'ride_request_id': rideid}
       }
     });
     try {

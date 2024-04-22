@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/goingtoworkas.dart';
+import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/view/Homepage/homepage.dart';
 import 'package:ridemate/widgets/custombutton.dart';

@@ -6,7 +6,7 @@ import 'package:ridemate/widgets/spacing.dart';
 import '../../../Providers/homeprovider.dart';
 import '../../../widgets/customtext.dart';
 
-void showbottomsheet(BuildContext context, {bool ispickup = false}) {
+void showsearchbottomsheet(BuildContext context, {bool ispickup = false}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,

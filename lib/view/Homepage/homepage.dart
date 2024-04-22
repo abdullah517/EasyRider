@@ -8,6 +8,7 @@ import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
+import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Homepage/components/homecomp1.dart';
 import 'package:ridemate/view/Homepage/components/ridecomponent.dart';
@@ -82,11 +83,17 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     Provider.of<Userdataprovider>(context, listen: false)
         .loaduserdata(widget.phoneno);
+    initializeservice();
   }
 
   String getgender() {
     return Provider.of<Userdataprovider>(context, listen: false)
         .userData['Gender'];
+  }
+
+  void initializeservice() async {
+    final service = PushNotificationService();
+    await service.init(context);
   }
 
   @override
@@ -162,13 +169,13 @@ class _HomepageState extends State<Homepage> {
                           ListTile(
                               leading: const Icon(Icons.location_on),
                               title: gettext(value.address),
-                              onTap: () =>
-                                  showbottomsheet(context, ispickup: true)),
+                              onTap: () => showsearchbottomsheet(context,
+                                  ispickup: true)),
                           const Divider(color: Appcolors.contentDisbaled),
                           ListTile(
                             leading: const Icon(Icons.location_on),
                             title: gettext(value.destination),
-                            onTap: () => showbottomsheet(context),
+                            onTap: () => showsearchbottomsheet(context),
                           ),
                           const Divider(color: Appcolors.contentDisbaled),
                           ListTile(
@@ -177,10 +184,13 @@ class _HomepageState extends State<Homepage> {
                           const Divider(color: Appcolors.contentDisbaled),
                           const Spacer(),
                           Consumer<Bookingprovider>(
-                            builder: (context, value, child) => Custombutton(
+                            builder: (context, bookingProvider, child) =>
+                                Custombutton(
                               text: 'Request Ride',
+                              loading: bookingProvider.loading,
                               ontap: () {
-                                value.sendRiderequesttonearestdriver(
+                                bookingProvider.saveRideRequest(context);
+                                bookingProvider.sendRideRequesttoNearestDriver(
                                     getgender(), context);
                               },
                               fontSize: 16,

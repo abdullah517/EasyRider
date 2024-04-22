@@ -8,17 +8,25 @@ import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/useraddressprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/models/nearbyavailabledrivers.dart';
+import 'package:ridemate/models/ridedetails.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
+import 'package:ridemate/view/Authentication/view/Driver/ridecontainer.dart';
+import 'package:ridemate/view/Homepage/components/rides.dart';
 
 class Bookingprovider extends ChangeNotifier {
+  String rideid = '';
+  List ridelist = [];
+  bool loading = false;
   void saveRideRequest(BuildContext context) {
-    final firestore = FirebaseFirestore.instance.collection('Ride Requests');
+    loading = true;
+    notifyListeners();
+    final docref = FirebaseFirestore.instance.collection('RideRequest').doc();
     final pickup = Provider.of<Pickupaddress>(context, listen: false);
     final destination = Provider.of<Destinationaddress>(context, listen: false);
-    final address = Provider.of<Homeprovider>(context, listen: false);
+    final addressdetail = Provider.of<Homeprovider>(context, listen: false);
     final user = Provider.of<Userdataprovider>(context, listen: false);
-    firestore.doc().set({
-      'driver_id': 'waiting',
+    rideid = docref.id;
+    docref.set({
       'pickup': {
         'latitude': pickup.latitude,
         'longitude': pickup.longitude,
@@ -29,19 +37,23 @@ class Bookingprovider extends ChangeNotifier {
       },
       'created_at': DateTime.now(),
       'rider_name': user.userData['Username'],
-      'pickup_address': address.address,
-      'destination_address': address.destination,
+      'pickup_address': addressdetail.address,
+      'destination_address': addressdetail.destination,
+      'driversid': []
     });
   }
 
-  void initfcm(String token) async {
+  void updateridelist(RideDetails rideDetails) {
+    ridelist.add(Ridecontainer(rideDetails: rideDetails));
+    notifyListeners();
+  }
+
+  void sendfcm(String token) async {
     PushNotificationService service = PushNotificationService();
-    await service.init().then((value) async {
-      await service.sendNotification(token);
-    });
+    await service.sendNotification(token, rideid);
   }
 
-  Future<void> sendRiderequesttonearestdriver(
+  Future<void> sendRideRequesttoNearestDriver(
       String gender, BuildContext context) async {
     for (Nearbyavailabledrivers driver
         in Geofireassistant.nearbyavailabledriverslist) {
@@ -49,13 +61,14 @@ class Bookingprovider extends ChangeNotifier {
           .collection('drivers')
           .doc(driver.key)
           .get();
-      String drivergender =
-          Provider.of<Userdataprovider>(context, listen: false)
-              .userData['Gender'];
-      if (drivergender == gender) {
+
+      if (doc['Gender'] == gender) {
         String token = doc['token'];
-        initfcm(token);
+        sendfcm(token);
       }
     }
+    loading = false;
+    notifyListeners();
+    showridebottomsheet(context, rideid);
   }
 }

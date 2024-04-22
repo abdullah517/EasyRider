@@ -3,11 +3,11 @@ import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/routing/routing.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/regdrlcdrcnic.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/transportname.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/vehiclephoto.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/vehiclereg.dart';
+import 'package:ridemate/view/Authentication/view/Driver/regdrlcdrcnic.dart';
+import 'package:ridemate/view/Authentication/view/Driver/listtile.dart';
+import 'package:ridemate/view/Authentication/view/Driver/transportname.dart';
+import 'package:ridemate/view/Authentication/view/Driver/vehiclephoto.dart';
+import 'package:ridemate/view/Authentication/view/Driver/vehiclereg.dart';
 
 class Vehicleinfo<T extends Driverregprovider1> extends StatelessWidget {
   final String title;

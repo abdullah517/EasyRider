@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:ridemate/models/directiondetails.dart';
 import 'package:ridemate/models/placepredmodel.dart';
 import 'package:ridemate/utils/api_credential.dart';
@@ -64,9 +64,9 @@ class Homeprovider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> convertlatlngtoaddress(Position position) async {
+  Future<void> convertlatlngtoaddress(LocationData position) async {
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude!, position.longitude!);
     address =
         "${placemarks.reversed.last.street}(${placemarks.reversed.last.subLocality})";
     notifyListeners();

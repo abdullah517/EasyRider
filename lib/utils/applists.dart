@@ -1,5 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/Providers/completeprofileprovider.dart';
 import 'package:ridemate/Providers/driverregprovider.dart';
 import 'package:ridemate/Providers/googleauthprovider.dart';
@@ -80,5 +81,8 @@ List<SingleChildWidget> providerlist = [
   ),
   ChangeNotifierProvider(
     create: (context) => Transportnameprovider(),
+  ),
+  ChangeNotifierProvider(
+    create: (context) => Bookingprovider(),
   ),
 ];

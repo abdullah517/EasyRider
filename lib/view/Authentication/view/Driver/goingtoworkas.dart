@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/transport.dart';
-import 'package:ridemate/view/Authentication/view/Driver_regis/listtile.dart';
+import 'package:ridemate/view/Authentication/view/Driver/transport.dart';
+import 'package:ridemate/view/Authentication/view/Driver/listtile.dart';
 
 import '../../components/customappbar.dart';
 

@@ -5,12 +5,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import '../routing/routing.dart';
-import '../view/Authentication/view/Driver_regis/driverscreen.dart';
+import '../view/Authentication/view/Driver/driverscreen.dart';
 import '../view/Dialogueboxes/congratdialogue.dart';
 
 Future<bool> checkAllFieldsExist(String userId) async {
@@ -40,28 +40,30 @@ Future<bool> checkAllFieldsExist(String userId) async {
 Future<void> checkit(String userId, BuildContext context) async {
   if (await checkAllFieldsExist(userId)) {
     congratdialogue(context);
-    FirebaseFirestore.instance
-        .collection('drivers')
-        .doc(userId)
-        .set({'Status': 'InReview'}, SetOptions(merge: true));
+    FirebaseFirestore.instance.collection('drivers').doc(userId).set({
+      'Status': 'InReview',
+      'Gender': Provider.of<Userdataprovider>(context, listen: false)
+          .userData['Gender'],
+    }, SetOptions(merge: true));
     navigateandremove(context, const Driverscreen());
   } else {
     Navigator.pop(context);
   }
 }
 
-late StreamSubscription<Position> streamSubscription;
+late StreamSubscription<LocationData> streamSubscription;
 
 void changedriverstatus(BuildContext context, bool isOnline) async {
   if (isOnline) {
     String id = Provider.of<Userdataprovider>(context, listen: false).userId;
     DatabaseReference reference = FirebaseDatabase.instance.ref().child(id);
-    Position position = await Geolocator.getCurrentPosition();
+    Location location = Location();
+    LocationData position = await location.getLocation();
     Geofire.initialize('availableDrivers');
-    Geofire.setLocation(id, position.latitude, position.longitude);
+    Geofire.setLocation(id, position.latitude!, position.longitude!);
     reference.onValue.listen((event) {});
-    streamSubscription = Geolocator.getPositionStream().listen((position) {
-      Geofire.setLocation(id, position.latitude, position.longitude);
+    streamSubscription = location.onLocationChanged.listen((position) {
+      Geofire.setLocation(id, position.latitude!, position.longitude!);
     });
   } else {
     String id = Provider.of<Userdataprovider>(context, listen: false).userId;

@@ -59,7 +59,7 @@ class Driverregprovider1 extends ChangeNotifier {
     savedriverdetails(userId, folderName, url1, url2, cnicno);
     loading = false;
     notifyListeners();
-    checkit(userId, context);
+    await checkit(userId, context);
   }
 }
 
@@ -105,7 +105,7 @@ class Driverregprovider2 extends ChangeNotifier {
     savedriverdetails(userId, folderName, url1);
     loading = false;
     notifyListeners();
-    checkit(userId, context);
+    await checkit(userId, context);
   }
 }
 
@@ -171,7 +171,7 @@ class Driverregprovider3 extends ChangeNotifier {
     savedriverdetails(userId, folderName, url1, url2);
     loading = false;
     notifyListeners();
-    checkit(userId, context);
+    await checkit(userId, context);
   }
 }
 
@@ -191,6 +191,6 @@ class Transportnameprovider extends ChangeNotifier {
     }, SetOptions(merge: true));
     loading = false;
     notifyListeners();
-    checkit(userId, context);
+    await checkit(userId, context);
   }
 }

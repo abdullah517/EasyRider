@@ -17,6 +17,16 @@ class Bookingprovider extends ChangeNotifier {
   String rideid = '';
   List ridelist = [];
   bool loading = false;
+  bool enabledbutton = false;
+
+  void checkifempty(BuildContext context) {
+    final homeprovider = Provider.of<Homeprovider>(context, listen: false);
+    if (homeprovider.destination != 'Destination') {
+      enabledbutton = true;
+      notifyListeners();
+    }
+  }
+
   void saveRideRequest(BuildContext context) {
     loading = true;
     notifyListeners();
@@ -50,7 +60,12 @@ class Bookingprovider extends ChangeNotifier {
 
   void sendfcm(String token) async {
     PushNotificationService service = PushNotificationService();
-    await service.sendNotification(token, rideid);
+    await service.sendNotification(
+      token,
+      rideid: rideid,
+      title: "New Ride Request",
+      bodytxt: "You have a new ride request.",
+    );
   }
 
   Future<void> sendRideRequesttoNearestDriver(

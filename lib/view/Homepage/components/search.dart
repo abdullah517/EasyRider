@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/useraddressprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/spacing.dart';
+import '../../../Providers/bookingprovider.dart';
 import '../../../Providers/homeprovider.dart';
 import '../../../widgets/customtext.dart';
 
@@ -145,6 +146,9 @@ class _SearchState extends State<Search> {
                                       '${value.suggestionlist[index].maintext}')
                                   : value.changedest(
                                       '${value.suggestionlist[index].maintext}');
+                              Provider.of<Bookingprovider>(context,
+                                      listen: false)
+                                  .checkifempty(context);
                             },
                           );
                         },

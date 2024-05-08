@@ -39,11 +39,12 @@ Future<bool> checkAllFieldsExist(String userId) async {
 
 Future<void> checkit(String userId, BuildContext context) async {
   if (await checkAllFieldsExist(userId)) {
-    congratdialogue(context);
+    final myprovider = Provider.of<Userdataprovider>(context, listen: false);
+    await congratdialogue(context);
     FirebaseFirestore.instance.collection('drivers').doc(userId).set({
       'Status': 'InReview',
-      'Gender': Provider.of<Userdataprovider>(context, listen: false)
-          .userData['Gender'],
+      'Gender': myprovider.userData['Gender'],
+      'Name': myprovider.userData['Username'],
     }, SetOptions(merge: true));
     navigateandremove(context, const Driverscreen());
   } else {

@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/models/ridedetails.dart';
 
+import '../Providers/userdataprovider.dart';
+
 Future<String> getAccessToken() async {
   // Load the service account credentials from the JSON key file
   final jsonString = await rootBundle.loadString('assets/service-account.json');
@@ -44,8 +46,12 @@ class PushNotificationService {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      retrieveRideRequestDetail(message, context);
-      displayNotification(message);
+      if (message.notification?.title == "New Ride Request") {
+        retrieveRideRequestDetail(message, context);
+        displayNotification(message);
+      } else {
+        displayNotification(message);
+      }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -83,6 +89,14 @@ class PushNotificationService {
     return token;
   }
 
+  void refreshtoken(CollectionReference firestore, BuildContext context) {
+    _firebaseMessaging.onTokenRefresh.listen((event) {
+      firestore
+          .doc(Provider.of<Userdataprovider>(context, listen: false).userId)
+          .update({'token': event});
+    });
+  }
+
   Future<void> displayNotification(RemoteMessage message) async {
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -108,7 +122,12 @@ class PushNotificationService {
     }
   }
 
-  Future<void> sendNotification(String token, String rideid) async {
+  Future<void> sendNotification(
+    String token, {
+    String rideid = '',
+    required String title,
+    required String bodytxt,
+  }) async {
     String oauthid = await getAccessToken();
     var headers = {
       'Content-Type': 'application/json',
@@ -118,11 +137,10 @@ class PushNotificationService {
     var body = jsonEncode({
       "message": {
         "token": token,
-        "notification": {
-          "title": "New Ride Request",
-          "body": "You have a new ride request."
-        },
-        "data": {"status": "processed", 'ride_request_id': rideid}
+        "notification": {"title": title, "body": bodytxt},
+        "data": rideid != ''
+            ? {"status": "processed", 'ride_request_id': rideid}
+            : {"status": "processed"}
       }
     });
     try {

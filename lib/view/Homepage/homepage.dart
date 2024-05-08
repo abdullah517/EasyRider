@@ -113,6 +113,7 @@ class _HomepageState extends State<Homepage> {
                 value.newgooglemapcontroller = mapcontroller;
                 value.setposition(context);
               },
+              myLocationEnabled: true,
               markers: Set<Marker>.of(value.markers),
               polylines: value.polylineset,
             ),
@@ -188,11 +189,14 @@ class _HomepageState extends State<Homepage> {
                                 Custombutton(
                               text: 'Request Ride',
                               loading: bookingProvider.loading,
-                              ontap: () {
-                                bookingProvider.saveRideRequest(context);
-                                bookingProvider.sendRideRequesttoNearestDriver(
-                                    getgender(), context);
-                              },
+                              ontap: bookingProvider.enabledbutton
+                                  ? () {
+                                      bookingProvider.saveRideRequest(context);
+                                      bookingProvider
+                                          .sendRideRequesttoNearestDriver(
+                                              getgender(), context);
+                                    }
+                                  : null,
                               fontSize: 16,
                               borderRadius: 8,
                             ),

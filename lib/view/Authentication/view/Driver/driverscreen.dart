@@ -49,6 +49,7 @@ class _DriverscreenState extends State<Driverscreen> {
             .doc(Provider.of<Userdataprovider>(context, listen: false).userId)
             .set({'token': '$token'}, SetOptions(merge: true));
       }
+      service.refreshtoken(firestore, context);
     }
   }
 

@@ -85,7 +85,7 @@ class vehiclephoto<T extends Driverregprovider2> extends StatelessWidget {
                               )),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 50),
+                          padding: const EdgeInsets.only(top: 40),
                           child: Custombutton(
                               text: 'Add a Photo',
                               height: 40,

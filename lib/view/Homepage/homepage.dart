@@ -114,6 +114,7 @@ class _HomepageState extends State<Homepage> {
                 value.setposition(context);
               },
               myLocationEnabled: true,
+              myLocationButtonEnabled: false,
               markers: Set<Marker>.of(value.markers),
               polylines: value.polylineset,
             ),

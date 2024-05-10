@@ -2,16 +2,18 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/Methods/drivermethods.dart';
 import 'package:ridemate/view/Authentication/view/Driver/bottomnav.dart';
 import 'package:ridemate/view/Authentication/view/Driver/driverdrawer.dart';
+import 'package:ridemate/view/Authentication/view/Driver/ridecontainer.dart';
 import 'package:ridemate/view/Authentication/view/Driver/toggle_button.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import '../../../../Providers/userdataprovider.dart';
+import '../../../../models/ridedetails.dart';
 
 class Driverscreen extends StatefulWidget {
   const Driverscreen({Key? key}) : super(key: key);
@@ -116,12 +118,49 @@ class _DriverscreenState extends State<Driverscreen> {
         ),
       ),
       drawer: const driverdrawer(),
-      body: Consumer<Bookingprovider>(
-        builder: (context, value, child) => ListView.separated(
-          itemBuilder: (context, index) => value.ridelist[index],
-          separatorBuilder: (context, index) => const SizedBox(height: 6),
-          itemCount: value.ridelist.length,
-        ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+            FirebaseFirestore.instance.collection('RideRequest').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          final driverid =
+              Provider.of<Userdataprovider>(context, listen: false).userId;
+
+          final filteredDocs = snapshot.data!.docs.where(
+              (doc) => (doc['requestdrivers'] as List).contains(driverid));
+
+          return ListView.separated(
+            separatorBuilder: (context, index) => const Divider(),
+            itemCount: filteredDocs.length,
+            itemBuilder: (context, index) {
+              final doc = filteredDocs.elementAt(index);
+
+              RideDetails rideDetails = RideDetails(
+                rideid: doc.id,
+                pickupaddress: doc['pickup_address'],
+                destinationaddress: doc['destination_address'],
+                pickup: LatLng(
+                  double.parse(doc['pickup']['latitude'].toString()),
+                  double.parse(doc['pickup']['longitude'].toString()),
+                ),
+                dropoff: LatLng(
+                  double.parse(doc['dropoff']['latitude'].toString()),
+                  double.parse(doc['dropoff']['longitude'].toString()),
+                ),
+                ridername: doc['rider_name'],
+              );
+
+              return Ridecontainer(rideDetails: rideDetails);
+            },
+          );
+        },
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,

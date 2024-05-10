@@ -18,6 +18,7 @@ import 'package:ridemate/models/directiondetails.dart';
 import 'package:ridemate/models/nearbyavailabledrivers.dart';
 import 'package:ridemate/utils/api_credential.dart';
 import 'package:image/image.dart' as images;
+import 'package:ridemate/utils/appcolors.dart';
 import '../view/Homepage/homepage.dart';
 
 class Mapprovider extends ChangeNotifier {
@@ -69,7 +70,7 @@ class Mapprovider extends ChangeNotifier {
         }
         Polyline polyline = Polyline(
           polylineId: const PolylineId('polylineid'),
-          color: Colors.pink,
+          color: Appcolors.primaryColor,
           jointType: JointType.round,
           points: plineCoordinates,
           width: 5,

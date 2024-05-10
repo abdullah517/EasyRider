@@ -8,14 +8,11 @@ import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/useraddressprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/models/nearbyavailabledrivers.dart';
-import 'package:ridemate/models/ridedetails.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
-import 'package:ridemate/view/Authentication/view/Driver/ridecontainer.dart';
 import 'package:ridemate/view/Homepage/components/rides.dart';
 
 class Bookingprovider extends ChangeNotifier {
   String rideid = '';
-  List ridelist = [];
   bool loading = false;
   bool enabledbutton = false;
 
@@ -49,13 +46,9 @@ class Bookingprovider extends ChangeNotifier {
       'rider_name': user.userData['Username'],
       'pickup_address': addressdetail.address,
       'destination_address': addressdetail.destination,
-      'driversid': []
+      'driversid': [],
+      'requestdrivers': []
     });
-  }
-
-  void updateridelist(RideDetails rideDetails) {
-    ridelist.add(Ridecontainer(rideDetails: rideDetails));
-    notifyListeners();
   }
 
   void sendfcm(String token) async {

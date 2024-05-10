@@ -29,7 +29,7 @@ class Homeprovider extends ChangeNotifier {
       double distanceTraveledFare =
           (directiondetails.distancevalue / 1000) * 0.10;
       int totalfare =
-          ((timeTraveledFare + distanceTraveledFare) * 278).truncate();
+          ((timeTraveledFare + distanceTraveledFare) * 140).truncate();
       if (selectedindex == 1) {
         faretext = "${totalfare + 200} PKR";
       } else if (selectedindex == 2) {

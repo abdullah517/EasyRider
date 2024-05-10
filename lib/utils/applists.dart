@@ -3,6 +3,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/Providers/completeprofileprovider.dart';
 import 'package:ridemate/Providers/driverregprovider.dart';
+import 'package:ridemate/Providers/driverrideprovider.dart';
 import 'package:ridemate/Providers/googleauthprovider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/joinviaphoneprovider.dart';
@@ -85,4 +86,7 @@ List<SingleChildWidget> providerlist = [
   ChangeNotifierProvider(
     create: (context) => Bookingprovider(),
   ),
+  ChangeNotifierProvider(
+    create: (context) => DriverRideProivder(),
+  )
 ];

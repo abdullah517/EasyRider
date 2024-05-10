@@ -50,6 +50,7 @@ class _RidesState extends State<Rides> {
       token,
       title: "Get Ready",
       bodytxt: "Pick your new Ride",
+      rideid: widget.rideid,
     );
     Navigator.pop(context);
     showbookedsheet(context);

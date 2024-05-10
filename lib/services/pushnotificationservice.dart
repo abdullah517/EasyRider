@@ -11,10 +11,11 @@ import 'dart:async';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/bookingprovider.dart';
-import 'package:ridemate/models/ridedetails.dart';
-
+import 'package:ridemate/routing/routing.dart';
+import 'package:ridemate/view/Authentication/view/Driver/driverridescreen.dart';
+import 'package:ridemate/Methods/drivermethods.dart';
 import '../Providers/userdataprovider.dart';
+import '../models/ridedetails.dart';
 
 Future<String> getAccessToken() async {
   // Load the service account credentials from the JSON key file
@@ -45,12 +46,15 @@ class PushNotificationService {
         InitializationSettings(android: initializationSettingsAndroid);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if (message.notification?.title == "New Ride Request") {
-        retrieveRideRequestDetail(message, context);
+        saverequestdriver(context, message);
         displayNotification(message);
       } else {
         displayNotification(message);
+        final ridedetails = await retrieveRideRequestDetail(message);
+        pausehometablivelocation(context);
+        navigateToScreen(context, DriverRideScreen(rideDetails: ridedetails));
       }
     });
 
@@ -59,8 +63,7 @@ class PushNotificationService {
     });
   }
 
-  Future<void> retrieveRideRequestDetail(
-      RemoteMessage message, BuildContext context) async {
+  Future<RideDetails> retrieveRideRequestDetail(RemoteMessage message) async {
     final ridedetail = await FirebaseFirestore.instance
         .collection('RideRequest')
         .doc(message.data['ride_request_id'])
@@ -79,8 +82,18 @@ class PushNotificationService {
       ),
       ridername: ridedetail['rider_name'],
     );
-    Provider.of<Bookingprovider>(context, listen: false)
-        .updateridelist(rideDetails);
+    return rideDetails;
+  }
+
+  void saverequestdriver(BuildContext context, RemoteMessage message) async {
+    String id = message.data['ride_request_id'];
+    final docRef = FirebaseFirestore.instance.collection('RideRequest').doc(id);
+    final driverid =
+        Provider.of<Userdataprovider>(context, listen: false).userId;
+    List newData = [driverid];
+    await docRef.update({
+      'requestdrivers': FieldValue.arrayUnion(newData),
+    });
   }
 
   Future<String?> getToken() async {
@@ -138,9 +151,7 @@ class PushNotificationService {
       "message": {
         "token": token,
         "notification": {"title": title, "body": bodytxt},
-        "data": rideid != ''
-            ? {"status": "processed", 'ride_request_id': rideid}
-            : {"status": "processed"}
+        "data": {"status": "processed", 'ride_request_id': rideid}
       }
     });
     try {

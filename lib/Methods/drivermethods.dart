@@ -75,3 +75,17 @@ void changedriverstatus(BuildContext context, bool isOnline) async {
     streamSubscription.cancel();
   }
 }
+
+void pausehometablivelocation(BuildContext context) {
+  String id = Provider.of<Userdataprovider>(context, listen: false).userId;
+  streamSubscription.pause();
+  Geofire.removeLocation(id);
+}
+
+Future<void> resumehometablivelocation(BuildContext context) async {
+  Location location = Location();
+  LocationData position = await location.getLocation();
+  String id = Provider.of<Userdataprovider>(context, listen: false).userId;
+  streamSubscription.resume();
+  Geofire.setLocation(id, position.latitude!, position.longitude!);
+}

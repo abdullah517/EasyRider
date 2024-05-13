@@ -17,8 +17,8 @@ void showbookedsheet(BuildContext context) {
     ),
     builder: (context) => DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.9,
-      maxChildSize: 0.9,
+      initialChildSize: 0.5,
+      maxChildSize: 0.8,
       builder: (context, scrollController) => SingleChildScrollView(
         controller: scrollController,
         child: Container(

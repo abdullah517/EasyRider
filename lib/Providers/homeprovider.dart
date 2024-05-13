@@ -23,6 +23,11 @@ class Homeprovider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setemptyaddress() {
+    address = '';
+    notifyListeners();
+  }
+
   void calculatefare() {
     if (directiondetails.distancetext != '') {
       double timeTraveledFare = (directiondetails.durationvalue / 60) * 0.10;

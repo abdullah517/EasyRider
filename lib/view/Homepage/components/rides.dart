@@ -2,6 +2,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ridemate/Providers/homeprovider.dart';
+import 'package:ridemate/Providers/mapprovider.dart';
 import 'package:ridemate/view/Homepage/components/bookedsheet.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -52,8 +55,13 @@ class _RidesState extends State<Rides> {
       bodytxt: "Pick your new Ride",
       rideid: widget.rideid,
     );
+    final myprovider = Provider.of<Mapprovider>(context, listen: false);
+    final homeprovider = Provider.of<Homeprovider>(context, listen: false);
+    homeprovider.setemptyaddress();
     Navigator.pop(context);
     showbookedsheet(context);
+    myprovider.resetmarkers();
+    myprovider.bookeddriverstatus(widget.rideid, context);
   }
 
   Future<void> datafromfirestore(String driverid) async {

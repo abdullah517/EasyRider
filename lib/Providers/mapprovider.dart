@@ -1,22 +1,21 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Methods/geofireassistant.dart';
+import 'package:ridemate/Methods/mapmethods.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/useraddressprovider.dart';
 import 'package:ridemate/models/directiondetails.dart';
 import 'package:ridemate/models/nearbyavailabledrivers.dart';
-import 'package:ridemate/utils/api_credential.dart';
 import 'package:image/image.dart' as images;
 import 'package:ridemate/utils/appcolors.dart';
 import '../view/Homepage/homepage.dart';
@@ -25,7 +24,7 @@ class Mapprovider extends ChangeNotifier {
   List<LatLng> plineCoordinates = [];
   Set<Polyline> polylineset = {};
   late GoogleMapController newgooglemapcontroller;
-  final Set<Marker> markers = {};
+  Set<Marker> markers = {};
   final Completer<GoogleMapController> controller = Completer();
   Future<void> obtainplacedirection(BuildContext context) async {
     final pickup = Provider.of<Pickupaddress>(context, listen: false);
@@ -44,68 +43,40 @@ class Mapprovider extends ChangeNotifier {
         position: LatLng(pickup.latitude, pickup.longitude),
       ),
     );
-    String url =
-        'https://maps.googleapis.com/maps/api/directions/json?destination=${destination.latitude},${destination.longitude}&origin=${pickup.latitude},${pickup.longitude}&key=$mapapikey';
-    var response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final res = json.decode(response.body);
-      if (res['status'] == 'OK') {
-        Directiondetails directiondetails = Directiondetails(
-          distancevalue: res['routes'][0]['legs'][0]['distance']['value'],
-          distancetext: res['routes'][0]['legs'][0]['distance']['text'],
-          durationtext: res['routes'][0]['legs'][0]['duration']['text'],
-          durationvalue: res['routes'][0]['legs'][0]['duration']['value'],
-          encodedpoints: res['routes'][0]['overview_polyline']['points'],
-        );
-        direction.directiondetails = directiondetails;
-        PolylinePoints polylinePoints = PolylinePoints();
-        List<PointLatLng> decodedPolylinePointsResult =
-            polylinePoints.decodePolyline(directiondetails.encodedpoints);
-        plineCoordinates.clear();
-        if (decodedPolylinePointsResult.isNotEmpty) {
-          for (var pointLatLng in decodedPolylinePointsResult) {
-            plineCoordinates
-                .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
-          }
-        }
-        Polyline polyline = Polyline(
-          polylineId: const PolylineId('polylineid'),
-          color: Appcolors.primaryColor,
-          jointType: JointType.round,
-          points: plineCoordinates,
-          width: 5,
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
-          geodesic: true,
-        );
-        polylineset.clear();
-        polylineset.add(polyline);
-        notifyListeners();
+    Directiondetails directiondetails = await fetchDirectionDetails(
+      LatLng(pickup.latitude, pickup.longitude),
+      LatLng(destination.latitude, destination.longitude),
+    );
+    direction.directiondetails = directiondetails;
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolylinePointsResult =
+        polylinePoints.decodePolyline(directiondetails.encodedpoints);
+    plineCoordinates.clear();
+    if (decodedPolylinePointsResult.isNotEmpty) {
+      for (var pointLatLng in decodedPolylinePointsResult) {
+        plineCoordinates
+            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
       }
     }
-    LatLngBounds latLngBounds;
-    if (pickup.latitude > destination.latitude &&
-        pickup.longitude > destination.longitude) {
-      latLngBounds = LatLngBounds(
-        southwest: LatLng(destination.latitude, destination.longitude),
-        northeast: LatLng(pickup.latitude, pickup.longitude),
-      );
-    } else if (pickup.longitude > destination.longitude) {
-      latLngBounds = LatLngBounds(
-        southwest: LatLng(pickup.latitude, destination.longitude),
-        northeast: LatLng(destination.latitude, pickup.longitude),
-      );
-    } else if (pickup.latitude > destination.latitude) {
-      latLngBounds = LatLngBounds(
-        southwest: LatLng(destination.latitude, pickup.longitude),
-        northeast: LatLng(pickup.latitude, destination.longitude),
-      );
-    } else {
-      latLngBounds = LatLngBounds(
-        southwest: LatLng(pickup.latitude, pickup.longitude),
-        northeast: LatLng(destination.latitude, destination.longitude),
-      );
-    }
+    Polyline polyline = Polyline(
+      polylineId: const PolylineId('polylineid'),
+      color: Appcolors.primaryColor,
+      jointType: JointType.round,
+      points: plineCoordinates,
+      width: 5,
+      startCap: Cap.roundCap,
+      endCap: Cap.roundCap,
+      geodesic: true,
+    );
+    polylineset.clear();
+    polylineset.add(polyline);
+    notifyListeners();
+
+    LatLngBounds latLngBounds = createLatLngBounds(
+      LatLng(pickup.latitude, pickup.longitude),
+      LatLng(destination.latitude, destination.longitude),
+    );
+
     newgooglemapcontroller
         .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 140));
     direction.calculatefare();
@@ -205,6 +176,49 @@ class Mapprovider extends ChangeNotifier {
   void removedriveronmap(String key) {
     markers.removeWhere((element) => element.markerId.value == 'driver$key');
     notifyListeners();
+  }
+
+  void resetmarkers() {
+    Set<Marker> filteredMarkers = {};
+
+    for (Marker marker in markers) {
+      if (marker.markerId.value == '2' || marker.markerId.value == '3') {
+        filteredMarkers.add(marker);
+      }
+    }
+
+    markers = filteredMarkers;
+
+    notifyListeners();
+  }
+
+  void bookeddriverstatus(String rideid, BuildContext context) async {
+    try {
+      final collection = FirebaseFirestore.instance.collection('RideRequest');
+      ByteData imageData = await rootBundle.load('assets/mapcar.png');
+      var bytes = Uint8List.view(imageData.buffer);
+      var carmapimg = images.decodeImage(bytes);
+      carmapimg = images.copyResize(carmapimg!, height: 100, width: 100);
+      var byteData = images.encodePng(carmapimg);
+      collection.doc(rideid).snapshots().listen((event) {
+        Map locmap = event['driver_loc'];
+        double latitude = double.parse(locmap['latitude'].toString());
+        double longitude = double.parse(locmap['longitude'].toString());
+        markers
+            .removeWhere((element) => element.markerId.value == 'bookdriver');
+        markers.add(Marker(
+            icon: BitmapDescriptor.fromBytes(byteData),
+            markerId: const MarkerId('bookdriver'),
+            position: LatLng(latitude, longitude)));
+        CameraPosition cameraPosition =
+            CameraPosition(target: LatLng(latitude, longitude), zoom: 17);
+        newgooglemapcontroller
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        notifyListeners();
+      });
+    } catch (e) {
+      print('Error is $e');
+    }
   }
 
   void updatedriversonmap() async {

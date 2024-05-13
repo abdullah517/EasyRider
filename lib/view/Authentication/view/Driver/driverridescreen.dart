@@ -25,11 +25,11 @@ class DriverRideScreen extends StatelessWidget {
               onMapCreated: (controller) {
                 mapcontroller.complete(controller);
                 value.newgooglemapcontroller = controller;
-                value.getcurrentLocation().then((loc) async {
+                value.getcurrentLocation(rideDetails.rideid).then((loc) async {
                   var currentLatLng = LatLng(loc.latitude!, loc.longitude!);
                   var pickupLatLng = rideDetails.pickup;
                   await value.getPlaceDirection(currentLatLng, pickupLatLng);
-                  value.animatedrivercar();
+                  value.animatedrivercar(rideDetails.rideid);
                 });
               },
               markers: Set<Marker>.of(value.markersSet),

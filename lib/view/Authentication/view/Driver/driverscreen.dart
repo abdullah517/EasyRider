@@ -24,6 +24,7 @@ class Driverscreen extends StatefulWidget {
 
 class _DriverscreenState extends State<Driverscreen> {
   int _selectedIndex = 0;
+  bool isOnline = false;
 
   @override
   void initState() {
@@ -51,7 +52,8 @@ class _DriverscreenState extends State<Driverscreen> {
             .doc(Provider.of<Userdataprovider>(context, listen: false).userId)
             .set({'token': '$token'}, SetOptions(merge: true));
       }
-      service.refreshtoken(firestore, context);
+      service.refreshtoken(firestore,
+          Provider.of<Userdataprovider>(context, listen: false).userId);
     }
   }
 
@@ -72,38 +74,34 @@ class _DriverscreenState extends State<Driverscreen> {
                         .userId)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                  if (!snapshot.hasData ||
+                      !snapshot.data!.exists ||
+                      snapshot.connectionState == ConnectionState.waiting) {
                     return ToggleSwitch(
                         onChanged: (value) {
                           showsnackbar('Complete the Registration Process');
                         },
                         initialValue: false);
-                  } else if (snapshot.hasData) {
-                    final data = snapshot.data!.data() as Map;
-                    bool isOnline = false;
-                    if (data.containsKey('Status')) {
-                      return ToggleSwitch(
-                        initialValue: isOnline,
-                        onChanged: (value) {
-                          if (data['Status'] == 'Approved') {
-                            setState(() {
-                              isOnline = value;
-                            });
-                            changedriverstatus(context, value);
-                            savetoken(data, value);
-                          } else {
-                            showsnackbar(
-                                'Your application status is in Review');
-                          }
-                        },
-                      );
-                    } else {
-                      return ToggleSwitch(
-                          onChanged: (value) {
-                            showsnackbar('Complete the Registration Process');
-                          },
-                          initialValue: false);
-                    }
+                  }
+                  final data = snapshot.data!.data() as Map;
+
+                  if (data.containsKey('status')) {
+                    return ToggleSwitch(
+                      initialValue: isOnline,
+                      onChanged: (value) {
+                        if (data['status'] == 'Approved') {
+                          setState(() {
+                            isOnline = value;
+                          });
+                          changedriverstatus(context, value);
+                          savetoken(data, value);
+                        } else if (data['status'] == 'InReview') {
+                          showsnackbar('Your application status is in Review');
+                        } else {
+                          showsnackbar('Complete the Registration Process');
+                        }
+                      },
+                    );
                   } else {
                     return ToggleSwitch(
                         onChanged: (value) {
@@ -118,50 +116,59 @@ class _DriverscreenState extends State<Driverscreen> {
         ),
       ),
       drawer: const driverdrawer(),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance.collection('RideRequest').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          }
+      body: isOnline
+          ? StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('RideRequest')
+                  .where('Status', isEqualTo: 'Pending')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
 
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
 
-          final driverid =
-              Provider.of<Userdataprovider>(context, listen: false).userId;
+                final driverid =
+                    Provider.of<Userdataprovider>(context, listen: false)
+                        .userId;
 
-          final filteredDocs = snapshot.data!.docs.where(
-              (doc) => (doc['requestdrivers'] as List).contains(driverid));
+                final filteredDocs = snapshot.data!.docs.where((doc) =>
+                    (doc['requestdrivers'] as List).contains(driverid));
 
-          return ListView.separated(
-            separatorBuilder: (context, index) => const Divider(),
-            itemCount: filteredDocs.length,
-            itemBuilder: (context, index) {
-              final doc = filteredDocs.elementAt(index);
+                return ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemCount: filteredDocs.length,
+                  itemBuilder: (context, index) {
+                    final doc = filteredDocs.elementAt(index);
 
-              RideDetails rideDetails = RideDetails(
-                rideid: doc.id,
-                pickupaddress: doc['pickup_address'],
-                destinationaddress: doc['destination_address'],
-                pickup: LatLng(
-                  double.parse(doc['pickup']['latitude'].toString()),
-                  double.parse(doc['pickup']['longitude'].toString()),
-                ),
-                dropoff: LatLng(
-                  double.parse(doc['dropoff']['latitude'].toString()),
-                  double.parse(doc['dropoff']['longitude'].toString()),
-                ),
-                ridername: doc['rider_name'],
-              );
+                    RideDetails rideDetails = RideDetails(
+                      rideid: doc.id,
+                      pickupaddress: doc['pickup_address'],
+                      destinationaddress: doc['destination_address'],
+                      pickup: LatLng(
+                        double.parse(doc['pickup']['latitude'].toString()),
+                        double.parse(doc['pickup']['longitude'].toString()),
+                      ),
+                      dropoff: LatLng(
+                        double.parse(doc['dropoff']['latitude'].toString()),
+                        double.parse(doc['dropoff']['longitude'].toString()),
+                      ),
+                      ridername: doc['rider_name'],
+                    );
 
-              return Ridecontainer(rideDetails: rideDetails);
-            },
-          );
-        },
-      ),
+                    return Ridecontainer(
+                        rideDetails: rideDetails,
+                        fare: int.parse(
+                          doc['ridefare'].toString(),
+                        ));
+                  },
+                );
+              },
+            )
+          : null,
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,

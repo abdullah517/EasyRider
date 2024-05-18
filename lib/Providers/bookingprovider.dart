@@ -46,8 +46,11 @@ class Bookingprovider extends ChangeNotifier {
       'rider_name': user.userData['Username'],
       'pickup_address': addressdetail.address,
       'destination_address': addressdetail.destination,
-      'driversid': [],
-      'requestdrivers': []
+      'ridefare': addressdetail.faretext,
+      'driversdata': [],
+      'requestdrivers': [],
+      'Status': 'Pending',
+      'rideDuration': {},
     });
   }
 

@@ -15,8 +15,10 @@ class Homeprovider extends ChangeNotifier {
   String address = '';
   String destination = 'Destination';
   int selectedindex = 0;
-  String faretext = 'Fare';
+  int faretext = 0;
+  double actualfare = 0;
   Directiondetails directiondetails = Directiondetails();
+  bool showsheet = false;
 
   void changecategory(int ind) {
     selectedindex = ind;
@@ -28,6 +30,16 @@ class Homeprovider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void showbooksheet() {
+    showsheet = true;
+    notifyListeners();
+  }
+
+  void userselectedfare(int fare) {
+    faretext = fare;
+    notifyListeners();
+  }
+
   void calculatefare() {
     if (directiondetails.distancetext != '') {
       double timeTraveledFare = (directiondetails.durationvalue / 60) * 0.10;
@@ -36,15 +48,16 @@ class Homeprovider extends ChangeNotifier {
       int totalfare =
           ((timeTraveledFare + distanceTraveledFare) * 140).truncate();
       if (selectedindex == 1) {
-        faretext = "${totalfare + 200} PKR";
+        faretext = totalfare + 200;
       } else if (selectedindex == 2) {
-        faretext = "${totalfare + 350} PKR";
+        faretext = totalfare + 350;
       } else if (selectedindex == 3) {
-        faretext = "${totalfare / 2} PKR";
+        faretext = (totalfare / 2).truncate();
       } else {
-        faretext = "$totalfare PKR";
+        faretext = totalfare;
       }
       notifyListeners();
+      actualfare = faretext.toDouble();
     }
   }
 

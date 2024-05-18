@@ -78,7 +78,7 @@ class Mapprovider extends ChangeNotifier {
     );
 
     newgooglemapcontroller
-        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 140));
+        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 120));
     direction.calculatefare();
   }
 
@@ -192,7 +192,7 @@ class Mapprovider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void bookeddriverstatus(String rideid, BuildContext context) async {
+  Future<void> bookeddriverstatus(String rideid, BuildContext context) async {
     try {
       final collection = FirebaseFirestore.instance.collection('RideRequest');
       ByteData imageData = await rootBundle.load('assets/mapcar.png');
@@ -201,23 +201,25 @@ class Mapprovider extends ChangeNotifier {
       carmapimg = images.copyResize(carmapimg!, height: 100, width: 100);
       var byteData = images.encodePng(carmapimg);
       collection.doc(rideid).snapshots().listen((event) {
-        Map locmap = event['driver_loc'];
-        double latitude = double.parse(locmap['latitude'].toString());
-        double longitude = double.parse(locmap['longitude'].toString());
-        markers
-            .removeWhere((element) => element.markerId.value == 'bookdriver');
-        markers.add(Marker(
-            icon: BitmapDescriptor.fromBytes(byteData),
-            markerId: const MarkerId('bookdriver'),
-            position: LatLng(latitude, longitude)));
-        CameraPosition cameraPosition =
-            CameraPosition(target: LatLng(latitude, longitude), zoom: 17);
-        newgooglemapcontroller
-            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        notifyListeners();
+        if (event.data()!.containsKey('driver_loc')) {
+          Map locmap = event['driver_loc'];
+          double latitude = double.parse(locmap['latitude'].toString());
+          double longitude = double.parse(locmap['longitude'].toString());
+          markers
+              .removeWhere((element) => element.markerId.value == 'bookdriver');
+          markers.add(Marker(
+              icon: BitmapDescriptor.fromBytes(byteData),
+              markerId: const MarkerId('bookdriver'),
+              position: LatLng(latitude, longitude)));
+          CameraPosition cameraPosition =
+              CameraPosition(target: LatLng(latitude, longitude), zoom: 17);
+          newgooglemapcontroller
+              .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+          notifyListeners();
+        }
       });
     } catch (e) {
-      print('Error is $e');
+      //
     }
   }
 

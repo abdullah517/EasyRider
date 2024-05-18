@@ -50,11 +50,13 @@ class PushNotificationService {
       if (message.notification?.title == "New Ride Request") {
         saverequestdriver(context, message);
         displayNotification(message);
-      } else {
+      } else if (message.notification?.title == "Get Ready") {
         displayNotification(message);
         final ridedetails = await retrieveRideRequestDetail(message);
         pausehometablivelocation(context);
         navigateToScreen(context, DriverRideScreen(rideDetails: ridedetails));
+      } else {
+        displayNotification(message);
       }
     });
 
@@ -102,11 +104,9 @@ class PushNotificationService {
     return token;
   }
 
-  void refreshtoken(CollectionReference firestore, BuildContext context) {
+  void refreshtoken(CollectionReference firestore, String docid) {
     _firebaseMessaging.onTokenRefresh.listen((event) {
-      firestore
-          .doc(Provider.of<Userdataprovider>(context, listen: false).userId)
-          .update({'token': event});
+      firestore.doc(docid).update({'token': event});
     });
   }
 

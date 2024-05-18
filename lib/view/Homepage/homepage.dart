@@ -10,6 +10,8 @@ import 'package:ridemate/Providers/mapprovider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Homepage/components/bookedsheet.dart';
+import 'package:ridemate/view/Homepage/components/faredialogue.dart';
 import 'package:ridemate/view/Homepage/components/homecomp1.dart';
 import 'package:ridemate/view/Homepage/components/ridecomponent.dart';
 import 'package:ridemate/view/Homepage/components/search.dart';
@@ -134,78 +136,93 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Consumer<Homeprovider>(
-            builder: (context, value, child) => value.address == ''
+            builder: (context, value, child) => value.address == '' &&
+                    value.showsheet == false
                 ? const SizedBox()
-                : Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      height: 390.h,
-                      padding: const EdgeInsets.only(
-                          bottom: 20, top: 15, left: 15, right: 10),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
+                : value.address == '' && value.showsheet
+                    ? showbookedsheet(context)
+                    : Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          height: 390.h,
+                          padding: const EdgeInsets.only(
+                              bottom: 20, top: 15, left: 15, right: 10),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30),
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 85.h,
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) =>
+                                      Ridecomponent(
+                                          imagepath: ridemap[index]['image']
+                                              .toString(),
+                                          ind: index,
+                                          text: ridemap[index]['text']
+                                              .toString()),
+                                  separatorBuilder: (context, index) =>
+                                      addHorizontalspace(width: 4),
+                                  itemCount: 4,
+                                ),
+                              ),
+                              addVerticalspace(height: 6),
+                              ListTile(
+                                  leading: const Icon(Icons.location_on),
+                                  title: gettext(value.address),
+                                  onTap: () => showsearchbottomsheet(context,
+                                      ispickup: true)),
+                              const Divider(color: Appcolors.contentDisbaled),
+                              ListTile(
+                                leading: const Icon(Icons.location_on),
+                                title: gettext(value.destination),
+                                onTap: () => showsearchbottomsheet(context),
+                              ),
+                              const Divider(color: Appcolors.contentDisbaled),
+                              ListTile(
+                                leading: const Icon(Icons.money),
+                                title: gettext(value.faretext == 0
+                                    ? 'Fare'
+                                    : '${value.faretext}PKR'),
+                                onTap: () {
+                                  if (value.faretext != 0) {
+                                    showFareDialog(context, value.actualfare);
+                                  }
+                                },
+                              ),
+                              const Divider(color: Appcolors.contentDisbaled),
+                              const Spacer(),
+                              Consumer<Bookingprovider>(
+                                builder: (context, bookingProvider, child) =>
+                                    Custombutton(
+                                  text: 'Request Ride',
+                                  loading: bookingProvider.loading,
+                                  ontap: bookingProvider.enabledbutton
+                                      ? () {
+                                          bookingProvider
+                                              .saveRideRequest(context);
+                                          bookingProvider
+                                              .sendRideRequesttoNearestDriver(
+                                                  getgender(), context);
+                                        }
+                                      : null,
+                                  fontSize: 16,
+                                  borderRadius: 8,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        color: Colors.white,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 85.h,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) => Ridecomponent(
-                                  imagepath: ridemap[index]['image'].toString(),
-                                  ind: index,
-                                  text: ridemap[index]['text'].toString()),
-                              separatorBuilder: (context, index) =>
-                                  addHorizontalspace(width: 4),
-                              itemCount: 4,
-                            ),
-                          ),
-                          addVerticalspace(height: 6),
-                          ListTile(
-                              leading: const Icon(Icons.location_on),
-                              title: gettext(value.address),
-                              onTap: () => showsearchbottomsheet(context,
-                                  ispickup: true)),
-                          const Divider(color: Appcolors.contentDisbaled),
-                          ListTile(
-                            leading: const Icon(Icons.location_on),
-                            title: gettext(value.destination),
-                            onTap: () => showsearchbottomsheet(context),
-                          ),
-                          const Divider(color: Appcolors.contentDisbaled),
-                          ListTile(
-                              leading: const Icon(Icons.money),
-                              title: gettext(value.faretext)),
-                          const Divider(color: Appcolors.contentDisbaled),
-                          const Spacer(),
-                          Consumer<Bookingprovider>(
-                            builder: (context, bookingProvider, child) =>
-                                Custombutton(
-                              text: 'Request Ride',
-                              loading: bookingProvider.loading,
-                              ontap: bookingProvider.enabledbutton
-                                  ? () {
-                                      bookingProvider.saveRideRequest(context);
-                                      bookingProvider
-                                          .sendRideRequesttoNearestDriver(
-                                              getgender(), context);
-                                    }
-                                  : null,
-                              fontSize: 16,
-                              borderRadius: 8,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
           ),
         ],
       ),

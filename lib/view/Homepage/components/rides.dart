@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
-import 'package:ridemate/view/Homepage/components/bookedsheet.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
@@ -40,9 +41,13 @@ class Rides extends StatefulWidget {
   State<Rides> createState() => _RidesState();
 }
 
+late StreamSubscription subs;
+
 class _RidesState extends State<Rides> {
   List<Map<String, dynamic>> driverdata = [];
-  Future<void> sendAcceptmessage(String driverid, BuildContext context) async {
+
+  Future<void> sendAcceptmessage(
+      String driverid, BuildContext context, int fare) async {
     final doc = await FirebaseFirestore.instance
         .collection('drivers')
         .doc(driverid)
@@ -55,13 +60,27 @@ class _RidesState extends State<Rides> {
       bodytxt: "Pick your new Ride",
       rideid: widget.rideid,
     );
+    FirebaseFirestore.instance
+        .collection('RideRequest')
+        .doc(widget.rideid)
+        .update({'Status': 'Accepted', 'ridefare': fare});
     final myprovider = Provider.of<Mapprovider>(context, listen: false);
     final homeprovider = Provider.of<Homeprovider>(context, listen: false);
     homeprovider.setemptyaddress();
     Navigator.pop(context);
-    showbookedsheet(context);
+    savebookdriverinfo(driverid, doc);
     myprovider.resetmarkers();
-    myprovider.bookeddriverstatus(widget.rideid, context);
+    await myprovider.bookeddriverstatus(widget.rideid, context);
+    final usertoken = await service.getToken();
+    await service
+        .sendNotification(
+          usertoken!,
+          title: "Ride booked",
+          bodytxt: "Your driver is coming in few mins",
+        )
+        .then((value) => deleteunuseddata());
+    startlistener();
+    homeprovider.showbooksheet();
   }
 
   Future<void> datafromfirestore(String driverid) async {
@@ -69,6 +88,53 @@ class _RidesState extends State<Rides> {
     final docref = await firestore.doc(driverid).get();
     final map = docref.data() as Map<String, dynamic>;
     driverdata.add(map);
+  }
+
+  void deleteunuseddata() {
+    final docref =
+        FirebaseFirestore.instance.collection('RideRequest').doc(widget.rideid);
+    docref.update(({
+      'driversdata': FieldValue.delete(),
+      'requestdrivers': FieldValue.delete(),
+    }));
+  }
+
+  void savebookdriverinfo(String driverid, var doc) {
+    final docref =
+        FirebaseFirestore.instance.collection('RideRequest').doc(widget.rideid);
+
+    docref.set(
+        ({
+          'driverid': driverid,
+          'drivername': doc['Name'],
+          'carname': doc['Transportname'],
+        }),
+        SetOptions(merge: true));
+  }
+
+  void startlistener() {
+    String checkstatus = 'checkarrive';
+    subs = FirebaseFirestore.instance
+        .collection('RideRequest')
+        .doc(widget.rideid)
+        .snapshots()
+        .listen((event) async {
+      if (event.exists && event.data() != null) {
+        var data = event.data()!;
+        var status = data['Status'];
+        if (checkstatus == 'checkarrive') {
+          if (status == 'Arrived') {
+            checkstatus = 'checkdest';
+            PushNotificationService service = PushNotificationService();
+            final token = await service.getToken();
+            await service.sendNotification(token!,
+                title: 'Your driver has arrived',
+                bodytxt: 'Remember to check details');
+            subs.cancel();
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -97,11 +163,12 @@ class _RidesState extends State<Rides> {
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final List<dynamic> driversid =
-                    snapshot.data!.data()!['driversid'];
+                final List<dynamic> driversdata =
+                    snapshot.data!.data()!['driversdata'];
+
                 return FutureBuilder(
-                  future: Future.wait(driversid.map(
-                      (driverid) => datafromfirestore(driverid.toString()))),
+                  future: Future.wait(driversdata
+                      .map((driver) => datafromfirestore(driver['driverid']))),
                   builder: (context, futureSnapshot) {
                     if (futureSnapshot.connectionState ==
                         ConnectionState.done) {
@@ -109,6 +176,10 @@ class _RidesState extends State<Rides> {
                         itemCount: driverdata.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
+                          final durationtxt =
+                              driversdata[index]['driverdir']['duration'];
+                          final distancetxt =
+                              driversdata[index]['driverdir']['distance'];
                           return Container(
                             decoration: BoxDecoration(
                               color: Colors.lightGreen,
@@ -155,7 +226,8 @@ class _RidesState extends State<Rides> {
                                   top: 16.0,
                                   right: 10.0,
                                   child: CustomText(
-                                    title: 'PKR 1,447',
+                                    title:
+                                        '${driversdata[index]['driverfare']}PKR',
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.red,
@@ -165,7 +237,7 @@ class _RidesState extends State<Rides> {
                                   top: 50.0,
                                   right: 10.0,
                                   child: CustomText(
-                                    title: '5 min.',
+                                    title: '$durationtxt',
                                     fontSize: 16.0,
                                     color: Colors.black,
                                   ),
@@ -174,7 +246,7 @@ class _RidesState extends State<Rides> {
                                   top: 80.0,
                                   right: 10.0,
                                   child: CustomText(
-                                    title: '463 m',
+                                    title: '$distancetxt',
                                     fontSize: 16.0,
                                     color: Colors.black,
                                   ),
@@ -191,7 +263,12 @@ class _RidesState extends State<Rides> {
                                         text: 'Accept',
                                         ontap: () async {
                                           await sendAcceptmessage(
-                                              driversid[index], context);
+                                            driversdata[index]['driverid'],
+                                            context,
+                                            int.parse(driversdata[index]
+                                                    ['driverfare']
+                                                .toString()),
+                                          );
                                         },
                                         fontSize: 16,
                                         borderRadius: 8,

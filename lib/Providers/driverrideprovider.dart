@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:ridemate/Methods/mapkitassistant.dart';
 import 'package:ridemate/Methods/mapmethods.dart';
+import 'package:ridemate/models/ridedetails.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import '../models/directiondetails.dart';
 
@@ -16,18 +18,42 @@ class DriverRideProivder extends ChangeNotifier {
   final List<LatLng> plineCoordinates = [];
   late final GoogleMapController newgooglemapcontroller;
   late StreamSubscription<LocationData> ridestreamsubscription;
+  late LocationData currentPosition;
+  String btntxt = 'Arrived';
+  String durationText = '';
+  bool isRequesting = true;
+  late Timer timer;
+  int durationcounter = 0;
 
-  Future<LocationData> getcurrentLocation(String rideid) async {
-    Location location = Location();
-    LocationData locationData = await location.getLocation();
+  void initcounter() {
+    const interval = Duration(seconds: 1);
+    timer = Timer.periodic(interval, (timer) {
+      durationcounter += 1;
+    });
+  }
 
+  void endtrip() {
+    ridestreamsubscription.cancel();
+    timer.cancel();
+  }
+
+  void changebtntxt(String text) {
+    btntxt = text;
+    notifyListeners();
+  }
+
+  void savecurrentLocation(String rideid) {
     FirebaseFirestore.instance.collection('RideRequest').doc(rideid).set({
       'driver_loc': {
-        'latitude': locationData.latitude,
-        'longitude': locationData.longitude,
+        'latitude': currentPosition.latitude,
+        'longitude': currentPosition.longitude,
       },
     }, SetOptions(merge: true));
-    return locationData;
+  }
+
+  Future<void> setcurrentPosition() async {
+    Location location = Location();
+    currentPosition = await location.getLocation();
   }
 
   Future<void> getPlaceDirection(
@@ -62,7 +88,8 @@ class DriverRideProivder extends ChangeNotifier {
       pickUpLatLng,
       dropoffLatLng,
     );
-
+    markersSet.removeWhere((element) =>
+        element.markerId.value == 'pickup' || element.markerId.value == 'dest');
     newgooglemapcontroller
         .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 140));
     Marker pickuplocmarker = Marker(
@@ -80,26 +107,34 @@ class DriverRideProivder extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> animatedrivercar(String rideid) async {
+  Future<void> animatedrivercar(RideDetails rideDetails) async {
     Location location = Location();
     ByteData imageData = await rootBundle.load('assets/mapcar.png');
     var bytes = Uint8List.view(imageData.buffer);
     var carmapimg = images.decodeImage(bytes);
     carmapimg = images.copyResize(carmapimg!, height: 100, width: 100);
     var bytedata = images.encodePng(carmapimg);
+    LatLng oldpos = const LatLng(0, 0);
     ridestreamsubscription = location.onLocationChanged.listen((pos) {
-      FirebaseFirestore.instance.collection('RideRequest').doc(rideid).update({
+      FirebaseFirestore.instance
+          .collection('RideRequest')
+          .doc(rideDetails.rideid)
+          .update({
         'driver_loc': {
           'latitude': pos.latitude,
           'longitude': pos.longitude,
         },
       });
       LatLng newpos = LatLng(pos.latitude!, pos.longitude!);
+      currentPosition = pos;
+      var rot = MapkitAssistant.getMarkerRotation(
+          oldpos.latitude, oldpos.longitude, newpos.latitude, newpos.longitude);
       Marker animatingmarker = Marker(
         markerId: const MarkerId('animating'),
         position: newpos,
         infoWindow: const InfoWindow(title: 'currentlocation'),
         icon: BitmapDescriptor.fromBytes(bytedata),
+        rotation: rot.toDouble(),
       );
       CameraPosition cameraPosition = CameraPosition(target: newpos, zoom: 17);
       newgooglemapcontroller
@@ -108,6 +143,35 @@ class DriverRideProivder extends ChangeNotifier {
           .removeWhere((element) => element.markerId.value == 'animating');
       markersSet.add(animatingmarker);
       notifyListeners();
+      oldpos = newpos;
+      updaterideduration(rideDetails);
     });
+  }
+
+  void updaterideduration(RideDetails rideDetails) async {
+    if (isRequesting) {
+      isRequesting = false;
+      LatLng destlatlng;
+      if (btntxt == 'Arrived') {
+        destlatlng = rideDetails.pickup;
+      } else {
+        destlatlng = rideDetails.dropoff;
+      }
+      var directiondetails = await fetchDirectionDetails(
+          LatLng(currentPosition.latitude!, currentPosition.longitude!),
+          destlatlng);
+      durationText = directiondetails.durationtext;
+      notifyListeners();
+      FirebaseFirestore.instance
+          .collection('RideRequest')
+          .doc(rideDetails.rideid)
+          .update({
+        'rideDuration': {
+          'duration': durationText,
+          'distance': directiondetails.distancetext,
+        }
+      });
+      isRequesting = true;
+    }
   }
 }

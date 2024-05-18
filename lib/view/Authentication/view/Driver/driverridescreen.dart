@@ -1,9 +1,22 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/driverrideprovider.dart';
 import 'package:ridemate/models/ridedetails.dart';
+import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Dialogueboxes/progressdialogue.dart';
+import 'package:ridemate/widgets/custombutton.dart';
+import 'package:ridemate/widgets/customtext.dart';
+import 'package:ridemate/widgets/spacing.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../routing/routing.dart';
+import '../../../messagingscreen/messagingscreen.dart';
 
 class DriverRideScreen extends StatelessWidget {
   final RideDetails rideDetails;
@@ -12,6 +25,21 @@ class DriverRideScreen extends StatelessWidget {
       const CameraPosition(target: LatLng(33.6941, 72.9734), zoom: 14.4746);
   final Completer<GoogleMapController> mapcontroller = Completer();
 
+  Future<void> makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
+
+  void updateridestatus(String status) {
+    FirebaseFirestore.instance
+        .collection('RideRequest')
+        .doc(rideDetails.rideid)
+        .update({'Status': status});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,23 +47,156 @@ class DriverRideScreen extends StatelessWidget {
         children: [
           Consumer<DriverRideProivder>(
             builder: (context, value, child) => GoogleMap(
+              padding: EdgeInsets.only(bottom: 300.h),
               initialCameraPosition: _kGooglePlex,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               onMapCreated: (controller) {
                 mapcontroller.complete(controller);
                 value.newgooglemapcontroller = controller;
-                value.getcurrentLocation(rideDetails.rideid).then((loc) async {
-                  var currentLatLng = LatLng(loc.latitude!, loc.longitude!);
+                value.setcurrentPosition().then((v) {
+                  value.savecurrentLocation(rideDetails.rideid);
+                  var currentLatLng = LatLng(value.currentPosition.latitude!,
+                      value.currentPosition.longitude!);
                   var pickupLatLng = rideDetails.pickup;
-                  await value.getPlaceDirection(currentLatLng, pickupLatLng);
-                  value.animatedrivercar(rideDetails.rideid);
+                  value.getPlaceDirection(currentLatLng, pickupLatLng);
+                  value.animatedrivercar(rideDetails);
                 });
               },
               markers: Set<Marker>.of(value.markersSet),
               polylines: value.polylineset,
             ),
-          )
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: 310.h,
+              padding: const EdgeInsets.only(
+                  bottom: 20, top: 15, left: 15, right: 10),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                color: Colors.white,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Consumer<DriverRideProivder>(
+                    builder: (context, value, child) => CustomText(
+                      title: value.durationText,
+                      textAlign: TextAlign.center,
+                      color: Appcolors.contentTertiary,
+                      fontSize: 13,
+                    ),
+                  ),
+                  addVerticalspace(height: 10),
+                  ListTile(
+                    leading: const Icon(Icons.person),
+                    title: CustomText(
+                      title: rideDetails.ridername,
+                      color: Appcolors.contentPrimary,
+                    ),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.location_on),
+                    title: CustomText(
+                      title: rideDetails.pickupaddress,
+                      color: Appcolors.contentPrimary,
+                    ),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.location_on),
+                    title: CustomText(
+                      title: rideDetails.destinationaddress,
+                      color: Appcolors.contentPrimary,
+                    ),
+                    onTap: () {},
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          await makePhoneCall('+923348668951');
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Appcolors.primaryColor,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Appcolors.primaryColor,
+                            child: Icon(
+                              Icons.call,
+                              color: Appcolors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => navigateToScreen(
+                            context,
+                            ChatScreen(
+                              title: 'Message Screen',
+                              isDriver: true,
+                              rideId: rideDetails.rideid,
+                            )),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Appcolors.primaryColor,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.message,
+                              color: Appcolors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Consumer<DriverRideProivder>(
+                    builder: (context, value, child) => Custombutton(
+                      text: value.btntxt,
+                      ontap: () async {
+                        if (value.btntxt == 'Arrived') {
+                          value.changebtntxt('Start trip');
+                          updateridestatus('Arrived');
+                          showProgressDialog(context, 'Please wait...');
+                          await value.getPlaceDirection(
+                              rideDetails.pickup, rideDetails.dropoff);
+                          hideProgressDialog(context);
+                        } else if (value.btntxt == 'Start trip') {
+                          value.changebtntxt('End trip');
+                          updateridestatus('Ride Start');
+                          value.initcounter();
+                        } else if (value.btntxt == 'End trip') {
+                          updateridestatus('Ended');
+                          value.endtrip();
+                        }
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

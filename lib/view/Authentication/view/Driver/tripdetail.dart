@@ -77,17 +77,20 @@ class _TripDetailState extends State<TripDetail> {
       markerId: const MarkerId('pickup'),
       position: widget.rideDetails.pickup,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: const InfoWindow(title: 'pickup'),
     );
     Marker destlocmarker = Marker(
-      markerId: const MarkerId('dest'),
+      markerId: const MarkerId('destination'),
       position: widget.rideDetails.dropoff,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: const InfoWindow(title: 'destination'),
     );
 
     Marker currentposmarker = Marker(
-      markerId: const MarkerId('currentpos'),
+      markerId: const MarkerId('currentpositon'),
       position: widget.rideDetails.dropoff,
       icon: BitmapDescriptor.fromBytes(bytedata),
+      infoWindow: const InfoWindow(title: 'currentpositon'),
     );
     markersSet.add(pickuplocmarker);
     markersSet.add(destlocmarker);
@@ -106,7 +109,7 @@ class _TripDetailState extends State<TripDetail> {
       body: Stack(
         children: [
           GoogleMap(
-            padding: EdgeInsets.only(bottom: 220.h),
+            padding: EdgeInsets.only(bottom: 330.h),
             initialCameraPosition: _kGooglePlex,
             zoomControlsEnabled: false,
             onMapCreated: (controller) async {
@@ -120,13 +123,49 @@ class _TripDetailState extends State<TripDetail> {
             polylines: polylineset,
           ),
           Positioned(
-              left: 15,
-              right: 15,
-              top: 37,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.pop(context),
-              )),
+            left: 0,
+            top: 37,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 220.h,
+            child: Container(
+              padding: const EdgeInsets.only(
+                  bottom: 10, top: 10, left: 15, right: 10),
+              decoration: const BoxDecoration(
+                color: Appcolors.contentSecondary,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.location_on, color: Colors.white),
+                    title: CustomText(
+                      title: widget.rideDetails.pickupaddress,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.location_on, color: Colors.white),
+                    title: CustomText(
+                      title: widget.rideDetails.destinationaddress,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Positioned(
             left: 0,
             right: 0,
@@ -135,13 +174,7 @@ class _TripDetailState extends State<TripDetail> {
               height: 220.h,
               padding: const EdgeInsets.only(
                   bottom: 20, top: 15, left: 15, right: 10),
-              decoration: const BoxDecoration(
-                color: Appcolors.contentPrimary,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
+              color: Appcolors.contentPrimary,
               child: Column(
                 children: [
                   Custombutton(

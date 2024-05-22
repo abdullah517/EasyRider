@@ -25,7 +25,7 @@ class Mapprovider extends ChangeNotifier {
   Set<Polyline> polylineset = {};
   late GoogleMapController newgooglemapcontroller;
   Set<Marker> markers = {};
-  final Completer<GoogleMapController> controller = Completer();
+  Completer<GoogleMapController> controller = Completer();
   Future<void> obtainplacedirection(BuildContext context) async {
     final pickup = Provider.of<Pickupaddress>(context, listen: false);
     final destination = Provider.of<Destinationaddress>(context, listen: false);

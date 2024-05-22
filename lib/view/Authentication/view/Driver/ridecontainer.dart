@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +11,7 @@ import 'package:ridemate/models/directiondetails.dart';
 import 'package:ridemate/models/ridedetails.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/view/Authentication/view/Driver/tripdetail.dart';
+import 'package:ridemate/view/Dialogueboxes/progressdialogue.dart';
 import 'package:ridemate/widgets/customtext.dart';
 
 import '../../../../widgets/custombutton.dart';
@@ -27,8 +30,28 @@ class Ridecontainer extends StatefulWidget {
   State<Ridecontainer> createState() => _RidecontainerState();
 }
 
+void deleteDriverMap(BuildContext context, String id, String driverid) async {
+  final docRef = FirebaseFirestore.instance.collection('RideRequest').doc(id);
+  final docSnapshot = await docRef.get();
+
+  final data = docSnapshot.data() as Map<String, dynamic>;
+  final driversdata = data['driversdata'] as List<dynamic>;
+  final driverMap = driversdata.firstWhere(
+    (driver) => driver['driverid'] == driverid,
+    orElse: () => null,
+  );
+  if (driverMap != null) {
+    await docRef.update({
+      'driversdata': FieldValue.arrayRemove([driverMap]),
+    });
+  }
+}
+
+late Timer offerfaretimer;
+
 void savedriverid(BuildContext context, String id, String duration,
     String distance, int dfare) async {
+  showProgressDialog(context, 'Offering fare Please wait...');
   final docRef = FirebaseFirestore.instance.collection('RideRequest').doc(id);
   final driverid = Provider.of<Userdataprovider>(context, listen: false).userId;
   List newData = [
@@ -40,6 +63,11 @@ void savedriverid(BuildContext context, String id, String duration,
   ];
   await docRef.update({
     'driversdata': FieldValue.arrayUnion(newData),
+  }).then((value) {
+    offerfaretimer = Timer(const Duration(seconds: 30), () async {
+      deleteDriverMap(context, id, driverid);
+      hideProgressDialog(context);
+    });
   });
 }
 
@@ -109,20 +137,32 @@ class _RidecontainerState extends State<Ridecontainer> {
                   Positioned(
                     top: 16.0,
                     left: 105.0,
-                    child: CustomText(
-                      title: widget.rideDetails.pickupaddress,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width - 225.0,
+                      ),
+                      child: CustomText(
+                        title: widget.rideDetails.pickupaddress,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   Positioned(
                     top: 50.0,
                     left: 105.0,
-                    child: CustomText(
-                      title: widget.rideDetails.destinationaddress,
-                      fontSize: 16.0,
-                      color: Colors.black,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width - 195.0,
+                      ),
+                      child: CustomText(
+                        title: widget.rideDetails.destinationaddress,
+                        fontSize: 16.0,
+                        color: Colors.black,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   Positioned(

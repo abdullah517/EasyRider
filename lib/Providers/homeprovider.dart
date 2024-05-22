@@ -19,6 +19,7 @@ class Homeprovider extends ChangeNotifier {
   double actualfare = 0;
   Directiondetails directiondetails = Directiondetails();
   bool showsheet = false;
+  double rating = 0;
 
   void changecategory(int ind) {
     selectedindex = ind;
@@ -30,8 +31,9 @@ class Homeprovider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void showbooksheet() {
+  void showbooksheet(double rat) {
     showsheet = true;
+    rating = rat;
     notifyListeners();
   }
 

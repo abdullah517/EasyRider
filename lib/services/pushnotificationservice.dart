@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/view/Authentication/view/Driver/driverridescreen.dart';
 import 'package:ridemate/Methods/drivermethods.dart';
+import 'package:ridemate/view/Authentication/view/Driver/ridecontainer.dart';
+import 'package:ridemate/view/Dialogueboxes/progressdialogue.dart';
 import '../Providers/userdataprovider.dart';
 import '../models/ridedetails.dart';
 
@@ -52,6 +54,8 @@ class PushNotificationService {
         displayNotification(message);
       } else if (message.notification?.title == "Get Ready") {
         displayNotification(message);
+        offerfaretimer.cancel();
+        hideProgressDialog(context);
         final ridedetails = await retrieveRideRequestDetail(message);
         pausehometablivelocation(context);
         navigateToScreen(context, DriverRideScreen(rideDetails: ridedetails));
@@ -83,6 +87,7 @@ class PushNotificationService {
         double.parse(ridedetail['dropoff']['longitude'].toString()),
       ),
       ridername: ridedetail['rider_name'],
+      ridefare: ridedetail['ridefare'],
     );
     return rideDetails;
   }

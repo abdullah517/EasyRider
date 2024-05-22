@@ -8,13 +8,14 @@ class Authtextform extends StatelessWidget {
   final Widget? suffixIcon;
   final bool readonly;
   final TextEditingController? controller;
-  const Authtextform({
-    super.key,
-    this.hinttext,
-    this.suffixIcon,
-    this.readonly = false,
-    this.controller,
-  });
+  final String? Function(String?)? validator;
+  const Authtextform(
+      {super.key,
+      this.hinttext,
+      this.suffixIcon,
+      this.readonly = false,
+      this.controller,
+      this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class Authtextform extends StatelessWidget {
       cursorColor: Appcolors.primaryColor,
       readOnly: readonly,
       controller: controller,
+      validator: validator,
       decoration: InputDecoration(
         hintText: hinttext,
         hintStyle: gethintstyle(),

@@ -84,7 +84,7 @@ class Sidemenubar extends StatelessWidget {
             Custombutton(
               buttoncolor: Appcolors.primaryColor,
               ontap: () {
-                navigateToScreen(context, const Driverscreen());
+                navigateToScreen(context, Driverscreen());
               },
               text: 'Driver Mode',
             ),

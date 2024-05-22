@@ -4,14 +4,16 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
+import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Homepage/components/userridecontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
 import '../../../services/pushnotificationservice.dart';
-import '../../../widgets/custombutton.dart';
 
 void showridebottomsheet(BuildContext context, String rideid) {
   showModalBottomSheet(
@@ -44,8 +46,6 @@ class Rides extends StatefulWidget {
 late StreamSubscription subs;
 
 class _RidesState extends State<Rides> {
-  List<Map<String, dynamic>> driverdata = [];
-
   Future<void> sendAcceptmessage(
       String driverid, BuildContext context, int fare) async {
     final doc = await FirebaseFirestore.instance
@@ -53,6 +53,9 @@ class _RidesState extends State<Rides> {
         .doc(driverid)
         .get();
     String token = doc['token'];
+    double rating = doc.data()!.containsKey('driverating')
+        ? doc.data()!['driverating']
+        : 4.9;
     PushNotificationService service = PushNotificationService();
     await service.sendNotification(
       token,
@@ -69,6 +72,7 @@ class _RidesState extends State<Rides> {
     homeprovider.setemptyaddress();
     Navigator.pop(context);
     savebookdriverinfo(driverid, doc);
+    Geofire.stopListener();
     myprovider.resetmarkers();
     await myprovider.bookeddriverstatus(widget.rideid, context);
     final usertoken = await service.getToken();
@@ -80,14 +84,14 @@ class _RidesState extends State<Rides> {
         )
         .then((value) => deleteunuseddata());
     startlistener();
-    homeprovider.showbooksheet();
+    homeprovider.showbooksheet(rating);
   }
 
-  Future<void> datafromfirestore(String driverid) async {
+  Future<Map<String, dynamic>> datafromfirestore(String driverid) async {
     final firestore = FirebaseFirestore.instance.collection('drivers');
     final docref = await firestore.doc(driverid).get();
     final map = docref.data() as Map<String, dynamic>;
-    driverdata.add(map);
+    return map;
   }
 
   void deleteunuseddata() {
@@ -165,6 +169,9 @@ class _RidesState extends State<Rides> {
               if (snapshot.hasData) {
                 final List<dynamic> driversdata =
                     snapshot.data!.data()!['driversdata'];
+                if (driversdata.isEmpty) {
+                  return buildLoadingScreen();
+                }
 
                 return FutureBuilder(
                   future: Future.wait(driversdata
@@ -172,6 +179,8 @@ class _RidesState extends State<Rides> {
                   builder: (context, futureSnapshot) {
                     if (futureSnapshot.connectionState ==
                         ConnectionState.done) {
+                      final List<Map<String, dynamic>> driverdata =
+                          futureSnapshot.data!;
                       return ListView.separated(
                         itemCount: driverdata.length,
                         shrinkWrap: true,
@@ -180,124 +189,22 @@ class _RidesState extends State<Rides> {
                               driversdata[index]['driverdir']['duration'];
                           final distancetxt =
                               driversdata[index]['driverdir']['distance'];
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.lightGreen,
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            width: MediaQuery.of(context).size.width,
-                            height: 200,
-                            margin: const EdgeInsets.only(
-                                left: 10.0, right: 10.0, top: 16.0),
-                            child: Stack(
-                              children: [
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 10.0, top: 10.0),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: CircleAvatar(
-                                      radius: 40,
-                                      backgroundImage:
-                                          AssetImage('assets/personimage.jpg'),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 16.0,
-                                  left: 105.0,
-                                  child: CustomText(
-                                    title: driverdata[index]['Transportname'],
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 64.0,
-                                  left: 105.0,
-                                  child: CustomText(
-                                    title: driverdata[index]['Name'],
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 16.0,
-                                  right: 10.0,
-                                  child: CustomText(
-                                    title:
-                                        '${driversdata[index]['driverfare']}PKR',
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 50.0,
-                                  right: 10.0,
-                                  child: CustomText(
-                                    title: '$durationtxt',
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 80.0,
-                                  right: 10.0,
-                                  child: CustomText(
-                                    title: '$distancetxt',
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 10.0,
-                                  left: 0.0,
-                                  right: 0.0,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Custombutton(
-                                        text: 'Accept',
-                                        ontap: () async {
-                                          await sendAcceptmessage(
-                                            driversdata[index]['driverid'],
-                                            context,
-                                            int.parse(driversdata[index]
-                                                    ['driverfare']
-                                                .toString()),
-                                          );
-                                        },
-                                        fontSize: 16,
-                                        borderRadius: 8,
-                                        height: 50,
-                                        width: 130,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      Custombutton(
-                                        text: 'Decline',
-                                        ontap: () {},
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        borderRadius: 8,
-                                        height: 50,
-                                        width: 130,
-                                        fontColor: Colors.red,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                          return UserRideContainer(
+                            transportName: driverdata[index]['Transportname'],
+                            driverName: driverdata[index]['Name'],
+                            durationTxt: durationtxt,
+                            distanceTxt: distancetxt,
+                            onAccept: sendAcceptmessage,
+                            driverfare:
+                                driversdata[index]['driverfare'].toString(),
+                            driverid: driversdata[index]['driverid'],
                           );
                         },
                         separatorBuilder: (context, index) =>
                             addVerticalspace(height: 7),
                       );
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return buildLoadingScreen();
                     }
                   },
                 );
@@ -309,4 +216,19 @@ class _RidesState extends State<Rides> {
       ],
     );
   }
+}
+
+Widget buildLoadingScreen() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: const [
+      CircularProgressIndicator(),
+      SizedBox(width: 6),
+      CustomText(
+        title: 'Searching for drivers...',
+        fontSize: 16,
+        color: Appcolors.contentTertiary,
+      ),
+    ],
+  );
 }

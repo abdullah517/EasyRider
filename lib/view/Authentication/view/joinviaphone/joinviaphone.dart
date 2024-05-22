@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
@@ -35,6 +36,15 @@ class Joinviaphone extends StatelessWidget {
               addVerticalspace(height: 20),
               Phonefield(
                 controller: phoneController,
+                onChanged: (PhoneNumber value) {
+                  if (value.number.length == 10) {
+                    Provider.of<Joinviaphoneprovider>(context, listen: false)
+                        .changebuttonstate(true);
+                  } else {
+                    Provider.of<Joinviaphoneprovider>(context, listen: false)
+                        .changebuttonstate(false);
+                  }
+                },
               ),
               const Spacer(),
               Row(

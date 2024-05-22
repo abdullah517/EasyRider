@@ -24,14 +24,14 @@ class Splashscreen extends StatelessWidget {
   Future<void> checkloginstatus(BuildContext context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool islogin = prefs.getBool('isLogin') ?? false;
-    final String phoneuserid = prefs.getString('phoneuserid') ?? '';
+    final String phoneNo = prefs.getString('phoneno') ?? '';
 
     if (FirebaseAuth.instance.currentUser != null) {
       final users = FirebaseFirestore.instance.collection('googleusers');
       final document =
           await users.doc(FirebaseAuth.instance.currentUser!.uid).get();
       final data = document.data() as Map<String, dynamic>;
-      if (data['Gender'] != null && data['Username'] != null) {
+      if (data.containsKey('Gender') && data.containsKey('Username')) {
         navigateToScreen(context, const Homepage());
       } else {
         final cnicprovider =
@@ -56,23 +56,24 @@ class Splashscreen extends StatelessWidget {
       final verifyprovider =
           Provider.of<Verifyotpprovider>(context, listen: false);
       final users = FirebaseFirestore.instance.collection('mobileusers');
-      String asciiPhoneNumber = phoneuserid.codeUnits.join('-');
+      String asciiPhoneNumber = phoneNo.codeUnits.join('-');
       DocumentSnapshot document = await users.doc(asciiPhoneNumber).get();
       final data = document.data() as Map<String, dynamic>;
-      if (data['Gender'] != null && data['Username'] != null) {
-        navigateandremove(context, Homepage(phoneno: phoneuserid));
+      if (data.containsKey('Gender') && data.containsKey('Username')) {
+        navigateandremove(context, Homepage(phoneno: phoneNo));
       } else {
-        navigateandremove(
+        navigateToScreen(
           context,
           Completeprofile(
             onPressed1: () {
               verifyprovider.profilefunction(
-                  context, phoneuserid, ImageSource.camera);
+                  context, phoneNo, ImageSource.camera);
             },
             onPressed2: () {
               verifyprovider.profilefunction(
-                  context, phoneuserid, ImageSource.gallery);
+                  context, phoneNo, ImageSource.gallery);
             },
+            phoneno: phoneNo,
           ),
         );
       }

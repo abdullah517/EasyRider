@@ -42,11 +42,11 @@ Future<void> checkit(String userId, BuildContext context) async {
     final myprovider = Provider.of<Userdataprovider>(context, listen: false);
     await congratdialogue(context);
     FirebaseFirestore.instance.collection('drivers').doc(userId).set({
-      'status': 'InReview',
+      'Status': 'InReview',
       'Gender': myprovider.userData['Gender'],
       'Name': myprovider.userData['Username'],
     }, SetOptions(merge: true));
-    navigateandremove(context, const Driverscreen());
+    navigateandremove(context, Driverscreen());
   } else {
     Navigator.pop(context);
   }

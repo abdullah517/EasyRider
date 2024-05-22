@@ -41,35 +41,33 @@ class PhoneOtp {
   }
 
   Future<String> sendOTP(String phoneNo) async {
-    String url = 'https://rest.moceanapi.com/rest/2/sms';
+    String url = 'https://api.veevotech.com/v3/sendsms';
     String message = await generateotp(phoneNo);
 
     if (message == 'Success') {
       Map<String, String> headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json'
+        'Content-Type': 'application/json',
       };
 
       Map<String, String> body = {
-        'mocean-api-key': apiKey,
-        'mocean-api-secret': apiSecret,
-        'mocean-from': 'RideMate',
-        'mocean-to': phoneNo,
-        'mocean-text':
-            'Your otp for phone verification is $otpCode. It will expire in 5 minutes.',
+        "apikey": apiKey,
+        "receivernum": phoneNo,
+        "sendernum": "Default",
+        "textmessage":
+            "Your otp for phone verification is $otpCode.It will expire in 5 minutes."
       };
 
       try {
         var response = await http.post(
           Uri.parse(url),
           headers: headers,
-          body: body,
+          body: jsonEncode(body),
         );
         Map<String, dynamic> responsedata = jsonDecode(response.body);
-        if (responsedata['messages'][0]['status'] == 0) {
+        if (responsedata['STATUS'] == 'SUCCESSFUL') {
           return message;
         } else {
-          return responsedata['messages'][0]['err_msg'];
+          return responsedata['ERROR_DESCRIPTION'];
         }
       } catch (e) {
         return e.toString();

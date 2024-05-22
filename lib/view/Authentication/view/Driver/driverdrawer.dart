@@ -13,7 +13,8 @@ import '../../../../widgets/customtext.dart';
 
 // ignore: camel_case_types
 class driverdrawer extends StatelessWidget {
-  const driverdrawer({super.key});
+  final double rating;
+  const driverdrawer({super.key, required this.rating});
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +30,24 @@ class driverdrawer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           children: [
             UserAccountsDrawerHeader(
-                accountName: CustomText(
-                  title: usermap.userData['Username'],
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: Appcolors.contentSecondary,
+                accountName: Row(
+                  children: [
+                    CustomText(
+                      title: usermap.userData['Username'],
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors.contentSecondary,
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.star, color: Colors.yellow, size: 20),
+                    const SizedBox(width: 4),
+                    CustomText(
+                      title: '$rating',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors.contentSecondary,
+                    ),
+                  ],
                 ),
                 accountEmail: CustomText(
                   title: usermap.userData['phoneNumber'] ??

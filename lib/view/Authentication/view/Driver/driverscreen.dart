@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,8 @@ import '../../../../Providers/userdataprovider.dart';
 import '../../../../models/ridedetails.dart';
 
 class Driverscreen extends StatefulWidget {
-  const Driverscreen({Key? key}) : super(key: key);
+  bool isOnline;
+  Driverscreen({super.key, this.isOnline = false});
 
   @override
   State<Driverscreen> createState() => _DriverscreenState();
@@ -24,11 +25,46 @@ class Driverscreen extends StatefulWidget {
 
 class _DriverscreenState extends State<Driverscreen> {
   int _selectedIndex = 0;
-  bool isOnline = false;
+  double rating = 0;
 
   @override
   void initState() {
     super.initState();
+    getDriverRating(
+        Provider.of<Userdataprovider>(context, listen: false).userId);
+  }
+
+  Future<void> checkdriverpauseStatus(String id) async {
+    final docref =
+        FirebaseFirestore.instance.collection('companyprofit').doc(id);
+    final docsnap = await docref.get();
+    if (docsnap.exists) {
+      List<dynamic> data = docsnap.data() as List<dynamic>;
+
+      int unpaidCount =
+          data.where((map) => map['paystatus'] == 'unpaid').length;
+      if (unpaidCount < 5) {
+        FirebaseFirestore.instance
+            .collection('drivers')
+            .doc(id)
+            .update(({'Status': 'Approved'}));
+      }
+    }
+  }
+
+  Future<void> getDriverRating(String docId) async {
+    final docRef = FirebaseFirestore.instance.collection('drivers').doc(docId);
+    final docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      if (docSnapshot.data()!.containsKey('driverating')) {
+        rating = docSnapshot['driverating'];
+        setState(() {});
+        return;
+      }
+    }
+    rating = 4.9;
+    setState(() {});
   }
 
   void showsnackbar(String text) {
@@ -85,18 +121,26 @@ class _DriverscreenState extends State<Driverscreen> {
                   }
                   final data = snapshot.data!.data() as Map;
 
-                  if (data.containsKey('status')) {
+                  if (data.containsKey('Status')) {
                     return ToggleSwitch(
-                      initialValue: isOnline,
+                      initialValue: widget.isOnline,
                       onChanged: (value) {
-                        if (data['status'] == 'Approved') {
+                        if (data['Status'] == 'Approved') {
                           setState(() {
-                            isOnline = value;
+                            widget.isOnline = value;
                           });
                           changedriverstatus(context, value);
                           savetoken(data, value);
-                        } else if (data['status'] == 'InReview') {
-                          showsnackbar('Your application status is in Review');
+                        } else if (data['Status'] == 'InReview') {
+                          showsnackbar(
+                              'Your application status is ${data['Status']} mode');
+                        } else if (data['Status'] == 'Paused') {
+                          checkdriverpauseStatus(Provider.of<Userdataprovider>(
+                                  context,
+                                  listen: false)
+                              .userId);
+                          showsnackbar(
+                              'Your application status is in ${data['Status']} mode');
                         } else {
                           showsnackbar('Complete the Registration Process');
                         }
@@ -115,8 +159,12 @@ class _DriverscreenState extends State<Driverscreen> {
           ],
         ),
       ),
-      drawer: const driverdrawer(),
-      body: isOnline
+      drawer: StatefulBuilder(
+        builder: (context, setState) {
+          return driverdrawer(rating: rating);
+        },
+      ),
+      body: widget.isOnline
           ? StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('RideRequest')

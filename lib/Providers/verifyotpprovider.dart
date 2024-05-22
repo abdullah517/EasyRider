@@ -23,8 +23,8 @@ class Verifyotpprovider extends ChangeNotifier {
     if (response == 'Success') {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLogin', true);
-      await prefs.setString('phoneuserid', phoneNo.codeUnits.join('-'));
-      addUserToFirestore(phoneNo);
+      await prefs.setString('phoneno', phoneNo);
+      await addUserToFirestore(phoneNo);
       loading = false;
       errormessage = '';
       notifyListeners();
@@ -68,8 +68,7 @@ class Verifyotpprovider extends ChangeNotifier {
 
     String asciiPhoneNumber = mobileNo.codeUnits.join('-');
     Navigator.pop(context);
-    cnicprovider.scanCnic(imageSource, context, mobileUsers, asciiPhoneNumber,
-        phoneno: mobileNo);
+    cnicprovider.scanCnic(imageSource, context, mobileUsers, asciiPhoneNumber);
   }
 
   void checkuserexistance(BuildContext context, String phoneNo) {
@@ -85,6 +84,7 @@ class Verifyotpprovider extends ChangeNotifier {
           onPressed2: () {
             profilefunction(context, phoneNo, ImageSource.gallery);
           },
+          phoneno: phoneNo,
         ),
       );
     }

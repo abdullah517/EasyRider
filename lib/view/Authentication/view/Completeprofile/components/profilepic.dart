@@ -20,7 +20,7 @@ class Profilepic extends StatelessWidget {
             builder: (context, pic, child) => CircleAvatar(
               backgroundColor: Appcolors.neutralgrey200,
               backgroundImage: pic.image == null
-                  ? const AssetImage('assets/personimage.png')
+                  ? const AssetImage('assets/personimage.jpg')
                   : Image.file(
                       pic.image!,
                       fit: BoxFit.cover,

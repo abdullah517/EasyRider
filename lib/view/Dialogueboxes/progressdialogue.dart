@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/customtext.dart';
 
 class ProgressDialog extends StatelessWidget {
@@ -16,6 +17,7 @@ class ProgressDialog extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Appcolors.primaryColor, width: 1.5),
         ),
         child: Row(
           children: [
@@ -27,10 +29,12 @@ class ProgressDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 20),
-            CustomText(
-              title: message,
-              fontSize: 16,
-              color: Colors.black,
+            Expanded(
+              child: CustomText(
+                title: message,
+                fontSize: 16,
+                color: Colors.black,
+              ),
             ),
           ],
         ),

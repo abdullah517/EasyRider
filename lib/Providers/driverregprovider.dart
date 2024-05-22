@@ -25,7 +25,7 @@ class Driverregprovider1 extends ChangeNotifier {
     return frontimage == '' || backimage == '';
   }
 
-  void savedriverdetails(String userid, String datatype, String url1,
+  Future<void> savedriverdetails(String userid, String datatype, String url1,
       String url2, String cnicno) async {
     final collection = FirebaseFirestore.instance.collection('drivers');
     cnicno.isEmpty
@@ -56,7 +56,7 @@ class Driverregprovider1 extends ChangeNotifier {
     final url1 = await frontImageRef.getDownloadURL();
     final url2 = await backImageRef.getDownloadURL();
 
-    savedriverdetails(userId, folderName, url1, url2, cnicno);
+    await savedriverdetails(userId, folderName, url1, url2, cnicno);
     loading = false;
     notifyListeners();
     await checkit(userId, context);
@@ -87,7 +87,8 @@ class Driverregprovider2 extends ChangeNotifier {
     return image == null;
   }
 
-  void savedriverdetails(String userid, String datatype, String url1) async {
+  Future<void> savedriverdetails(
+      String userid, String datatype, String url1) async {
     final collection = FirebaseFirestore.instance.collection('drivers');
     await collection.doc(userid).set({
       datatype: url1,
@@ -102,7 +103,7 @@ class Driverregprovider2 extends ChangeNotifier {
         FirebaseStorage.instance.ref('drivers/$userId/$folderName/image.jpg');
     await imageRef.putFile(image!);
     final url1 = await imageRef.getDownloadURL();
-    savedriverdetails(userId, folderName, url1);
+    await savedriverdetails(userId, folderName, url1);
     loading = false;
     notifyListeners();
     await checkit(userId, context);
@@ -147,7 +148,7 @@ class Driverregprovider3 extends ChangeNotifier {
     return img1 == null || img2 == null;
   }
 
-  void savedriverdetails(
+  Future<void> savedriverdetails(
       String userid, String datatype, String url1, String url2) async {
     final collection = FirebaseFirestore.instance.collection('drivers');
     await collection.doc(userid).set({
@@ -168,7 +169,7 @@ class Driverregprovider3 extends ChangeNotifier {
     await imageRef2.putFile(img2!);
     final url1 = await imageRef1.getDownloadURL();
     final url2 = await imageRef2.getDownloadURL();
-    savedriverdetails(userId, folderName, url1, url2);
+    await savedriverdetails(userId, folderName, url1, url2);
     loading = false;
     notifyListeners();
     await checkit(userId, context);

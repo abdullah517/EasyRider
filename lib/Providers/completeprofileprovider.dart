@@ -5,8 +5,6 @@ import 'package:cnic_scanner/model/cnic_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ridemate/routing/routing.dart';
-import '../../view/Homepage/homepage.dart';
 
 class Completeprofileprovider extends ChangeNotifier {
   TextEditingController genderController = TextEditingController();
@@ -14,6 +12,13 @@ class Completeprofileprovider extends ChangeNotifier {
   bool loading = false;
   File? image;
   String url = '';
+  String btntxt = 'Scan';
+  bool enabled = true;
+
+  void changebuttonstate(bool btnstate) {
+    enabled = btnstate;
+    notifyListeners();
+  }
 
   void cleartextcontroller() {
     genderController.text = '';
@@ -21,33 +26,23 @@ class Completeprofileprovider extends ChangeNotifier {
   }
 
   Future<void> scanCnic(ImageSource imageSource, BuildContext context,
-      CollectionReference collectionName, String docid,
-      {String phoneno = ''}) async {
+      CollectionReference collectionName, String docid) async {
+    loading = true;
+    notifyListeners();
     CnicModel cnicModel =
         await CnicScanner().scanImage(imageSource: imageSource);
     genderController.text = cnicModel.cnicHolderGender;
     usernameController.text = cnicModel.cnicHolderName;
+    btntxt = 'Proceed';
     notifyListeners();
-    Future.delayed(const Duration(seconds: 1)).then((value) async {
-      loading = true;
-      notifyListeners();
 
-      await collectionName.doc(docid).set({
-        'Gender': cnicModel.cnicHolderGender,
-        'Username': cnicModel.cnicHolderName,
-        'Profileimage': url,
-      }, SetOptions(merge: true)).then((value) {
-        loading = false;
-        notifyListeners();
-        if (phoneno == '') {
-          navigateandremove(context, const Homepage());
-          cleartextcontroller();
-        } else {
-          navigateandremove(context, Homepage(phoneno: phoneno));
-          cleartextcontroller();
-        }
-      });
-    });
+    await collectionName.doc(docid).set({
+      'Gender': cnicModel.cnicHolderGender,
+      'Username': cnicModel.cnicHolderName,
+      'Profileimage': url,
+    }, SetOptions(merge: true));
+    loading = false;
+    notifyListeners();
   }
 
   Future<void> uploadImage() async {

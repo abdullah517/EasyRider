@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/joinviaphoneprovider.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/hinttextstyle.dart';
 
 class Phonefield extends StatelessWidget {
   final TextEditingController controller;
-  const Phonefield({super.key, required this.controller});
+  final Function(PhoneNumber) onChanged;
+  const Phonefield(
+      {super.key, required this.controller, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +33,7 @@ class Phonefield extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
       initialCountryCode: 'PK',
-      onChanged: (value) {
-        value.number.length == 10
-            ? Provider.of<Joinviaphoneprovider>(context, listen: false)
-                .changebuttonstate(true)
-            : Provider.of<Joinviaphoneprovider>(context, listen: false)
-                .changebuttonstate(false);
-      },
+      onChanged: onChanged,
     );
   }
 }

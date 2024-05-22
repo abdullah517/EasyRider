@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/driverrideprovider.dart';
 import 'package:ridemate/models/ridedetails.dart';
 import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Authentication/view/Driver/collectfare.dart';
 import 'package:ridemate/view/Dialogueboxes/progressdialogue.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
@@ -67,133 +68,149 @@ class DriverRideScreen extends StatelessWidget {
               polylines: value.polylineset,
             ),
           ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              height: 310.h,
-              padding: const EdgeInsets.only(
-                  bottom: 20, top: 15, left: 15, right: 10),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+          DraggableScrollableSheet(
+            initialChildSize: 0.4,
+            minChildSize: 0.22,
+            maxChildSize: 0.5,
+            builder: (context, scrollController) => SingleChildScrollView(
+              controller: scrollController,
+              child: Container(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.5),
+                padding: const EdgeInsets.only(
+                    bottom: 20, top: 15, left: 15, right: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  color: Colors.white,
                 ),
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Consumer<DriverRideProivder>(
-                    builder: (context, value, child) => CustomText(
-                      title: value.durationText,
-                      textAlign: TextAlign.center,
-                      color: Appcolors.contentTertiary,
-                      fontSize: 13,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 150.w,
+                        height: 5.h,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
                     ),
-                  ),
-                  addVerticalspace(height: 10),
-                  ListTile(
-                    leading: const Icon(Icons.person),
-                    title: CustomText(
-                      title: rideDetails.ridername,
-                      color: Appcolors.contentPrimary,
+                    Consumer<DriverRideProivder>(
+                      builder: (context, value, child) => CustomText(
+                        title: value.durationText,
+                        textAlign: TextAlign.center,
+                        color: Appcolors.contentTertiary,
+                        fontSize: 13,
+                      ),
                     ),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.location_on),
-                    title: CustomText(
-                      title: rideDetails.pickupaddress,
-                      color: Appcolors.contentPrimary,
+                    addVerticalspace(height: 10),
+                    ListTile(
+                      leading: const Icon(Icons.person),
+                      title: CustomText(
+                        title: rideDetails.ridername,
+                        color: Appcolors.contentPrimary,
+                      ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.location_on),
-                    title: CustomText(
-                      title: rideDetails.destinationaddress,
-                      color: Appcolors.contentPrimary,
+                    ListTile(
+                      leading: const Icon(Icons.location_on),
+                      title: CustomText(
+                        title: rideDetails.pickupaddress,
+                        color: Appcolors.contentPrimary,
+                      ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          await makePhoneCall('+923348668951');
+                    ListTile(
+                      leading: const Icon(Icons.location_on),
+                      title: CustomText(
+                        title: rideDetails.destinationaddress,
+                        color: Appcolors.contentPrimary,
+                      ),
+                      onTap: () {},
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            await makePhoneCall('+923348668951');
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Appcolors.primaryColor,
+                                width: 2.0,
+                              ),
+                            ),
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Appcolors.primaryColor,
+                              child: Icon(
+                                Icons.call,
+                                color: Appcolors.primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => navigateToScreen(
+                              context,
+                              ChatScreen(
+                                title: 'Message Screen',
+                                isDriver: true,
+                                rideId: rideDetails.rideid,
+                              )),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Appcolors.primaryColor,
+                                width: 2.0,
+                              ),
+                            ),
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.message,
+                                color: Appcolors.primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Consumer<DriverRideProivder>(
+                      builder: (context, value, child) => Custombutton(
+                        text: value.btntxt,
+                        ontap: () async {
+                          if (value.btntxt == 'Arrived') {
+                            value.changebtntxt('Start trip');
+                            updateridestatus('Arrived');
+                            showProgressDialog(context, 'Please wait...');
+                            await value.getPlaceDirection(
+                                rideDetails.pickup, rideDetails.dropoff);
+                            hideProgressDialog(context);
+                          } else if (value.btntxt == 'Start trip') {
+                            value.changebtntxt('End trip');
+                            updateridestatus('Ride Start');
+                            value.initcounter();
+                          } else if (value.btntxt == 'End trip') {
+                            updateridestatus('Ended');
+                            value.endtrip();
+                            showcollectfaredialogue(context, rideDetails);
+                          }
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Appcolors.primaryColor,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: const CircleAvatar(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Appcolors.primaryColor,
-                            child: Icon(
-                              Icons.call,
-                              color: Appcolors.primaryColor,
-                            ),
-                          ),
-                        ),
                       ),
-                      GestureDetector(
-                        onTap: () => navigateToScreen(
-                            context,
-                            ChatScreen(
-                              title: 'Message Screen',
-                              isDriver: true,
-                              rideId: rideDetails.rideid,
-                            )),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Appcolors.primaryColor,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: const CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.message,
-                              color: Appcolors.primaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Consumer<DriverRideProivder>(
-                    builder: (context, value, child) => Custombutton(
-                      text: value.btntxt,
-                      ontap: () async {
-                        if (value.btntxt == 'Arrived') {
-                          value.changebtntxt('Start trip');
-                          updateridestatus('Arrived');
-                          showProgressDialog(context, 'Please wait...');
-                          await value.getPlaceDirection(
-                              rideDetails.pickup, rideDetails.dropoff);
-                          hideProgressDialog(context);
-                        } else if (value.btntxt == 'Start trip') {
-                          value.changebtntxt('End trip');
-                          updateridestatus('Ride Start');
-                          value.initcounter();
-                        } else if (value.btntxt == 'End trip') {
-                          updateridestatus('Ended');
-                          value.endtrip();
-                        }
-                      },
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),

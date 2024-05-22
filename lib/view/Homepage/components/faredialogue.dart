@@ -62,9 +62,9 @@ void showFareDialog(BuildContext context, double actualFare) {
                       setState(() {
                         sliderValue = value;
                         if (sliderValue == 0) {
-                          fare = actualFare - (actualFare * 0.10);
+                          fare = actualFare - (actualFare * 1.10);
                         } else if (sliderValue == 1) {
-                          fare = actualFare - (actualFare * 0.05);
+                          fare = actualFare - (actualFare * 1.05);
                         } else if (sliderValue == 2) {
                           fare = actualFare;
                         }

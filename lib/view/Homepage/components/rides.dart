@@ -114,6 +114,7 @@ class _RidesState extends State<Rides> {
           'driverid': driverid,
           'drivername': doc['Name'],
           'carname': doc['Transportname'],
+          'carnumber': doc['Vehicle_Number'],
         }),
         SetOptions(merge: true));
   }

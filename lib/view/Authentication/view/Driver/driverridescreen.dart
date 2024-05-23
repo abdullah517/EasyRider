@@ -71,179 +71,182 @@ class DriverRideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Consumer<DriverRideProivder>(
-            builder: (context, value, child) => GoogleMap(
-              padding: EdgeInsets.only(bottom: 300.h),
-              initialCameraPosition: _kGooglePlex,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              onMapCreated: (controller) {
-                mapcontroller.complete(controller);
-                value.newgooglemapcontroller = controller;
-                value.setcurrentPosition().then((v) {
-                  value.savecurrentLocation(rideDetails.rideid);
-                  var currentLatLng = LatLng(value.currentPosition.latitude!,
-                      value.currentPosition.longitude!);
-                  var pickupLatLng = rideDetails.pickup;
-                  value.getPlaceDirection(currentLatLng, pickupLatLng);
-                  value.animatedrivercar(rideDetails);
-                });
-              },
-              markers: Set<Marker>.of(value.markersSet),
-              polylines: value.polylineset,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Consumer<DriverRideProivder>(
+              builder: (context, value, child) => GoogleMap(
+                padding: EdgeInsets.only(bottom: 300.h),
+                initialCameraPosition: _kGooglePlex,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                onMapCreated: (controller) {
+                  mapcontroller.complete(controller);
+                  value.newgooglemapcontroller = controller;
+                  value.setcurrentPosition().then((v) {
+                    value.savecurrentLocation(rideDetails.rideid);
+                    var currentLatLng = LatLng(value.currentPosition.latitude!,
+                        value.currentPosition.longitude!);
+                    var pickupLatLng = rideDetails.pickup;
+                    value.getPlaceDirection(currentLatLng, pickupLatLng);
+                    value.animatedrivercar(rideDetails);
+                  });
+                },
+                markers: Set<Marker>.of(value.markersSet),
+                polylines: value.polylineset,
+              ),
             ),
-          ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.4,
-            minChildSize: 0.22,
-            maxChildSize: 0.5,
-            builder: (context, scrollController) => SingleChildScrollView(
-              controller: scrollController,
-              child: Container(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.5),
-                padding: const EdgeInsets.only(
-                    bottom: 20, top: 15, left: 15, right: 10),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
+            DraggableScrollableSheet(
+              initialChildSize: 0.4,
+              minChildSize: 0.22,
+              maxChildSize: 0.5,
+              builder: (context, scrollController) => SingleChildScrollView(
+                controller: scrollController,
+                child: Container(
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.5),
+                  padding: const EdgeInsets.only(
+                      bottom: 20, top: 15, left: 15, right: 10),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                    color: Colors.white,
                   ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 150.w,
-                        height: 5.h,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          borderRadius: BorderRadius.circular(5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 150.w,
+                          height: 5.h,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
                       ),
-                    ),
-                    Consumer<DriverRideProivder>(
-                      builder: (context, value, child) => CustomText(
-                        title: value.durationText,
-                        textAlign: TextAlign.center,
-                        color: Appcolors.contentTertiary,
-                        fontSize: 13,
+                      Consumer<DriverRideProivder>(
+                        builder: (context, value, child) => CustomText(
+                          title: value.durationText,
+                          textAlign: TextAlign.center,
+                          color: Appcolors.contentTertiary,
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
-                    addVerticalspace(height: 10),
-                    ListTile(
-                      leading: const Icon(Icons.person),
-                      title: CustomText(
-                        title: rideDetails.ridername,
-                        color: Appcolors.contentPrimary,
+                      addVerticalspace(height: 10),
+                      ListTile(
+                        leading: const Icon(Icons.person),
+                        title: CustomText(
+                          title: rideDetails.ridername,
+                          color: Appcolors.contentPrimary,
+                        ),
+                        onTap: () {},
                       ),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.location_on),
-                      title: CustomText(
-                        title: rideDetails.pickupaddress,
-                        color: Appcolors.contentPrimary,
+                      ListTile(
+                        leading: const Icon(Icons.location_on),
+                        title: CustomText(
+                          title: rideDetails.pickupaddress,
+                          color: Appcolors.contentPrimary,
+                        ),
+                        onTap: () {},
                       ),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.location_on),
-                      title: CustomText(
-                        title: rideDetails.destinationaddress,
-                        color: Appcolors.contentPrimary,
+                      ListTile(
+                        leading: const Icon(Icons.location_on),
+                        title: CustomText(
+                          title: rideDetails.destinationaddress,
+                          color: Appcolors.contentPrimary,
+                        ),
+                        onTap: () {},
                       ),
-                      onTap: () {},
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            await makePhoneCall('+923348668951');
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              await makePhoneCall('+923348668951');
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Appcolors.primaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: const CircleAvatar(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Appcolors.primaryColor,
+                                child: Icon(
+                                  Icons.call,
+                                  color: Appcolors.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => navigateToScreen(
+                                context,
+                                ChatScreen(
+                                  title: 'Message Screen',
+                                  isDriver: true,
+                                  rideId: rideDetails.rideid,
+                                )),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Appcolors.primaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: const CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.message,
+                                  color: Appcolors.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Consumer<DriverRideProivder>(
+                        builder: (context, value, child) => Custombutton(
+                          text: value.btntxt,
+                          ontap: () async {
+                            if (value.btntxt == 'Arrived') {
+                              value.changebtntxt('Start trip');
+                              updateridestatus('Arrived');
+                              showProgressDialog(context, 'Please wait...');
+                              await value.getPlaceDirection(
+                                  rideDetails.pickup, rideDetails.dropoff);
+                              hideProgressDialog(context);
+                            } else if (value.btntxt == 'Start trip') {
+                              value.changebtntxt('End trip');
+                              updateridestatus('Ride Start');
+                              value.initcounter();
+                            } else if (value.btntxt == 'End trip') {
+                              updateridestatus('Completed');
+                              updateduration(value.durationcounter);
+                              value.endtrip();
+                              showcollectfaredialogue(context, rideDetails);
+                            }
                           },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Appcolors.primaryColor,
-                                width: 2.0,
-                              ),
-                            ),
-                            child: const CircleAvatar(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Appcolors.primaryColor,
-                              child: Icon(
-                                Icons.call,
-                                color: Appcolors.primaryColor,
-                              ),
-                            ),
-                          ),
                         ),
-                        GestureDetector(
-                          onTap: () => navigateToScreen(
-                              context,
-                              ChatScreen(
-                                title: 'Message Screen',
-                                isDriver: true,
-                                rideId: rideDetails.rideid,
-                              )),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Appcolors.primaryColor,
-                                width: 2.0,
-                              ),
-                            ),
-                            child: const CircleAvatar(
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.message,
-                                color: Appcolors.primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Consumer<DriverRideProivder>(
-                      builder: (context, value, child) => Custombutton(
-                        text: value.btntxt,
-                        ontap: () async {
-                          if (value.btntxt == 'Arrived') {
-                            value.changebtntxt('Start trip');
-                            updateridestatus('Arrived');
-                            showProgressDialog(context, 'Please wait...');
-                            await value.getPlaceDirection(
-                                rideDetails.pickup, rideDetails.dropoff);
-                            hideProgressDialog(context);
-                          } else if (value.btntxt == 'Start trip') {
-                            value.changebtntxt('End trip');
-                            updateridestatus('Ride Start');
-                            value.initcounter();
-                          } else if (value.btntxt == 'End trip') {
-                            updateridestatus('Completed');
-                            updateduration(value.durationcounter);
-                            value.endtrip();
-                            showcollectfaredialogue(context, rideDetails);
-                          }
-                        },
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

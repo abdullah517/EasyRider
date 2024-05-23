@@ -23,13 +23,12 @@ import '../../../Homepage/homepage.dart';
 
 class Completeprofile extends StatelessWidget {
   final void Function()? onPressed1;
-  final void Function()? onPressed2;
+
   final String phoneno;
   final controller = TextEditingController();
   final formkey = GlobalKey<FormState>();
   final EmailOTP myAuth = EmailOTP();
-  Completeprofile(
-      {super.key, this.onPressed1, this.onPressed2, this.phoneno = ''});
+  Completeprofile({super.key, this.onPressed1, this.phoneno = ''});
 
   Future<void> verifyemailotp(BuildContext context, String inputOTP) async {
     final prov = Provider.of<Completeprofileprovider>(context, listen: false);
@@ -39,7 +38,7 @@ class Completeprofile extends StatelessWidget {
       FirebaseFirestore.instance
           .collection('mobileusers')
           .doc(phoneno.codeUnits.join('-'))
-          .set(({'email': controller.text}), SetOptions(merge: true));
+          .set(({'Email': controller.text}), SetOptions(merge: true));
       navigateandremove(context, Homepage(phoneno: phoneno));
     } else {
       ScaffoldMessenger.of(context)
@@ -128,8 +127,7 @@ class Completeprofile extends StatelessWidget {
                         ontap: value.enabled
                             ? () async {
                                 if (value.btntxt == 'Scan') {
-                                  cnicscannerdialogue(
-                                          context, onPressed1, onPressed2)
+                                  cnicscannerdialogue(context, onPressed1)
                                       .then((v) {
                                     if (phoneno == '' &&
                                         controller.text.length < 10) {
@@ -144,7 +142,8 @@ class Completeprofile extends StatelessWidget {
                                             .instance.currentUser!.uid)
                                         .set(
                                             ({
-                                              'mobileno': '92${controller.text}'
+                                              'phoneNumber':
+                                                  '92${controller.text}'
                                             }),
                                             SetOptions(merge: true));
                                     navigateandremove(

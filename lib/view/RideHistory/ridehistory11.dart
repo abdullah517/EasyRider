@@ -26,6 +26,35 @@ class RideHistoryPage extends StatelessWidget {
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
+  String formatDateTime(DateTime dateTime) {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    String formattedDate =
+        '${dateTime.day}-${months[dateTime.month - 1]}-${dateTime.year}';
+
+    int hours = dateTime.hour;
+    String ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours == 0 ? 12 : hours;
+    String minutes =
+        dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';
+    String formattedTime = '$hours:$minutes $ampm';
+
+    return '$formattedDate $formattedTime';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,12 +91,11 @@ class RideHistoryPage extends StatelessWidget {
                         Icons.location_city,
                       ],
                       texts: [
-                        ride['created_at'] ?? 'Unknown Time & Date',
-                        ride['drivername'] ?? 'Unknown Driver Name',
-                        ride['ridefare'] ?? 'Unknown Fare',
-                        ride['pickup_address'] ?? 'Unknown Pickup Location',
-                        ride['destination_address'] ??
-                            'Unknown Destination Location',
+                        formatDateTime(ride['created_at'].toDate()),
+                        ride['drivername'].toString(),
+                        '${ride['ridefare']}PKR',
+                        ride['pickup_address'].toString(),
+                        ride['destination_address'].toString(),
                       ],
                       containerColor: Appcolors.neutralgrey,
                       iconColors: [
@@ -124,24 +152,6 @@ class RideHistoryPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Appcolors.neutralgrey700,
                       ),
-                    ),
-                  ],
-                ),
-                const Row(
-                  children: [
-                    Text(
-                      'Completed',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Appcolors.neutralgrey700,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.check_box,
-                      size: 30,
-                      color: Colors.green,
                     ),
                   ],
                 ),

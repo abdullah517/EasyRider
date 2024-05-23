@@ -31,6 +31,7 @@ Future<bool> checkAllFieldsExist(String userId) async {
         data.containsKey('Photo of Vehicle') &&
         data.containsKey('Vehicle Registration Frontside') &&
         data.containsKey('Vehicle Registration Backside') &&
+        data.containsKey('Vehicle_Number') &&
         data.containsKey('Transportname');
   } else {
     return false;
@@ -45,6 +46,8 @@ Future<void> checkit(String userId, BuildContext context) async {
       'Status': 'InReview',
       'Gender': myprovider.userData['Gender'],
       'Name': myprovider.userData['Username'],
+      'Email': myprovider.userData['Email'],
+      'Phonenumber': myprovider.userData['phoneNumber'],
     }, SetOptions(merge: true));
     navigateandremove(context, Driverscreen());
   } else {

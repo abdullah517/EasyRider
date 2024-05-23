@@ -44,11 +44,6 @@ class Splashscreen extends StatelessWidget {
               cnicprovider.scanCnic(ImageSource.camera, context, users,
                   FirebaseAuth.instance.currentUser!.uid);
             },
-            onPressed2: () {
-              Navigator.pop(context);
-              cnicprovider.scanCnic(ImageSource.gallery, context, users,
-                  FirebaseAuth.instance.currentUser!.uid);
-            },
           ),
         );
       }
@@ -68,10 +63,6 @@ class Splashscreen extends StatelessWidget {
             onPressed1: () {
               verifyprovider.profilefunction(
                   context, phoneNo, ImageSource.camera);
-            },
-            onPressed2: () {
-              verifyprovider.profilefunction(
-                  context, phoneNo, ImageSource.gallery);
             },
             phoneno: phoneNo,
           ),

@@ -81,9 +81,6 @@ class Verifyotpprovider extends ChangeNotifier {
           onPressed1: () {
             profilefunction(context, phoneNo, ImageSource.camera);
           },
-          onPressed2: () {
-            profilefunction(context, phoneNo, ImageSource.gallery);
-          },
           phoneno: phoneNo,
         ),
       );

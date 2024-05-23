@@ -51,11 +51,6 @@ class Googleloginprovider extends ChangeNotifier {
                 cnicprovider.scanCnic(
                     ImageSource.camera, context, googleUsers, userid);
               },
-              onPressed2: () {
-                Navigator.pop(context);
-                cnicprovider.scanCnic(
-                    ImageSource.gallery, context, googleUsers, userid);
-              },
             ),
           );
         });

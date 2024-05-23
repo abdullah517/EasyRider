@@ -6,12 +6,10 @@ import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/sidemenupages/aboutus.dart';
 import 'package:ridemate/sidemenupages/contactus.dart';
-import 'package:ridemate/sidemenupages/deleteaccount.dart';
 import 'package:ridemate/sidemenupages/helpandsupport.dart';
 import 'package:ridemate/sidemenupages/privacy.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver/driverscreen.dart';
-//import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/view/RideHistory/ridehistory11.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
@@ -56,8 +54,9 @@ class Sidemenubar extends StatelessWidget {
                   color: Appcolors.contentSecondary,
                 ),
                 accountEmail: CustomText(
-                  title: usermap.userData['phoneNumber'] ??
-                      usermap.userData['Email'],
+                  title: FirebaseAuth.instance.currentUser != null
+                      ? usermap.userData['Email']
+                      : usermap.userData['phoneNumber'],
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: Appcolors.contentSecondary,
@@ -71,25 +70,12 @@ class Sidemenubar extends StatelessWidget {
                           as ImageProvider
                       : NetworkImage(usermap.userData['Profileimage']),
                 )),
-            const Menubarcomp(text: 'Edit Profile', icon: Icons.person_outline),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
             Menubarcomp(
               text: 'History',
               icon: Icons.history,
               onTap: () {
                 navigateToScreen(context, const RideHistoryPage());
               },
-            ),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(text: 'Complain', icon: Icons.info),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(text: 'About Us', icon: Icons.info_outline),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(text: 'Settings', icon: Icons.settings),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(
-              text: 'History',
-              icon: Icons.history,
             ),
             const Divider(color: Appcolors.neutralgrey, height: 1),
             Menubarcomp(
@@ -113,14 +99,6 @@ class Sidemenubar extends StatelessWidget {
               icon: Icons.contact_page,
               onTap: () {
                 navigateToScreen(context, const ContactUsPage());
-              },
-            ),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
-            Menubarcomp(
-              text: 'Delete Account',
-              icon: Icons.account_box,
-              onTap: () {
-                navigateToScreen(context, const DeleteAccountPage());
               },
             ),
             const Divider(color: Appcolors.neutralgrey, height: 1),

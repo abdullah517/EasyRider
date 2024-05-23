@@ -230,7 +230,7 @@ class DriverRideScreen extends StatelessWidget {
                             updateridestatus('Ride Start');
                             value.initcounter();
                           } else if (value.btntxt == 'End trip') {
-                            updateridestatus('Ended');
+                            updateridestatus('Completed');
                             updateduration(value.durationcounter);
                             value.endtrip();
                             showcollectfaredialogue(context, rideDetails);

@@ -42,6 +42,7 @@ class Bookingprovider extends ChangeNotifier {
         'latitude': destination.latitude,
         'longitude': destination.longitude,
       },
+      'userid': Provider.of<Userdataprovider>(context, listen: false).userId,
       'created_at': DateTime.now(),
       'rider_name': user.userData['Username'],
       'pickup_address': addressdetail.address,
@@ -65,7 +66,7 @@ class Bookingprovider extends ChangeNotifier {
   }
 
   Future<void> sendRideRequesttoNearestDriver(
-      String gender, BuildContext context) async {
+      String gender, BuildContext context, bool ridemode) async {
     for (Nearbyavailabledrivers driver
         in Geofireassistant.nearbyavailabledriverslist) {
       final doc = await FirebaseFirestore.instance
@@ -73,7 +74,12 @@ class Bookingprovider extends ChangeNotifier {
           .doc(driver.key)
           .get();
 
-      if (doc['Gender'] == gender) {
+      if (ridemode) {
+        if (doc['Gender'] == gender) {
+          String token = doc['token'];
+          sendfcm(token);
+        }
+      } else {
         String token = doc['token'];
         sendfcm(token);
       }

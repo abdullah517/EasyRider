@@ -76,7 +76,7 @@ Future<Uint8List> makeReceiptImage() async {
 
 class _HomepageState extends State<Homepage> {
   final _scaffoldState = GlobalKey<ScaffoldState>();
-
+  bool isChecked = false;
   final CameraPosition _kGooglePlex =
       const CameraPosition(target: LatLng(33.6941, 72.9734), zoom: 14.4746);
 
@@ -107,7 +107,7 @@ class _HomepageState extends State<Homepage> {
         children: [
           Consumer<Mapprovider>(
             builder: (context, value, child) => GoogleMap(
-              padding: EdgeInsets.only(bottom: 300.h),
+              padding: EdgeInsets.only(bottom: 330.h),
               initialCameraPosition: _kGooglePlex,
               zoomControlsEnabled: false,
               onMapCreated: (mapcontroller) {
@@ -200,6 +200,34 @@ class _HomepageState extends State<Homepage> {
                                 },
                               ),
                               const Divider(color: Appcolors.contentDisbaled),
+                              StatefulBuilder(
+                                builder: (context, setState) {
+                                  return CheckboxListTile(
+                                    title: const Text(
+                                      'Gender Preference',
+                                      style: TextStyle(
+                                          color: Appcolors.contentDisbaled,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    value: isChecked,
+                                    onChanged: (bool? value) {
+                                      setState(
+                                        () {
+                                          isChecked = value ?? false;
+                                        },
+                                      );
+                                    },
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      side: const BorderSide(
+                                          color: Appcolors.primaryColor),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const Divider(color: Appcolors.contentDisbaled),
                               const Spacer(),
                               Consumer<Bookingprovider>(
                                 builder: (context, bookingProvider, child) =>
@@ -212,7 +240,9 @@ class _HomepageState extends State<Homepage> {
                                               .saveRideRequest(context);
                                           bookingProvider
                                               .sendRideRequesttoNearestDriver(
-                                                  getgender(), context);
+                                                  getgender(),
+                                                  context,
+                                                  isChecked);
                                         }
                                       : null,
                                   fontSize: 16,

@@ -42,7 +42,7 @@ class _CancelridePageState extends State<CancelridePage> {
   }
 
   int _selectedContainerIndex = 0;
-  String cancelledreason = '';
+  String cancelledreason = 'Please select the reason for cancellation.';
 
   Future<void> setstatustocancel() async {
     FirebaseFirestore.instance
@@ -125,6 +125,7 @@ class _CancelridePageState extends State<CancelridePage> {
       onTap: () {
         setState(() {
           _selectedContainerIndex = index;
+          cancelledreason = title;
         });
       },
       child: Container(

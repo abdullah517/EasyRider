@@ -54,17 +54,17 @@ void showFareDialog(BuildContext context, double actualFare) {
                     max: 2,
                     divisions: 2,
                     label: sliderValue == 0
-                        ? 'Minus 10%'
+                        ? 'Minus 15%'
                         : sliderValue == 1
-                            ? 'Minus 5%'
+                            ? 'Minus 10%'
                             : 'Actualfare',
                     onChanged: (value) {
                       setState(() {
                         sliderValue = value;
                         if (sliderValue == 0) {
-                          fare = actualFare - (actualFare * 1.10);
+                          fare = actualFare - (actualFare * 0.15);
                         } else if (sliderValue == 1) {
-                          fare = actualFare - (actualFare * 1.05);
+                          fare = actualFare - (actualFare * 0.07);
                         } else if (sliderValue == 2) {
                           fare = actualFare;
                         }

@@ -56,7 +56,7 @@ class _StartrideState extends State<Startride> {
           'startLocation': bookingData['userstartlocation']['address'],
           'dropLocation': bookingData['userdroplocation']['address'],
           'rideFare': bookingData['ridefare'],
-          'userId': userId,  // Add userId to send notifications later
+          'userId': userId, // Add userId to send notifications later
         });
       }
     }
@@ -64,11 +64,15 @@ class _StartrideState extends State<Startride> {
   }
 
   Future<DocumentSnapshot> _getPassengerData(String userId) async {
-    var googleUserSnapshot =
-        await FirebaseFirestore.instance.collection('googleusers').doc(userId).get();
+    var googleUserSnapshot = await FirebaseFirestore.instance
+        .collection('googleusers')
+        .doc(userId)
+        .get();
 
-    var mobileUserSnapshot =
-        await FirebaseFirestore.instance.collection('mobileusers').doc(userId).get();
+    var mobileUserSnapshot = await FirebaseFirestore.instance
+        .collection('mobileusers')
+        .doc(userId)
+        .get();
 
     if (googleUserSnapshot.exists) {
       return googleUserSnapshot;
@@ -79,7 +83,8 @@ class _StartrideState extends State<Startride> {
     }
   }
 
-  Future<void> _sendNotificationToUser(String userId, String startLocation) async {
+  Future<void> _sendNotificationToUser(
+      String userId, String startLocation) async {
     try {
       // Get the user's token from Firestore
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -99,36 +104,44 @@ class _StartrideState extends State<Startride> {
         }
       }
     } catch (e) {
-      print('Error notifying user: $e');
+      //print('Error notifying user: $e');
     }
   }
 
   void _startLocationUpdateTimer() {
     // Start the location update timer
-    _locationUpdateTimer = Timer.periodic(Duration(seconds: 10), (timer) {
+    _locationUpdateTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       _updateDriverLocation();
     });
   }
 
   void _updateDriverLocation() async {
     try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
       setState(() {
         _currentPosition = position;
       });
       // Update driver's location in Firestore as string values
-      FirebaseFirestore.instance.collection('booking').doc(widget.rideid).update({
+      FirebaseFirestore.instance
+          .collection('booking')
+          .doc(widget.rideid)
+          .update({
         'livelocation': '${position.latitude},${position.longitude}',
       });
-      print("update location");
+      //print("update location");
     } catch (e) {
-      print('Error getting location: $e');
+      //print('Error getting location: $e');
     }
   }
 
   void _listenToDriverLocation() {
     // Listen to driver's live location from Firestore
-    FirebaseFirestore.instance.collection('booking').doc(widget.rideid).snapshots().listen((snapshot) {
+    FirebaseFirestore.instance
+        .collection('booking')
+        .doc(widget.rideid)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.exists) {
         setState(() {
           _driverLocation = snapshot['livelocation'];
@@ -164,7 +177,7 @@ class _StartrideState extends State<Startride> {
             children: [
               ElevatedButton(
                 onPressed: _startRide,
-                child: Text('Start Ride'),
+                child: const Text('Start Ride'),
               ),
               const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -178,15 +191,18 @@ class _StartrideState extends State<Startride> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Current Location: Lat: ${_currentPosition!.latitude}, Lon: ${_currentPosition!.longitude}',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
-              if (_driverLocation != null) // Display driver's live location from Firestore
+              if (_driverLocation !=
+                  null) // Display driver's live location from Firestore
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Live Location from Firestore: Lat: ${_driverLocation!.latitude}, Lon: ${_driverLocation!.longitude}',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
               Expanded(
@@ -199,10 +215,10 @@ class _StartrideState extends State<Startride> {
                       color: Appcolors.primaryColor,
                       elevation: 4,
                       child: ListTile(
-                        leading: Icon(Icons.person, color: Colors.white),
+                        leading: const Icon(Icons.person, color: Colors.white),
                         title: Text(
                           booking['username'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             color: Colors.white,
@@ -210,29 +226,33 @@ class _StartrideState extends State<Startride> {
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                         
                           children: [
                             const SizedBox(height: 5),
                             Text(
                               'Contact Info: ${booking['contactInfo']}',
-                              style: const TextStyle(fontSize: 14, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
                             ),
                             Text(
                               'Start Location: ${booking['startLocation']}',
-                              style: const TextStyle(fontSize: 14, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
                             ),
                             Text(
                               'Drop Location: ${booking['dropLocation']}',
-                              style: const TextStyle(fontSize: 14, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
                             ),
                             const SizedBox(height: 5),
                             Text(
                               'Ride Fare: ${booking['rideFare']}',
-                              style: const TextStyle(fontSize: 14, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
                             ),
                           ],
                         ),
-                        trailing: Icon(Icons.arrow_forward, color: Colors.white),
+                        trailing: const Icon(Icons.arrow_forward,
+                            color: Colors.white),
                       ),
                     );
                   },

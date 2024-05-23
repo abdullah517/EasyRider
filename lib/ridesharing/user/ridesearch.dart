@@ -5,9 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
-import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/view/Authentication/components/customappbar.dart';
-
+//import 'package:ridemate/utils/appcolors.dart';
+//import 'package:ridemate/view/Authentication/components/customappbar.dart';
 
 class RideSearchScreen extends StatefulWidget {
   final double userDropLatitude;
@@ -42,98 +41,103 @@ class _RideSearchScreenState extends State<RideSearchScreen> {
     _searchNearbyRides();
   }
 
- Future<String> _fetchDriverGender(String driverId) async {
-  try {
-    // Check if the driver exists in the 'drivers' collection
-    DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
-        .collection('drivers')
-        .doc(driverId)
-        .get();
+  Future<String> _fetchDriverGender(String driverId) async {
+    try {
+      // Check if the driver exists in the 'drivers' collection
+      DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
+          .collection('drivers')
+          .doc(driverId)
+          .get();
 
-    if (driverSnapshot.exists) {
-      Map<String, dynamic>? data = driverSnapshot.data() as Map<String, dynamic>?;
+      if (driverSnapshot.exists) {
+        Map<String, dynamic>? data =
+            driverSnapshot.data() as Map<String, dynamic>?;
 
-      if (data != null && data.containsKey('Gender')) {
-        String? gender = data['Gender'] as String?;
-        if (gender != null && gender.isNotEmpty) {
-          return gender;
+        if (data != null && data.containsKey('Gender')) {
+          String? gender = data['Gender'] as String?;
+          if (gender != null && gender.isNotEmpty) {
+            return gender;
+          }
+        }
+      } else {
+        // If driver doesn't exist in 'drivers' collection, check in 'googleusers' and 'mobileusers'
+        String userGender = await _fetchUserGender(driverId);
+        if (userGender.isNotEmpty) {
+          return userGender;
         }
       }
-    } else {
-      // If driver doesn't exist in 'drivers' collection, check in 'googleusers' and 'mobileusers'
-      String userGender = await _fetchUserGender(driverId);
-      if (userGender.isNotEmpty) {
-        return userGender;
-      }
+    } catch (e) {
+      //print('Error fetching driver gender: $e');
     }
-  } catch (e) {
-    print('Error fetching driver gender: $e');
+    return '';
   }
-  return '';
-}
 
-Future<void> _notifyDriver(String driverId) async {
-  try {
-    // Get the driver's token from Firestore
-    DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
-        .collection('drivers')
-        .doc(driverId)
-        .get();
+  Future<void> _notifyDriver(String driverId) async {
+    try {
+      // Get the driver's token from Firestore
+      DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
+          .collection('drivers')
+          .doc(driverId)
+          .get();
 
-    if (driverSnapshot.exists) {
-      String? driverToken = driverSnapshot['token'];
-      if (driverToken != null && driverToken.isNotEmpty) {
-        // Send the push notification to the driver
-        await PushNotificationService().sendNotification(
-          driverToken,
-          title: 'New Ride Request',
-          bodytxt: 'You have a new ride request!',
-        );
+      if (driverSnapshot.exists) {
+        String? driverToken = driverSnapshot['token'];
+        if (driverToken != null && driverToken.isNotEmpty) {
+          // Send the push notification to the driver
+          await PushNotificationService().sendNotification(
+            driverToken,
+            title: 'New Ride Request',
+            bodytxt: 'You have a new ride request!',
+          );
+        }
       }
+    } catch (e) {
+      //print('Error notifying driver: $e');
     }
-  } catch (e) {
-    print('Error notifying driver: $e');
   }
-}
+
 // Function to fetch user gender from either 'googleusers' or 'mobileusers' collection
-Future<String> _fetchUserGender(String userId) async {
-  try {
-    // Check 'googleusers' collection first
-    DocumentSnapshot googleUserSnapshot = await FirebaseFirestore.instance
-        .collection('googleusers')
-        .doc(userId)
-        .get();
+  Future<String> _fetchUserGender(String userId) async {
+    try {
+      // Check 'googleusers' collection first
+      DocumentSnapshot googleUserSnapshot = await FirebaseFirestore.instance
+          .collection('googleusers')
+          .doc(userId)
+          .get();
 
-    if (googleUserSnapshot.exists) {
-      Map<String, dynamic>? data = googleUserSnapshot.data() as Map<String, dynamic>?;
-      if (data != null && data.containsKey('Gender')) {
-        String? gender = data['Gender'] as String?;
-        if (gender != null && gender.isNotEmpty) {
-          return gender;
+      if (googleUserSnapshot.exists) {
+        Map<String, dynamic>? data =
+            googleUserSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('Gender')) {
+          String? gender = data['Gender'] as String?;
+          if (gender != null && gender.isNotEmpty) {
+            return gender;
+          }
         }
       }
-    }
 
-    // Check 'mobileusers' collection if not found in 'googleusers'
-    DocumentSnapshot mobileUserSnapshot = await FirebaseFirestore.instance
-        .collection('mobileusers')
-        .doc(userId)
-        .get();
+      // Check 'mobileusers' collection if not found in 'googleusers'
+      DocumentSnapshot mobileUserSnapshot = await FirebaseFirestore.instance
+          .collection('mobileusers')
+          .doc(userId)
+          .get();
 
-    if (mobileUserSnapshot.exists) {
-      Map<String, dynamic>? data = mobileUserSnapshot.data() as Map<String, dynamic>?;
-      if (data != null && data.containsKey('Gender')) {
-        String? gender = data['Gender'] as String?;
-        if (gender != null && gender.isNotEmpty) {
-          return gender;
+      if (mobileUserSnapshot.exists) {
+        Map<String, dynamic>? data =
+            mobileUserSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('Gender')) {
+          String? gender = data['Gender'] as String?;
+          if (gender != null && gender.isNotEmpty) {
+            return gender;
+          }
         }
       }
+    } catch (e) {
+      //print('Error fetching user gender: $e');
     }
-  } catch (e) {
-    print('Error fetching user gender: $e');
+    return '';
   }
-  return '';
-}
+
   // Method to search for nearby rides and update the UI
   void _searchNearbyRides() async {
     // Retrieve nearby rides from Firestore
@@ -147,7 +151,6 @@ Future<String> _fetchUserGender(String userId) async {
 
     bool rideFound = false;
     bool rideAvailableForUserGender = false;
-
 
     // Loop through each ride and add it to the nearby rides list if it's within the vicinity
     await Future.forEach(nearbyRidesSnapshot.docs, (ride) async {
@@ -166,7 +169,7 @@ Future<String> _fetchUserGender(String userId) async {
         rideFound = true;
         String driverGender = await _fetchDriverGender(ride['driverid']);
         String passengerGender = await _fetchUserGender(widget.userid);
-print('Here is your driver gender $driverGender and here is user gender $passengerGender');
+        //print('Here is your driver gender $driverGender and here is user gender $passengerGender');
         if (driverGender.isNotEmpty && passengerGender.isNotEmpty) {
           // Check if genders match
           if (driverGender == passengerGender) {
@@ -185,15 +188,15 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('No Rides Available'),
-            content: Text('Sorry, no rides are available nearby.'),
+            title: const Text('No Rides Available'),
+            content: const Text('Sorry, no rides are available nearby.'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -205,15 +208,16 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('No Rides Available'),
-            content: Text('Sorry, no rides are available for your gender.'),
+            title: const Text('No Rides Available'),
+            content:
+                const Text('Sorry, no rides are available for your gender.'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -251,7 +255,7 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nearby Rides'),
+        title: const Text('Nearby Rides'),
       ),
       backgroundColor: Colors.black,
       body: ListView.builder(
@@ -279,12 +283,12 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
 
           return Card(
               color: Colors.white, // Card background color
-              margin: EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
               elevation: 4, // Card elevation for a shadow effect
               child: ListTile(
                   title: Text(
                     'Ride ID: ${ride.id}',
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 16),
@@ -292,78 +296,84 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         'Start Location: ${ride['startlocation']['address']}',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         'Drop Location: ${ride['droplocation']['address']}',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 14),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Design for one-way booking
                       Row(
                         children: [
-                          Icon(Icons.bike_scooter,
+                          const Icon(Icons.bike_scooter,
                               color: Colors.blue), // Icon for one-way booking
-                          SizedBox(width: 5),
+                          const SizedBox(width: 5),
                           Expanded(
                             child: Text(
                               'One Way: $availableSeatsOneWay Seats',
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 14),
+                              style: const TextStyle(
+                                  color: Colors.blue, fontSize: 14),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           // Show available seats as icons
                           for (int i = 0; i < availableSeatsOneWay; i++)
-                            Icon(Icons.airline_seat_individual_suite_rounded,
+                            const Icon(
+                                Icons.airline_seat_individual_suite_rounded,
                                 color: Colors.green),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       // Design for return-way booking
                       Row(
                         children: [
-                          Icon(Icons.directions_rounded,
+                          const Icon(Icons.directions_rounded,
                               color:
                                   Colors.orange), // Icon for return-way booking
-                          SizedBox(width: 5),
+                          const SizedBox(width: 5),
                           Expanded(
                             child: Text(
                               'Return Way: $availableSeatsReturnWay Seats',
-                              style:
-                                  TextStyle(color: Colors.orange, fontSize: 14),
+                              style: const TextStyle(
+                                  color: Colors.orange, fontSize: 14),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           // Show available seats as icons
                           for (int i = 0; i < availableSeatsReturnWay; i++)
-                            Icon(Icons.airline_seat_individual_suite_rounded,
+                            const Icon(
+                                Icons.airline_seat_individual_suite_rounded,
                                 color: Colors.green),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       // Additional ride details
                       Text(
                         'Start Date: $startDate |$startTime',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         'End Date: $endDate |$returnTime',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                     ],
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     onPressed: () async {
                       String userId = widget.userid;
                       if (person1.contains(userId) ||
                           person2.contains(userId)) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                          const SnackBar(
                               content:
                                   Text('You have already booked this ride.')),
                         );
@@ -380,7 +390,7 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
                               setState(() {
                                 _selectedRideType = type;
                               });
-                              print('Selected Ride Type: $_selectedRideType');
+                              //print('Selected Ride Type: $_selectedRideType');
                             },
                           );
                         },
@@ -418,31 +428,31 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
                                 .userid, // Using the userid passed from widget
                           };
 
-                           try {
-      await FirebaseFirestore.instance
-          .collection('rideshare-request')
-          .add(rideRequestData);
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('rideshare-request')
+                                .add(rideRequestData);
 
-      // Notify the driver by sending a push notification
-      await _notifyDriver(driverId);
+                            // Notify the driver by sending a push notification
+                            await _notifyDriver(driverId);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ride request sent!')),
-      );
-      Navigator.pop(context); // Go back to user.dart
-    } catch (e) {
-      // Handle any errors that occur during adding ride request data
-      print('Error adding ride request: $e');
-      // Show a snackbar to indicate error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed to send ride request. Please try again later.',
-          ),
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Ride request sent!')),
+                            );
+                            Navigator.pop(context); // Go back to user.dart
+                          } catch (e) {
+                            // Handle any errors that occur during adding ride request data
+                            //print('Error adding ride request: $e');
+                            // Show a snackbar to indicate error
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Failed to send ride request. Please try again later.',
+                                ),
                               ),
                             );
                           }
-                         
                         }
                       });
                     },
@@ -456,18 +466,18 @@ print('Here is your driver gender $driverGender and here is user gender $passeng
 class RideTypeSelectionDialog extends StatelessWidget {
   final Function(int) onRideTypeSelected;
 
-  RideTypeSelectionDialog({required this.onRideTypeSelected});
+  const RideTypeSelectionDialog({super.key, required this.onRideTypeSelected});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Select Ride Type'),
+      title: const Text('Select Ride Type'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            title: Text('Start Ride (One Way)'),
-            leading: Icon(Icons.directions_bike),
+            title: const Text('Start Ride (One Way)'),
+            leading: const Icon(Icons.directions_bike),
             onTap: () {
               // Notify the parent widget that start ride (one-way) is selected
               onRideTypeSelected(1); // 1 for start ride (one-way)
@@ -476,8 +486,8 @@ class RideTypeSelectionDialog extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Return Ride (One Way)'),
-            leading: Icon(Icons.directions_bike),
+            title: const Text('Return Ride (One Way)'),
+            leading: const Icon(Icons.directions_bike),
             onTap: () {
               // Notify the parent widget that return ride (one-way) is selected
               onRideTypeSelected(2); // 2 for return ride (one-way)
@@ -486,8 +496,8 @@ class RideTypeSelectionDialog extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Two Way Ride'),
-            leading: Icon(Icons.commute),
+            title: const Text('Two Way Ride'),
+            leading: const Icon(Icons.commute),
             onTap: () {
               // Notify the parent widget that two-way ride is selected
               onRideTypeSelected(0);

@@ -12,8 +12,8 @@ import 'package:ridemate/ridesharing/driver/notificationscreen.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver/driverscreen.dart';
-import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
-import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
+//import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
+//import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import '../../../Providers/userdataprovider.dart';
@@ -307,7 +307,6 @@ class _DriverScreen1State extends State<DriverScreen1> {
 
   Widget _buildDrawer() {
     final usermap = Provider.of<Userdataprovider>(context, listen: false);
-    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     return SafeArea(
       child: Drawer(
         shape: const RoundedRectangleBorder(
@@ -347,46 +346,6 @@ class _DriverScreen1State extends State<DriverScreen1> {
                               as ImageProvider
                           : NetworkImage(usermap.userData['Profileimage']),
                     )),
-                Menubarcomp(
-                  text: 'Registration',
-                  icon: Icons.app_registration_outlined,
-                  onTap: () {
-                    navigateToScreen(context, const GoingtoWorkAs());
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'Edit Profile',
-                  icon: Icons.person_outline,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'History',
-                  icon: Icons.history,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'Settings',
-                  icon: Icons.settings,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'Help and Support',
-                  icon: Icons.help_outline_outlined,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
                 const SizedBox(height: 20),
                 Custombutton(
                   buttoncolor: Appcolors.primaryColor,

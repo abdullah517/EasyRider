@@ -5,7 +5,8 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const String mapApiKey = "AIzaSyDoCmnLSTMCBPnbqrG3_71ZztjLItFsnfk"; // Replace with your actual API key
+const String mapApiKey =
+    "AIzaSyDoCmnLSTMCBPnbqrG3_71ZztjLItFsnfk"; // Replace with your actual API key
 
 class PlacePredModel {
   final String placeId;
@@ -24,10 +25,12 @@ class PlacePredModel {
 class GoogleMapSearchPlacesApi extends StatefulWidget {
   final Function(String address, double lat, double lng) onLocationSelected;
 
-  const GoogleMapSearchPlacesApi({Key? key, required this.onLocationSelected}) : super(key: key);
+  const GoogleMapSearchPlacesApi({Key? key, required this.onLocationSelected})
+      : super(key: key);
 
   @override
-  _GoogleMapSearchPlacesApiState createState() => _GoogleMapSearchPlacesApiState();
+  _GoogleMapSearchPlacesApiState createState() =>
+      _GoogleMapSearchPlacesApiState();
 }
 
 class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
@@ -54,9 +57,11 @@ class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
     getSuggestion(_controller.text);
   }
 
- Future<void> getSuggestion(String input) async {
-    String baseUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    String request = '$baseUrl?input=$input&key=$mapApiKey&sessiontoken=$_sessionToken&components=country:pk&components=locality:islamabad';
+  Future<void> getSuggestion(String input) async {
+    String baseUrl =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request =
+        '$baseUrl?input=$input&key=$mapApiKey&sessiontoken=$_sessionToken&components=country:pk&components=locality:islamabad';
 
     try {
       var response = await http.get(Uri.parse(request));
@@ -79,7 +84,7 @@ class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
         throw Exception('Failed to fetch suggestion');
       }
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -94,7 +99,8 @@ class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
         if (result['status'] == 'OK') {
           final placeDetails = result['result'];
           final location = placeDetails['geometry']['location'];
-          widget.onLocationSelected(description, location['lat'], location['lng']);
+          widget.onLocationSelected(
+              description, location['lat'], location['lng']);
           Navigator.pop(context);
         } else {
           setState(() {
@@ -105,14 +111,15 @@ class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
         throw Exception('Failed to fetch place details');
       }
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: customappbar(context, title: 'Search location', backgroundColor: Appcolors.primaryColor),
+      appBar: customappbar(context,
+          title: 'Search location', backgroundColor: Appcolors.primaryColor),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -141,7 +148,8 @@ class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
                 return ListTile(
                   title: Text(_placeList[index].description),
                   onTap: () async {
-                    await getPlaceDetails(_placeList[index].placeId, _placeList[index].description);
+                    await getPlaceDetails(_placeList[index].placeId,
+                        _placeList[index].description);
                   },
                 );
               },
@@ -150,7 +158,7 @@ class _GoogleMapSearchPlacesApiState extends State<GoogleMapSearchPlacesApi> {
           if (message.isNotEmpty)
             Text(
               message,
-              style: TextStyle(color: Colors.red),
+              style: const TextStyle(color: Colors.red),
             ),
         ],
       ),

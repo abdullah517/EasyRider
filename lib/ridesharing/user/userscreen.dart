@@ -33,13 +33,13 @@ class _UserScreenState extends State<Userscreen> {
   void initState() {
     super.initState();
     _getLocation();
-      savetoken();
-  
+    savetoken();
   }
 
   void _getLocation() async {
     try {
-      Geolocator.Position position = await Geolocator.Geolocator.getCurrentPosition(
+      Geolocator.Position position =
+          await Geolocator.Geolocator.getCurrentPosition(
         desiredAccuracy: Geolocator.LocationAccuracy.high,
       );
       setState(() {
@@ -49,7 +49,7 @@ class _UserScreenState extends State<Userscreen> {
         });
       });
     } catch (e) {
-      print("Error getting location: $e");
+      //print("Error getting location: $e");
     }
   }
 
@@ -72,7 +72,7 @@ class _UserScreenState extends State<Userscreen> {
 
   Widget _buildMapWidget() {
     if (currentLocation == null) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -95,13 +95,13 @@ class _UserScreenState extends State<Userscreen> {
       myLocationEnabled: true,
       markers: <Marker>{
         Marker(
-          markerId: MarkerId("current_location"),
+          markerId: const MarkerId("current_location"),
           position: LatLng(
             currentLocation?.latitude ?? 0,
             currentLocation?.longitude ?? 0,
           ),
           icon: customMarkerIcon,
-          infoWindow: InfoWindow(
+          infoWindow: const InfoWindow(
             title: 'Custom Location',
             snippet: 'Additional info here',
           ),
@@ -113,10 +113,10 @@ class _UserScreenState extends State<Userscreen> {
       myLocationButtonEnabled: false,
     );
   }
- 
-Future<void> savetoken( ) async {
+
+  Future<void> savetoken() async {
     final useridd = FirebaseAuth.instance.currentUser?.uid ?? '';
- 
+
     final service = PushNotificationService();
     String? token = await service.getToken();
     if (token != null && token.isNotEmpty) {
@@ -125,16 +125,14 @@ Future<void> savetoken( ) async {
         'token': token,
         'userid': useridd,
       }).then((_) {
-        
-        print('Token saved successfully');
+        //print('Token saved successfully');
       }).catchError((error) {
-        print('Error saving token: $error');
+        //print('Error saving token: $error');
       });
     } else {
-      print('Error: Token is null or empty');
+      //print('Error: Token is null or empty');
     }
-  
-}
+  }
 
   Widget _buildBottomContainer(BuildContext context) {
     return Positioned(
@@ -143,16 +141,16 @@ Future<void> savetoken( ) async {
       right: 0,
       child: Container(
         height: 251,
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(143, 206, 176, 5).withOpacity(0.2),
+              color: const Color.fromARGB(143, 206, 176, 5).withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 3,
-              offset: Offset(0, -3),
+              offset: const Offset(0, -3),
             ),
           ],
         ),
@@ -161,7 +159,7 @@ Future<void> savetoken( ) async {
           children: [
             RichText(
               textAlign: TextAlign.center,
-              text: TextSpan(
+              text: const TextSpan(
                 children: [
                   TextSpan(
                     text: 'USER ',
@@ -197,7 +195,7 @@ Future<void> savetoken( ) async {
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _buildButtonRow(
               iconPath: 'assets/location.gif',
               buttonText: 'Book Ride',
@@ -226,7 +224,7 @@ Future<void> savetoken( ) async {
   }) {
     return Row(
       children: [
-        SizedBox(width: 5),
+        const SizedBox(width: 5),
         IconButton(
           onPressed: () {
             Navigator.push(
@@ -242,13 +240,13 @@ Future<void> savetoken( ) async {
             height: 42,
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               buttonInfo,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 12,
               ),
@@ -273,7 +271,7 @@ Future<void> savetoken( ) async {
               },
               child: Text(
                 buttonText,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 17,
                   fontFamily: 'Actor',
@@ -288,7 +286,6 @@ Future<void> savetoken( ) async {
 
   Widget _buildDrawer() {
     final usermap = Provider.of<Userdataprovider>(context, listen: false);
-    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     return SafeArea(
       child: Drawer(
         shape: const RoundedRectangleBorder(
@@ -312,60 +309,24 @@ Future<void> savetoken( ) async {
                     color: Appcolors.contentSecondary,
                   ),
                   accountEmail: CustomText(
-                    title: userData['phoneNumber'] ?? userData['Email'] ?? 'PhoneNumber or Email',
+                    title: userData['phoneNumber'] ??
+                        userData['Email'] ??
+                        'PhoneNumber or Email',
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: Appcolors.contentSecondary,
                   ),
-                  decoration: const BoxDecoration(color: Appcolors.scaffoldbgcolor),
+                  decoration:
+                      const BoxDecoration(color: Appcolors.scaffoldbgcolor),
                   currentAccountPicture: CircleAvatar(
                     radius: 40,
                     backgroundImage: usermap.userData['Profileimage'] == ''
-                        ? const AssetImage('assets/personimage.jpg') as ImageProvider
+                        ? const AssetImage('assets/personimage.jpg')
+                            as ImageProvider
                         : NetworkImage(usermap.userData['Profileimage']),
                   ),
                 ),
-                Menubarcomp(
-                  text: 'Registration',
-                  icon: Icons.app_registration_outlined,
-                  onTap: () {
-                    navigateToScreen(context, const GoingtoWorkAs());
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'Edit Profile',
-                  icon: Icons.person_outline,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'History',
-                  icon: Icons.history,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'Settings',
-                  icon: Icons.settings,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                Menubarcomp(
-                  text: 'Help and Support',
-                  icon: Icons.help_outline_outlined,
-                  onTap: () {
-                    // Define the onTap logic
-                  },
-                ),
-                const Divider(color: Appcolors.neutralgrey, height: 1),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Custombutton(
                   buttoncolor: Appcolors.primaryColor,
                   ontap: () {
@@ -384,7 +345,7 @@ Future<void> savetoken( ) async {
   void navigateToScreen(BuildContext context, Widget screen) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Homepage()),
+      MaterialPageRoute(builder: (context) => const Homepage()),
     );
   }
 }

@@ -371,14 +371,14 @@ class _AddRideScreenState extends State<AddRideScreen> {
         }).then((value) {
           // Handle success
           Navigator.of(context).pop();
-          print('Ride added successfully!');
+          //print('Ride added successfully!');
           startLocationController.clear();
           dropLocationController.clear();
         }).catchError((error) {
-          print('Failed to add ride: $error');
+          //print('Failed to add ride: $error');
         });
       } else {
-        print('Please select both start and drop locations.');
+        //print('Please select both start and drop locations.');
       }
     }
   }

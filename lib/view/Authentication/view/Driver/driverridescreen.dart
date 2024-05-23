@@ -62,13 +62,6 @@ class DriverRideScreen extends StatelessWidget {
         .update({'Status': status});
   }
 
-  void updateduration(int duration) {
-    FirebaseFirestore.instance
-        .collection('RideRequest')
-        .doc(rideDetails.rideid)
-        .update({'rideDuration': duration});
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -233,7 +226,6 @@ class DriverRideScreen extends StatelessWidget {
                               value.initcounter();
                             } else if (value.btntxt == 'End trip') {
                               updateridestatus('Completed');
-                              updateduration(value.durationcounter);
                               value.endtrip();
                               showcollectfaredialogue(context, rideDetails);
                             }

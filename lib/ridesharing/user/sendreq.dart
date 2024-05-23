@@ -19,7 +19,6 @@ class Sendrequest extends StatefulWidget {
 }
 
 class _SendrequestState extends State<Sendrequest> {
-  location.LocationData? _currentPosition;
   location.Location _location = location.Location();
   TextEditingController startLocationController = TextEditingController();
   TextEditingController dropLocationController = TextEditingController();
@@ -43,11 +42,9 @@ class _SendrequestState extends State<Sendrequest> {
   void _getLocation() async {
     try {
       var userLocation = await _location.getLocation();
-      setState(() {
-        _currentPosition = userLocation;
-      });
+      setState(() {});
     } catch (e) {
-      print("Error: $e");
+      //print("Error: $e");
     }
   }
 
@@ -76,11 +73,12 @@ class _SendrequestState extends State<Sendrequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customappbar(context, title: 'Search Ride', backgroundColor: Appcolors.primaryColor),
+      appBar: customappbar(context,
+          title: 'Search Ride', backgroundColor: Appcolors.primaryColor),
       body: Container(
         color: Colors.white,
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -89,25 +87,29 @@ class _SendrequestState extends State<Sendrequest> {
                   color: Colors.white70,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                padding: EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   children: [
                     _textField(
                       label: 'Start Location',
                       hint: 'Choose starting point',
                       controller: startLocationController,
-                      onTap: () => _selectLocation(startLocationController, true),
-                      iconPath: 'assets/location.gif', // Set the path of the icon
+                      onTap: () =>
+                          _selectLocation(startLocationController, true),
+                      iconPath:
+                          'assets/location.gif', // Set the path of the icon
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     _textField(
                       label: 'Drop Location',
                       hint: 'Choose drop point',
                       controller: dropLocationController,
-                      onTap: () => _selectLocation(dropLocationController, false),
-                      iconPath: 'assets/location.gif', // Set the path of the icon
+                      onTap: () =>
+                          _selectLocation(dropLocationController, false),
+                      iconPath:
+                          'assets/location.gif', // Set the path of the icon
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Custombutton(
                       buttoncolor: Appcolors.primaryColor,
                       ontap: () {
@@ -129,7 +131,7 @@ class _SendrequestState extends State<Sendrequest> {
                           );
                         } else {
                           // Handle case where drop location is not selected
-                          print('Please select drop location');
+                          //print('Please select drop location');
                         }
                       },
                       text: 'Search rides',
@@ -137,16 +139,16 @@ class _SendrequestState extends State<Sendrequest> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 height: 20.0,
                 thickness: 3.0,
-                color: const Color.fromARGB(255, 20, 23, 26),
+                color: Color.fromARGB(255, 20, 23, 26),
                 indent: 25.0,
                 endIndent: 25.0,
               ),
               RichText(
                 textAlign: TextAlign.center,
-                text: TextSpan(
+                text: const TextSpan(
                   children: [
                     TextSpan(
                       text: 'Available ',
@@ -182,7 +184,7 @@ class _SendrequestState extends State<Sendrequest> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 height: 20.0,
                 thickness: 3.0,
                 color: Color.fromARGB(255, 19, 16, 16),
@@ -194,38 +196,54 @@ class _SendrequestState extends State<Sendrequest> {
                   alignment: Alignment.center,
                   child: SingleChildScrollView(
                     child: Container(
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: StreamBuilder(
-                        stream: FirebaseFirestore.instance.collection('rides').snapshots(),
-                        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        stream: FirebaseFirestore.instance
+                            .collection('rides')
+                            .snapshots(),
+                        builder:
+                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (!snapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                           return ListView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (context, index) {
                               var ride = snapshot.data!.docs[index];
-                              List<dynamic> person1 = List.from(ride['person1'] ?? []);
-                              List<dynamic> person2 = List.from(ride['person2'] ?? []);
+                              List<dynamic> person1 =
+                                  List.from(ride['person1'] ?? []);
+                              List<dynamic> person2 =
+                                  List.from(ride['person2'] ?? []);
 
-                              int capacity = ride['capacity'] ?? 0; // Parse capacity as an integer
+                              int capacity = ride['capacity'] ??
+                                  0; // Parse capacity as an integer
 
                               int bookedSeatsOneWay = person1.length;
                               int bookedSeatsReturnWay = person2.length;
-                              int availableSeatsOneWay = capacity - bookedSeatsOneWay;
-                              int availableSeatsReturnWay = capacity - bookedSeatsReturnWay;
+                              int availableSeatsOneWay =
+                                  capacity - bookedSeatsOneWay;
+                              int availableSeatsReturnWay =
+                                  capacity - bookedSeatsReturnWay;
 
-                              DateTime startingDate = (ride['startingdate'] as Timestamp).toDate();
-                              DateTime endingDate = (ride['endingdate'] as Timestamp).toDate();
-                              String startDate = DateFormat('dd/MM').format(startingDate);
-                              String endDate = DateFormat('dd/MM').format(endingDate);
-                              String returnTime = ride['returntime'].toString(); // Assuming returntime is a string
-                              String startTime = ride['startingtime'].toString(); // Assuming startingtime is a string
+                              DateTime startingDate =
+                                  (ride['startingdate'] as Timestamp).toDate();
+                              DateTime endingDate =
+                                  (ride['endingdate'] as Timestamp).toDate();
+                              String startDate =
+                                  DateFormat('dd/MM').format(startingDate);
+                              String endDate =
+                                  DateFormat('dd/MM').format(endingDate);
+                              String returnTime = ride['returntime']
+                                  .toString(); // Assuming returntime is a string
+                              String startTime = ride['startingtime']
+                                  .toString(); // Assuming startingtime is a string
 
                               return Card(
-                                margin: EdgeInsets.symmetric(vertical: 5.0),
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -234,26 +252,28 @@ class _SendrequestState extends State<Sendrequest> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Align(
                                         alignment: Alignment.topRight,
                                         child: Container(
-                                          padding: EdgeInsets.all(5.0),
-                                          decoration: BoxDecoration(),
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: const BoxDecoration(),
                                           child: Text(
                                             '$startDate - $endDate | $startTime - $returnTime',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 12.0,
                                               color: Colors.black,
                                             ),
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 10.0),
-                                      Row(
+                                      const SizedBox(height: 10.0),
+                                      const Row(
                                         children: [
-                                          Icon(Icons.location_on, color: Colors.black),
+                                          Icon(Icons.location_on,
+                                              color: Colors.black),
                                           SizedBox(width: 5.0),
                                           Text(
                                             'Start Location',
@@ -265,15 +285,19 @@ class _SendrequestState extends State<Sendrequest> {
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 5.0),
+                                      const SizedBox(height: 5.0),
                                       Text(
-                                        _extractAddress(ride['startlocation']['address']),
-                                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                                        _extractAddress(
+                                            ride['startlocation']['address']),
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black),
                                       ),
-                                      SizedBox(height: 10.0),
-                                      Row(
+                                      const SizedBox(height: 10.0),
+                                      const Row(
                                         children: [
-                                          Icon(Icons.location_on, color: Colors.black),
+                                          Icon(Icons.location_on,
+                                              color: Colors.black),
                                           SizedBox(width: 5.0),
                                           Text(
                                             'Drop Location',
@@ -285,52 +309,74 @@ class _SendrequestState extends State<Sendrequest> {
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 5.0),
+                                      const SizedBox(height: 5.0),
                                       Text(
-                                        _extractAddress(ride['droplocation']['address']),
-                                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                                        _extractAddress(
+                                            ride['droplocation']['address']),
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black),
                                       ),
-                                      SizedBox(height: 10.0),
+                                      const SizedBox(height: 10.0),
                                       Row(
                                         children: [
-                                          Icon(Icons.people, color: Colors.black),
-                                          SizedBox(width: 5.0),
+                                          const Icon(Icons.people,
+                                              color: Colors.black),
+                                          const SizedBox(width: 5.0),
                                           Text(
                                             'Capacity: ${ride['capacity']} Persons',
-                                            style: TextStyle(fontSize: 16.0, color: Colors.black),
+                                            style: const TextStyle(
+                                                fontSize: 16.0,
+                                                color: Colors.black),
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 10.0),
+                                      const SizedBox(height: 10.0),
                                       Row(
                                         children: [
-                                          Icon(Icons.bike_scooter, color: Colors.blue),
-                                          SizedBox(width: 5),
+                                          const Icon(Icons.bike_scooter,
+                                              color: Colors.blue),
+                                          const SizedBox(width: 5),
                                           Expanded(
                                             child: Text(
                                               'One Way: $availableSeatsOneWay Seats',
-                                              style: TextStyle(color: Colors.blue, fontSize: 14),
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          for (int i = 0; i < availableSeatsOneWay; i++)
-                                            Icon(Icons.airline_seat_individual_suite_rounded, color: Colors.green),
-                                        ],
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.directions_rounded, color: Colors.orange),
-                                          SizedBox(width: 5),
-                                          Expanded(
-                                            child: Text(
-                                              'Return Way: $availableSeatsReturnWay Seats',
-                                              style: TextStyle(color: Colors.orange, fontSize: 14),
+                                              style: const TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 14),
                                             ),
                                           ),
                                           const SizedBox(width: 10),
-                                          for (int i = 0; i < availableSeatsReturnWay; i++)
-                                            const Icon(Icons.airline_seat_individual_suite_rounded, color: Colors.green),
+                                          for (int i = 0;
+                                              i < availableSeatsOneWay;
+                                              i++)
+                                            const Icon(
+                                                Icons
+                                                    .airline_seat_individual_suite_rounded,
+                                                color: Colors.green),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.directions_rounded,
+                                              color: Colors.orange),
+                                          const SizedBox(width: 5),
+                                          Expanded(
+                                            child: Text(
+                                              'Return Way: $availableSeatsReturnWay Seats',
+                                              style: const TextStyle(
+                                                  color: Colors.orange,
+                                                  fontSize: 14),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          for (int i = 0;
+                                              i < availableSeatsReturnWay;
+                                              i++)
+                                            const Icon(
+                                                Icons
+                                                    .airline_seat_individual_suite_rounded,
+                                                color: Colors.green),
                                         ],
                                       ),
                                     ],
@@ -351,16 +397,16 @@ class _SendrequestState extends State<Sendrequest> {
       ),
     );
   }
-String _extractAddress(String fullAddress) {
-  int index = fullAddress.toLowerCase().indexOf('islamabad');
 
-  if (index != -1) {
-    return fullAddress.substring(0, index).trim();
-  } else {
-    return fullAddress;
+  String _extractAddress(String fullAddress) {
+    int index = fullAddress.toLowerCase().indexOf('islamabad');
+
+    if (index != -1) {
+      return fullAddress.substring(0, index).trim();
+    } else {
+      return fullAddress;
+    }
   }
-}
-
 
   Widget _textField({
     required String label,
@@ -373,7 +419,8 @@ String _extractAddress(String fullAddress) {
       controller: controller,
       onTap: () => onTap(),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
         labelText: label,
         hintText: hint,
         prefixIcon: Padding(

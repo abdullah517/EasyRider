@@ -10,10 +10,7 @@ import 'package:ridemate/widgets/custombutton.dart';
 class DriverRideHistoryScreen extends StatelessWidget {
   final String userId;
 
-  const DriverRideHistoryScreen({
-    super.key,
-    required this.userId
-  });
+  const DriverRideHistoryScreen({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +20,7 @@ class DriverRideHistoryScreen extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('rides')
-              .where('driverid', isEqualTo: userId)
+            .where('driverid', isEqualTo: userId)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -292,7 +289,7 @@ class BookingScreen extends StatelessWidget {
           child: ListTile(
             title: Text(
               user['Username'] ?? 'No Name',
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -326,15 +323,18 @@ class BookingScreen extends StatelessWidget {
     );
   }
 
-
   Future<DocumentSnapshot> _getPassengerData(String userId) async {
     // Check if the user exists in the 'googleusers' collection
-    var googleUserSnapshot =
-        await FirebaseFirestore.instance.collection('googleusers').doc(userId).get();
+    var googleUserSnapshot = await FirebaseFirestore.instance
+        .collection('googleusers')
+        .doc(userId)
+        .get();
 
     // Check if the user exists in the 'mobileusers' collection
-    var mobileUserSnapshot =
-        await FirebaseFirestore.instance.collection('mobileusers').doc(userId).get();
+    var mobileUserSnapshot = await FirebaseFirestore.instance
+        .collection('mobileusers')
+        .doc(userId)
+        .get();
 
     // Return the document snapshot based on the availability in collections
     if (googleUserSnapshot.exists) {

@@ -10,7 +10,7 @@ import 'package:ridemate/view/Authentication/components/customappbar.dart';
 class NotificationsScreen extends StatelessWidget {
   final String driverid;
 
-  NotificationsScreen({required this.driverid});
+  const NotificationsScreen({super.key, required this.driverid});
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +165,7 @@ class NotificationsScreen extends StatelessWidget {
         return mobileUserSnapshot.get('Username') as String;
       }
     } catch (e) {
-      print('Error fetching user name: $e');
+      //print('Error fetching user name: $e');
     }
 
     return 'shami'; // Return empty string if user not found
@@ -209,7 +209,7 @@ class NotificationsScreen extends StatelessWidget {
         ),
       );
     }).catchError((error) {
-      print('Failed to remove ride request: $error');
+      //print('Failed to remove ride request: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -239,7 +239,7 @@ class NotificationsScreen extends StatelessWidget {
         }
       }
     } catch (e) {
-      print('Error notifying driver: $e');
+      //print('Error notifying driver: $e');
     }
   }
 
@@ -258,7 +258,7 @@ class NotificationsScreen extends StatelessWidget {
         var dropLocation = rideData?['droplocation'];
 
         if (startLocation == null || dropLocation == null) {
-          print('Start location or drop location is null');
+          //print('Start location or drop location is null');
           return;
         }
 
@@ -293,9 +293,9 @@ class NotificationsScreen extends StatelessWidget {
           'person1': FieldValue.arrayUnion(person1),
           'person2': FieldValue.arrayUnion(person2),
         }).then((_) {
-          print('Person 1 and Person 2 updated successfully');
+          //print('Person 1 and Person 2 updated successfully');
         }).catchError((error) {
-          print('Failed to update Person 1 and Person 2: $error');
+          //print('Failed to update Person 1 and Person 2: $error');
         });
 
         // Add booking details...
@@ -316,9 +316,9 @@ class NotificationsScreen extends StatelessWidget {
           'userid': userId,
           'livelocation': ''
         }).then((_) {
-          print('Booking details added successfully');
+          //print('Booking details added successfully');
         }).catchError((error) {
-          print('Failed to add booking details: $error');
+          //print('Failed to add booking details: $error');
         });
         _sendNotificationToUser(userId);
         // Delete the ride request from the riderequest collection
@@ -327,15 +327,15 @@ class NotificationsScreen extends StatelessWidget {
             .doc(requestId)
             .delete()
             .then((_) {
-          print('Ride request deleted successfully');
+          //print('Ride request deleted successfully');
         }).catchError((error) {
-          print('Failed to delete ride request: $error');
+          //print('Failed to delete ride request: $error');
         });
       } else {
-        print('Ride request document not found');
+        //print('Ride request document not found');
       }
     }).catchError((error) {
-      print('Error retrieving ride request document: $error');
+      //print('Error retrieving ride request document: $error');
       // Show a snack bar in case of error
       if (context != null && ScaffoldMessenger.of(context).mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

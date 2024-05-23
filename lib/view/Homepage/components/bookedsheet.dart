@@ -120,13 +120,12 @@ Widget showbookedsheet(BuildContext context) {
                               ),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 100.w,
-                                    height: 100.h,
-                                    decoration: BoxDecoration(
-                                      color: Appcolors.primaryColor,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
+                                  CustomText(
+                                    title:
+                                        '${data['carnumber']}${data['carname']}',
+                                    fontSize: 13,
+                                    color: Appcolors.contentPrimary,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                   const SizedBox(width: 16.0),
                                   Expanded(
@@ -178,14 +177,6 @@ Widget showbookedsheet(BuildContext context) {
                                     ),
                                   ),
                                   const Spacer(),
-                                  Container(
-                                    width: 50.w,
-                                    height: 50.h,
-                                    decoration: BoxDecoration(
-                                      color: Appcolors.primaryColor,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),

@@ -116,6 +116,7 @@ class driverdrawer extends StatelessWidget {
               },
               text: 'Passenger Mode',
             ),
+            addVerticalspace(height: 10),
             Custombutton(
               buttoncolor: Appcolors.primaryColor,
               ontap: () {

@@ -12,8 +12,8 @@ class booking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-              appBar: customappbar(context,
-            title: 'Bookings', backgroundColor: Appcolors.primaryColor),
+      appBar: customappbar(context,
+          title: 'Bookings', backgroundColor: Appcolors.primaryColor),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('booking')
@@ -41,7 +41,7 @@ class booking extends StatelessWidget {
   Widget _buildBookingCard(
       BuildContext context, QueryDocumentSnapshot booking) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       elevation: 4.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,10 +72,9 @@ class booking extends StatelessWidget {
                     ),
                   );
                 },
-                icon:const Icon(
+                icon: const Icon(
                   Icons.directions,
                   color: Colors.white, // Set icon color to white
-                  
                 ),
                 label: const Text(
                   'Track Driver',
@@ -83,7 +82,6 @@ class booking extends StatelessWidget {
                       color: Colors.white), // Set label color to white
                 ),
                 style: ElevatedButton.styleFrom(
-                  
                   backgroundColor: Colors.green, // Set button color to green
                 ),
               ),
@@ -121,7 +119,7 @@ class booking extends StatelessWidget {
         var bookingData = bookingSnapshot.data();
         String rideId = bookingData?['rideid'];
         String userId = bookingData?['userid'];
-        print('User $userId and $rideId');
+        //print('User $userId and $rideId');
         if (rideId != null && userId != null) {
           // Remove user ID from person1 and person2 arrays in the rides collection
           await FirebaseFirestore.instance
@@ -132,7 +130,7 @@ class booking extends StatelessWidget {
             'person2': FieldValue.arrayRemove([userId]),
           });
 
-          print('User removed from ride document successfully');
+          //print('User removed from ride document successfully');
         }
 
         // Delete the booking from the 'booking' collection
@@ -140,10 +138,10 @@ class booking extends StatelessWidget {
             .collection('booking')
             .doc(bookingId)
             .delete();
-        print('Booking deleted successfully');
+        //print('Booking deleted successfully');
       }
     }).catchError((error) {
-      print('Error deleting booking: $error');
+      //print('Error deleting booking: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to delete booking. Please try again later.'),

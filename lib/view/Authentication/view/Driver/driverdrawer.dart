@@ -19,6 +19,16 @@ class driverdrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usermap = Provider.of<Userdataprovider>(context, listen: false);
+    // Function to handle long usernames
+    /*String truncateUsername(String username) {
+      const maxLength = 20; // Define maximum length for username
+      if (username.length <= maxLength) {
+        return username; // If username is shorter than maxLength, return as is
+      } else {
+        return '${username.substring(0, maxLength)}...'; // Truncate and add ellipsis
+      }
+    }*/
+
     return SafeArea(
       child: Drawer(
         shape: const RoundedRectangleBorder(
@@ -34,9 +44,10 @@ class driverdrawer extends StatelessWidget {
                   children: [
                     CustomText(
                       title: usermap.userData['Username'],
-                      fontSize: 18,
+                      fontSize: 11,
                       fontWeight: FontWeight.w500,
                       color: Appcolors.contentSecondary,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(width: 8),
                     const Icon(Icons.star, color: Colors.yellow, size: 20),
@@ -73,11 +84,7 @@ class driverdrawer extends StatelessWidget {
               },
             ),
             const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(text: 'Edit Profile', icon: Icons.person_outline),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
             const Menubarcomp(text: 'History', icon: Icons.history),
-            const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(text: 'Settings', icon: Icons.settings),
             const Divider(color: Appcolors.neutralgrey, height: 1),
             const Menubarcomp(
                 text: 'Help and Support', icon: Icons.help_outline_outlined),

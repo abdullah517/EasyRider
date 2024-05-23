@@ -52,8 +52,9 @@ class Joinviaphone extends StatelessWidget {
                   Consumer<Joinviaphoneprovider>(
                     builder: (context, checkstate, child) => Checkbox(
                       value: checkstate.ischecked,
-                      fillColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) => Appcolors.successColor),
+                      fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) =>
+                              Appcolors.successColor),
                       onChanged: (value) {
                         checkstate.setcheckstate(value);
                       },

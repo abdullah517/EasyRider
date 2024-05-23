@@ -10,7 +10,7 @@ import 'package:ridemate/sidemenupages/helpandsupport.dart';
 import 'package:ridemate/sidemenupages/privacy.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver/driverscreen.dart';
-import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
+//import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
 import 'package:ridemate/widgets/custombutton.dart';

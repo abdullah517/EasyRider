@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/components/customappbar.dart';
 import 'package:ridemate/widgets/custombutton.dart';
@@ -10,7 +12,6 @@ class ContactUsPage extends StatefulWidget {
   const ContactUsPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _ContactUsPageState createState() => _ContactUsPageState();
 }
 
@@ -22,12 +23,118 @@ class _ContactUsPageState extends State<ContactUsPage> {
 
   @override
   void dispose() {
-    // Clean up the controllers when the widget is disposed
     _messageController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
     super.dispose();
+  }
+
+  Future<void> sendEmail() async {
+    final String name = _nameController.text;
+    final String email = _emailController.text;
+    final String message = _messageController.text;
+    final String phoneNumber = _phoneNumberController.text;
+
+    // Configure the SMTP server
+    String username =
+        'muhammadabdurrehman516@gmail.com'; // Replace with your email
+    String password = 'dvlpsewyaqgckrck'; // Replace with your email password
+
+    final smtpServer =
+        gmail(username, password); // Use the appropriate SMTP server
+
+    final emailMessage = Message()
+      ..from = Address(username, 'Easy Rider')
+      ..recipients.add('muhammadabdurrehman516@gmail.com')
+      ..subject = 'Easy Rider Contact Us'
+      ..text =
+          'Name: $name\nEmail: $email\nMessage: $message\nPhone: $phoneNumber';
+
+    try {
+      final sendReport = await send(emailMessage, smtpServer);
+      _showSuccessDialog();
+      print('Message sent: ' + sendReport.toString());
+    } catch (e) {
+      _showFailureDialog(e.toString());
+      print('Message not sent. Error: $e');
+    }
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 10), // Add some spacing between the icon and text
+              Text('Success'),
+            ],
+          ),
+          content: const Text('Email sent successfully'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFailureDialog(String error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.error, color: Colors.red),
+              SizedBox(width: 10), // Add some spacing between the icon and text
+              Text('Failure'),
+            ],
+          ),
+          content: Text('Failed to send email: $error'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _validateAndSendEmail() {
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _messageController.text.isEmpty ||
+        _phoneNumberController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+    } else if (!_isValidEmail(_emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email address')),
+      );
+    } else {
+      sendEmail();
+    }
+  }
+
+  bool _isValidEmail(String email) {
+    final RegExp regex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return regex.hasMatch(email);
   }
 
   @override
@@ -83,25 +190,23 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     color: Appcolors.contentPrimary,
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
-                    cursorColor:
-                        Appcolors.primaryColor, // Change cursor color here
-                    decoration: InputDecoration(
+                  TextFormField(
+                    controller: _nameController,
+                    cursorColor: Appcolors.primaryColor,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Appcolors.primaryColor),
                       ),
                       labelText: 'Enter your name',
-                      labelStyle: TextStyle(
-                          color: Appcolors
-                              .primaryColor), // Use custom color from Appcolors
+                      labelStyle: TextStyle(color: Appcolors.primaryColor),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
-                    cursorColor:
-                        Appcolors.primaryColor, // Change cursor color here
-                    decoration: InputDecoration(
+                  TextFormField(
+                    controller: _emailController,
+                    cursorColor: Appcolors.primaryColor,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Appcolors.primaryColor),
@@ -111,21 +216,18 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
+                  TextFormField(
+                    controller: _messageController,
                     cursorColor: Appcolors.primaryColor,
-                    maxLines: 5, // Set maxLines to null for unlimited lines
-                    decoration: InputDecoration(
+                    maxLines: 5,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Appcolors.primaryColor),
                       ),
                       hintText: 'Enter your message',
-                      hintStyle: TextStyle(
-                          color: Appcolors
-                              .primaryColor), // Change hint text color here
-                      labelStyle: TextStyle(
-                          color: Appcolors
-                              .primaryColor), // Change label text color here
+                      hintStyle: TextStyle(color: Appcolors.primaryColor),
+                      labelStyle: TextStyle(color: Appcolors.primaryColor),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -135,10 +237,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     dropdownTextStyle: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
-                      //color: Appcolors.primaryColor
                     ),
                     decoration: const InputDecoration(
-                      //labelText: 'Phone Number',
                       labelStyle: TextStyle(
                         color: Appcolors.primaryColor,
                       ),
@@ -150,9 +250,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       ),
                     ),
                     initialCountryCode: 'PK',
-                    onChanged: (phone) {
-                      //print(phone.completeNumber);
-                    },
+                    onChanged: (phone) {},
                   ),
                   const SizedBox(height: 20),
                   Custombutton(
@@ -162,9 +260,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     width: double.infinity,
                     fontWeight: FontWeight.w500,
                     borderRadius: 8,
-                    ontap: () {
-                      // Handle submission here
-                    },
+                    ontap: _validateAndSendEmail,
                   ),
                 ],
               ),

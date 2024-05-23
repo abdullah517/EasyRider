@@ -65,6 +65,8 @@ dependencies:
   url_launcher: ^6.2.4
   flutter_rating_stars: ^1.0.3+4
   email_otp: ^2.1.2
+  mailer: ^6.1.0
+  flutter_email_sender: ^6.0.3
   
   
   

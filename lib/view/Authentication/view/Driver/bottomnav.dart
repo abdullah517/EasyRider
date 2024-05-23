@@ -21,16 +21,8 @@ class BottomNavBar extends StatelessWidget {
           label: 'Ride Requests',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.money),
-          label: 'My Income',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.star_border_outlined),
-          label: 'Rating',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.payment),
-          label: 'Pay',
+          icon: Icon(Icons.history),
+          label: 'History',
         ),
       ],
       currentIndex: selectedIndex,

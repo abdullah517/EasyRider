@@ -182,13 +182,14 @@ class Motoreg extends Driverregprovider3 {}
 
 class Transportnameprovider extends ChangeNotifier {
   bool loading = false;
-  Future<void> savedetail(
-      String userId, String transportname, BuildContext context) async {
+  Future<void> savedetail(String userId, String transportname,
+      String tranposrtnumber, BuildContext context) async {
     final collection = FirebaseFirestore.instance.collection('drivers');
     loading = true;
     notifyListeners();
     await collection.doc(userId).set({
       'Transportname': transportname,
+      'Vehicle_Number': tranposrtnumber,
     }, SetOptions(merge: true));
     loading = false;
     notifyListeners();

@@ -62,7 +62,7 @@ class CollectfareDialog extends StatelessWidget {
         'chargedprofit': FieldValue.arrayUnion([newdata]),
       }))
           .then((value) {
-        List<dynamic> data = docsnap.data() as List<dynamic>;
+        List data = docsnap.data()!['chargedprofit'] as List;
 
         int unpaidCount =
             data.where((map) => map['paystatus'] == 'unpaid').length;

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/bookingprovider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Cancelride/cancelridepage.dart';
 import 'package:ridemate/view/Homepage/components/paycash.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -316,7 +317,18 @@ Widget showbookedsheet(BuildContext context) {
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                             borderRadius: 8,
-                                            ontap: () {},
+                                            ontap: data['Status'] == 'Accepted'
+                                                ? () {
+                                                    navigateToScreen(
+                                                        context,
+                                                        CancelridePage(
+                                                          rideid: rideid,
+                                                          afterbooking: true,
+                                                          driverid:
+                                                              data['driverid'],
+                                                        ));
+                                                  }
+                                                : null,
                                           ),
                                         ),
                                       ],

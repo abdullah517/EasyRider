@@ -59,6 +59,9 @@ class PushNotificationService {
         final ridedetails = await retrieveRideRequestDetail(message);
         pausehometablivelocation(context);
         navigateToScreen(context, DriverRideScreen(rideDetails: ridedetails));
+      } else if (message.notification?.title == "Ride Cancelled") {
+        displayNotification(message);
+        startcancelsubs(context, message.data['ride_request_id']);
       } else {
         displayNotification(message);
       }

@@ -26,7 +26,7 @@ class DriverRideProivder extends ChangeNotifier {
   int durationcounter = 0;
 
   void initcounter() {
-    const interval = Duration(seconds: 1);
+    const interval = Duration(minutes: 1);
     timer = Timer.periodic(interval, (timer) {
       durationcounter += 1;
     });

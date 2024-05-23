@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ridemate/Methods/drivermethods.dart';
 import 'package:ridemate/Providers/driverrideprovider.dart';
 import 'package:ridemate/models/ridedetails.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver/collectfare.dart';
+import 'package:ridemate/view/Authentication/view/Driver/driverscreen.dart';
 import 'package:ridemate/view/Dialogueboxes/progressdialogue.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
@@ -18,6 +20,25 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../routing/routing.dart';
 import '../../../messagingscreen/messagingscreen.dart';
+
+StreamSubscription? cancelsubs;
+
+void startcancelsubs(BuildContext context, String rideid) {
+  cancelsubs = FirebaseFirestore.instance
+      .collection('RideRequest')
+      .doc(rideid)
+      .snapshots()
+      .listen((event) {
+    if (event['Status'] == 'Cancelled') {
+      cancelsubs?.cancel();
+      Provider.of<DriverRideProivder>(context, listen: false)
+          .ridestreamsubscription
+          .cancel();
+      resumehometablivelocation(context);
+      navigateandremove(context, Driverscreen(isOnline: true));
+    }
+  });
+}
 
 class DriverRideScreen extends StatelessWidget {
   final RideDetails rideDetails;
@@ -39,6 +60,13 @@ class DriverRideScreen extends StatelessWidget {
         .collection('RideRequest')
         .doc(rideDetails.rideid)
         .update({'Status': status});
+  }
+
+  void updateduration(int duration) {
+    FirebaseFirestore.instance
+        .collection('RideRequest')
+        .doc(rideDetails.rideid)
+        .update({'rideDuration': duration});
   }
 
   @override
@@ -203,6 +231,7 @@ class DriverRideScreen extends StatelessWidget {
                             value.initcounter();
                           } else if (value.btntxt == 'End trip') {
                             updateridestatus('Ended');
+                            updateduration(value.durationcounter);
                             value.endtrip();
                             showcollectfaredialogue(context, rideDetails);
                           }

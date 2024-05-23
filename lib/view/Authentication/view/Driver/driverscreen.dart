@@ -39,7 +39,7 @@ class _DriverscreenState extends State<Driverscreen> {
         FirebaseFirestore.instance.collection('companyprofit').doc(id);
     final docsnap = await docref.get();
     if (docsnap.exists) {
-      List<dynamic> data = docsnap.data() as List<dynamic>;
+      List data = docsnap.data()!['chargedprofit'] as List;
 
       int unpaidCount =
           data.where((map) => map['paystatus'] == 'unpaid').length;
@@ -48,6 +48,8 @@ class _DriverscreenState extends State<Driverscreen> {
             .collection('drivers')
             .doc(id)
             .update(({'Status': 'Approved'}));
+      } else {
+        showsnackbar('Your application status is in paused mode');
       }
     }
   }
@@ -139,8 +141,6 @@ class _DriverscreenState extends State<Driverscreen> {
                                   context,
                                   listen: false)
                               .userId);
-                          showsnackbar(
-                              'Your application status is in ${data['Status']} mode');
                         } else {
                           showsnackbar('Complete the Registration Process');
                         }

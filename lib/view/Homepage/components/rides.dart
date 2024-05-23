@@ -8,7 +8,9 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/homeprovider.dart';
 import 'package:ridemate/Providers/mapprovider.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Cancelride/cancelridepage.dart';
 import 'package:ridemate/view/Homepage/components/userridecontainer.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
@@ -25,8 +27,8 @@ void showridebottomsheet(BuildContext context, String rideid) {
     ),
     builder: (context) => DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.9,
-      maxChildSize: 0.9,
+      initialChildSize: 0.95,
+      maxChildSize: 0.95,
       builder: (context, scrollController) => SingleChildScrollView(
         controller: scrollController,
         child: Rides(rideid: rideid),
@@ -143,92 +145,115 @@ class _RidesState extends State<Rides> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.topCenter,
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          top: -12,
-          child: Container(
-            width: 60,
-            height: 7,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.95,
+      child: Stack(
+        alignment: AlignmentDirectional.topCenter,
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: 16,
+            right: 16,
+            child: TextButton(
+              onPressed: () {
+                navigateToScreen(
+                    context,
+                    CancelridePage(
+                      rideid: widget.rideid,
+                    ));
+              },
+              child: CustomText(
+                title: 'Cancel',
+                fontSize: 15,
+                color: Appcolors.contentTertiary,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('RideRequest')
-                .doc(widget.rideid)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final List<dynamic> driversdata =
-                    snapshot.data!.data()!['driversdata'];
-                if (driversdata.isEmpty) {
-                  return buildLoadingScreen();
-                }
-
-                return FutureBuilder(
-                  future: Future.wait(driversdata
-                      .map((driver) => datafromfirestore(driver['driverid']))),
-                  builder: (context, futureSnapshot) {
-                    if (futureSnapshot.connectionState ==
-                        ConnectionState.done) {
-                      final List<Map<String, dynamic>> driverdata =
-                          futureSnapshot.data!;
-                      return ListView.separated(
-                        itemCount: driverdata.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final durationtxt =
-                              driversdata[index]['driverdir']['duration'];
-                          final distancetxt =
-                              driversdata[index]['driverdir']['distance'];
-                          return UserRideContainer(
-                            transportName: driverdata[index]['Transportname'],
-                            driverName: driverdata[index]['Name'],
-                            durationTxt: durationtxt,
-                            distanceTxt: distancetxt,
-                            onAccept: sendAcceptmessage,
-                            driverfare:
-                                driversdata[index]['driverfare'].toString(),
-                            driverid: driversdata[index]['driverid'],
-                          );
-                        },
-                        separatorBuilder: (context, index) =>
-                            addVerticalspace(height: 7),
-                      );
-                    } else {
-                      return buildLoadingScreen();
-                    }
-                  },
-                );
-              }
-              return Center(child: CircularProgressIndicator());
-            },
+          Positioned(
+            top: -12,
+            child: Container(
+              width: 60,
+              height: 7,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+              ),
+            ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 50),
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('RideRequest')
+                  .doc(widget.rideid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final List<dynamic> driversdata =
+                      snapshot.data!.data()!['driversdata'];
+                  if (driversdata.isEmpty) {
+                    return buildLoadingScreen();
+                  }
+
+                  return FutureBuilder(
+                    future: Future.wait(driversdata.map(
+                        (driver) => datafromfirestore(driver['driverid']))),
+                    builder: (context, futureSnapshot) {
+                      if (futureSnapshot.connectionState ==
+                          ConnectionState.done) {
+                        final List<Map<String, dynamic>> driverdata =
+                            futureSnapshot.data!;
+                        return ListView.separated(
+                          itemCount: driverdata.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final durationtxt =
+                                driversdata[index]['driverdir']['duration'];
+                            final distancetxt =
+                                driversdata[index]['driverdir']['distance'];
+                            return UserRideContainer(
+                              transportName: driverdata[index]['Transportname'],
+                              driverName: driverdata[index]['Name'],
+                              durationTxt: durationtxt,
+                              distanceTxt: distancetxt,
+                              onAccept: sendAcceptmessage,
+                              driverfare:
+                                  driversdata[index]['driverfare'].toString(),
+                              driverid: driversdata[index]['driverid'],
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              addVerticalspace(height: 7),
+                        );
+                      } else {
+                        return buildLoadingScreen();
+                      }
+                    },
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 Widget buildLoadingScreen() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: const [
-      CircularProgressIndicator(),
-      SizedBox(width: 6),
-      CustomText(
-        title: 'Searching for drivers...',
-        fontSize: 16,
-        color: Appcolors.contentTertiary,
-      ),
-    ],
+  return Center(
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        CircularProgressIndicator(),
+        SizedBox(width: 6),
+        CustomText(
+          title: 'Searching for drivers...',
+          fontSize: 16,
+          color: Appcolors.contentTertiary,
+        ),
+      ],
+    ),
   );
 }

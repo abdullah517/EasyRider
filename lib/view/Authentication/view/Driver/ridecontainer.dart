@@ -48,6 +48,7 @@ void deleteDriverMap(BuildContext context, String id, String driverid) async {
 }
 
 late Timer offerfaretimer;
+StreamSubscription? rideRequest;
 
 void savedriverid(BuildContext context, String id, String duration,
     String distance, int dfare) async {
@@ -67,6 +68,14 @@ void savedriverid(BuildContext context, String id, String duration,
     offerfaretimer = Timer(const Duration(seconds: 30), () async {
       deleteDriverMap(context, id, driverid);
       hideProgressDialog(context);
+    });
+    rideRequest = docRef.snapshots().listen((snapshot) {
+      final data = snapshot.data() as Map<String, dynamic>;
+      if (data['Status'] == 'Cancelled') {
+        offerfaretimer.cancel();
+        hideProgressDialog(context);
+        rideRequest?.cancel();
+      }
     });
   });
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/routing/routing.dart';
@@ -11,6 +12,7 @@ import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/spacing.dart';
 
 import '../../../../Providers/userdataprovider.dart';
+import '../../../../ridesharing/driver/driverscreen.dart';
 import '../../../../widgets/customtext.dart';
 import '../../../RideHistory/ridehistory11.dart';
 
@@ -22,6 +24,8 @@ class driverdrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usermap = Provider.of<Userdataprovider>(context, listen: false);
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String? userId = user?.uid;
 
     return SafeArea(
       child: Drawer(
@@ -55,8 +59,9 @@ class driverdrawer extends StatelessWidget {
                   ],
                 ),
                 accountEmail: CustomText(
-                  title: usermap.userData['phoneNumber'] ??
-                      usermap.userData['Email'],
+                  title: FirebaseAuth.instance.currentUser != null
+                      ? usermap.userData['Email']
+                      : usermap.userData['phoneNumber'],
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: Appcolors.contentSecondary,
@@ -110,6 +115,19 @@ class driverdrawer extends StatelessWidget {
                 navigateToScreen(context, const Homepage());
               },
               text: 'Passenger Mode',
+            ),
+            Custombutton(
+              buttoncolor: Appcolors.primaryColor,
+              ontap: () {
+                if (userId != null) {
+                  navigateToScreen(context, DriverScreen1(userId: userId));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('User is not logged in.')),
+                  );
+                }
+              },
+              text: 'Ridesharing Mode',
             ),
           ],
         ),

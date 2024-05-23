@@ -51,7 +51,7 @@ Widget showbookedsheet(BuildContext context) {
                       : data['Status'] == 'Arrived'
                           ? 'Your driver has Arrived'
                           : 'Going to destination in ${dirmap['duration']}';
-                  if (data['Status'] == 'Ended') {
+                  if (data['Status'] == 'Completed') {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       showPayfaredialogue(
                           context, data['ridefare'], data['driverid']);

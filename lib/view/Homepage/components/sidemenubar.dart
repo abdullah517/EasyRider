@@ -18,12 +18,17 @@ import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../ridesharing/user/userscreen.dart';
+
 class Sidemenubar extends StatelessWidget {
   const Sidemenubar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final usermap = Provider.of<Userdataprovider>(context, listen: false);
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String? userId = user?.uid;
+
     Future<void> logout() async {
       if (FirebaseAuth.instance.currentUser != null) {
         await GoogleSignIn().disconnect();
@@ -120,6 +125,21 @@ class Sidemenubar extends StatelessWidget {
                 navigateToScreen(context, Driverscreen());
               },
               text: 'Driver Mode',
+            ),
+            addVerticalspace(height: 10),
+            Custombutton(
+              buttoncolor: Appcolors.primaryColor,
+              ontap: () {
+                if (userId != null) {
+                  navigateToScreen(context, Userscreen(userId: userId));
+                } else {
+                  // Handle the case when userId is null
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('User is not logged in.')),
+                  );
+                }
+              },
+              text: 'Ridesharing Mode',
             ),
           ],
         ),

@@ -13,6 +13,7 @@ import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver/driverscreen.dart';
 //import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
+import 'package:ridemate/view/RideHistory/ridehistory11.dart';
 import 'package:ridemate/view/Welcomescreen/welcomescreen.dart';
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
@@ -70,6 +71,22 @@ class Sidemenubar extends StatelessWidget {
                           as ImageProvider
                       : NetworkImage(usermap.userData['Profileimage']),
                 )),
+            const Menubarcomp(text: 'Edit Profile', icon: Icons.person_outline),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
+            Menubarcomp(
+              text: 'History',
+              icon: Icons.history,
+              onTap: () {
+                navigateToScreen(context, const RideHistoryPage());
+              },
+            ),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
+            const Menubarcomp(text: 'Complain', icon: Icons.info),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
+            const Menubarcomp(text: 'About Us', icon: Icons.info_outline),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
+            const Menubarcomp(text: 'Settings', icon: Icons.settings),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
             const Menubarcomp(
               text: 'History',
               icon: Icons.history,

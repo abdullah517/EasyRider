@@ -12,6 +12,7 @@ import 'package:ridemate/widgets/spacing.dart';
 
 import '../../../../Providers/userdataprovider.dart';
 import '../../../../widgets/customtext.dart';
+import '../../../RideHistory/ridehistory11.dart';
 
 // ignore: camel_case_types
 class driverdrawer extends StatelessWidget {
@@ -21,15 +22,6 @@ class driverdrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usermap = Provider.of<Userdataprovider>(context, listen: false);
-    // Function to handle long usernames
-    /*String truncateUsername(String username) {
-      const maxLength = 20; // Define maximum length for username
-      if (username.length <= maxLength) {
-        return username; // If username is shorter than maxLength, return as is
-      } else {
-        return '${username.substring(0, maxLength)}...'; // Truncate and add ellipsis
-      }
-    }*/
 
     return SafeArea(
       child: Drawer(
@@ -86,7 +78,14 @@ class driverdrawer extends StatelessWidget {
               },
             ),
             const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(text: 'History', icon: Icons.history),
+            Menubarcomp(
+              text: 'History',
+              icon: Icons.history,
+              onTap: () {
+                navigateToScreen(
+                    context, const RideHistoryPage(isdriver: true));
+              },
+            ),
             const Divider(color: Appcolors.neutralgrey, height: 1),
             Menubarcomp(
               text: 'Help and Support',

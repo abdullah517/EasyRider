@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
 import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/sidemenupages/aboutus.dart';
+import 'package:ridemate/sidemenupages/contactus.dart';
 import 'package:ridemate/sidemenupages/deleteaccount.dart';
 import 'package:ridemate/sidemenupages/helpandsupport.dart';
 import 'package:ridemate/sidemenupages/privacy.dart';
@@ -87,6 +88,14 @@ class Sidemenubar extends StatelessWidget {
               icon: Icons.privacy_tip,
               onTap: () {
                 navigateToScreen(context, const PrivacyPolicyPage());
+              },
+            ),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
+            Menubarcomp(
+              text: 'Contact Us',
+              icon: Icons.contact_page,
+              onTap: () {
+                navigateToScreen(context, const ContactUsPage());
               },
             ),
             const Divider(color: Appcolors.neutralgrey, height: 1),

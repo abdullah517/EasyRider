@@ -98,6 +98,7 @@ class _HomepageState extends State<Homepage> {
     await service.init(context);
   }
 
+  bool isChecked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +147,7 @@ class _HomepageState extends State<Homepage> {
                         right: 0,
                         bottom: 0,
                         child: Container(
-                          height: 390.h,
+                          height: 410.h,
                           padding: const EdgeInsets.only(
                               bottom: 20, top: 15, left: 15, right: 10),
                           decoration: const BoxDecoration(
@@ -200,7 +201,34 @@ class _HomepageState extends State<Homepage> {
                                 },
                               ),
                               const Divider(color: Appcolors.contentDisbaled),
-                              const Spacer(),
+                              CheckboxListTile(
+                                title: const Text(
+                                  'Gender Preference',
+                                  style: TextStyle(
+                                      color: Appcolors.contentDisbaled,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                value: isChecked,
+                                onChanged: (bool? value) {
+                                  setState(
+                                    () {
+                                      isChecked = value ?? false;
+                                    },
+                                  );
+                                },
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                // Set tile color to transparent
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      20.0), // Make it round
+                                  side: const BorderSide(
+                                      color: Appcolors
+                                          .primaryColor), // Add a border for visibility
+                                ),
+                                // Remove default padding
+                              ),
+                              const Divider(color: Appcolors.contentDisbaled),
                               Consumer<Bookingprovider>(
                                 builder: (context, bookingProvider, child) =>
                                     Custombutton(

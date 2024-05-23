@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ridemate/routing/routing.dart';
+import 'package:ridemate/sidemenupages/contactus.dart';
+import 'package:ridemate/sidemenupages/helpandsupport.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/view/Authentication/view/Driver/goingtoworkas.dart';
 import 'package:ridemate/view/Homepage/components/menubarcomp.dart';
@@ -85,8 +87,21 @@ class driverdrawer extends StatelessWidget {
               },
             ),
             const Divider(color: Appcolors.neutralgrey, height: 1),
-            const Menubarcomp(
-                text: 'Help and Support', icon: Icons.help_outline_outlined),
+            Menubarcomp(
+              text: 'Help and Support',
+              icon: Icons.help_outline_outlined,
+              onTap: () {
+                navigateToScreen(context, const HelpSupportPage());
+              },
+            ),
+            const Divider(color: Appcolors.neutralgrey, height: 1),
+            Menubarcomp(
+              text: 'Contact Us',
+              icon: Icons.contact_page_outlined,
+              onTap: () {
+                navigateToScreen(context, const ContactUsPage());
+              },
+            ),
             const Divider(color: Appcolors.neutralgrey, height: 1),
             addVerticalspace(height: 20),
             Custombutton(

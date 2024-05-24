@@ -139,7 +139,7 @@ class DriverRideHistoryScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Custombutton(
-                      text: 'Check Bookings',
+                      text: 'Bookings',
                       fontSize: 16,
                       height: 30,
                       width: 170,
@@ -284,7 +284,7 @@ class BookingScreen extends StatelessWidget {
           margin: const EdgeInsets.all(8.0),
           color: user['provider'] == 'google'
               ? const Color.fromARGB(255, 247, 248, 248)
-              : Colors.blue, // Change color based on user provider
+              : Color.fromARGB(255, 255, 255, 255), // Change color based on user provider
           elevation: 4,
           child: ListTile(
             title: Text(

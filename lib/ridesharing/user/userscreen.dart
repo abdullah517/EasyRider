@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as Geolocator;
 import 'package:location/location.dart';
+import 'package:ridemate/ridesharing/user/historyuser.dart';
+import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ridemate/Providers/userdataprovider.dart';
@@ -326,14 +328,38 @@ class _UserScreenState extends State<Userscreen> {
                         : NetworkImage(usermap.userData['Profileimage']),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Custombutton(
-                  buttoncolor: Appcolors.primaryColor,
-                  ontap: () {
-                    navigateToScreen(context, const Homepage());
-                  },
-                  text: 'Users Mode',
-                ),
+              Menubarcomp(
+  text: 'History',
+  icon: Icons.history,
+  onTap: () {
+    navigateToScreen(context, UserRideHistoryScreen(userId: widget.userId));
+  },
+),
+const SizedBox(height: 20),
+Custombutton(
+  buttoncolor: Appcolors.primaryColor,
+  ontap: () {
+    // Navigate to the Homepage
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Homepage()),
+    );
+  },
+  text: 'Users Mode',
+),
+const SizedBox(height: 20),
+Custombutton(
+  buttoncolor: Appcolors.primaryColor,
+  ontap: () {
+    // Navigate to the UserRideHistoryScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserRideHistoryScreen(userId: widget.userId)),
+    );
+  },
+  text: 'History Mode',
+),
+
               ],
             );
           },
@@ -342,10 +368,5 @@ class _UserScreenState extends State<Userscreen> {
     );
   }
 
-  void navigateToScreen(BuildContext context, Widget screen) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Homepage()),
-    );
-  }
+  
 }

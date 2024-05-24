@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:ridemate/services/pushnotificationservice.dart';
+import 'package:ridemate/utils/appcolors.dart';
+import 'package:ridemate/view/Authentication/components/customappbar.dart';
 //import 'package:ridemate/utils/appcolors.dart';
 //import 'package:ridemate/view/Authentication/components/customappbar.dart';
 
@@ -254,9 +256,8 @@ class _RideSearchScreenState extends State<RideSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nearby Rides'),
-      ),
+      appBar: customappbar(context,
+          title: 'Nearby Rides', backgroundColor: Appcolors.primaryColor),
       backgroundColor: Colors.black,
       body: ListView.builder(
         itemCount: _nearbyRides.length,

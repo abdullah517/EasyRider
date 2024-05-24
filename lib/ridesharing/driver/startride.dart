@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart'; // Import intl for date formatting
+import 'dart:async';
+
 import 'package:ridemate/services/pushnotificationservice.dart';
 import 'package:ridemate/utils/appcolors.dart';
-import 'package:ridemate/view/Authentication/components/customappbar.dart';
-import 'dart:async';
 
 class Startride extends StatefulWidget {
   final String rideid;
@@ -18,6 +19,8 @@ class _StartrideState extends State<Startride> {
   Timer? _locationUpdateTimer;
   Position? _currentPosition;
   GeoPoint? _driverLocation; // To store driver's live location from Firestore
+  double? startLatitude;
+  double? startLongitude;
 
   @override
   void initState() {
@@ -46,9 +49,20 @@ class _StartrideState extends State<Startride> {
       DocumentSnapshot userSnapshot = await _getPassengerData(userId);
       if (userSnapshot.exists) {
         var userData = userSnapshot.data() as Map<String, dynamic>;
-        String contactInfo = userData['provider'] == 'google'
-            ? userData['Email'] ?? 'No Email'
-            : userData['phoneNumber'] ?? 'No Phone Number';
+        String contactInfo;
+        if (userData.containsKey('phoneNumber')) {
+          contactInfo = userData['phoneNumber'];
+        } else {
+          var googleUserData = await FirebaseFirestore.instance
+              .collection('googleusers')
+              .doc(userId)
+              .get();
+          if (googleUserData.exists && googleUserData['phoneNumber'] != null) {
+            contactInfo = googleUserData['phoneNumber'];
+          } else {
+            contactInfo = 'No Phone Number';
+          }
+        }
 
         rideDetails.add({
           'username': userData['Username'] ?? 'No Name',
@@ -56,7 +70,15 @@ class _StartrideState extends State<Startride> {
           'startLocation': bookingData['userstartlocation']['address'],
           'dropLocation': bookingData['userdroplocation']['address'],
           'rideFare': bookingData['ridefare'],
+          'startLatitude': bookingData['userstartlocation']['latitude'],
+          'startLongitude': bookingData['userstartlocation']['longitude'],
           'userId': userId, // Add userId to send notifications later
+        });
+
+        // Update start latitude and longitude
+        setState(() {
+          startLatitude = bookingData['userstartlocation']['latitude'];
+          startLongitude = bookingData['userstartlocation']['longitude'];
         });
       }
     }
@@ -99,7 +121,7 @@ class _StartrideState extends State<Startride> {
           await PushNotificationService().sendNotification(
             userToken,
             title: 'Ride Started',
-            bodytxt: 'Please track him from booking page!',
+            bodytxt: 'Kindly track him from the booking page!',
           );
         }
       }
@@ -127,7 +149,7 @@ class _StartrideState extends State<Startride> {
           .collection('booking')
           .doc(widget.rideid)
           .update({
-        'livelocation': '${position.latitude},${position.longitude}',
+        'livelocation': GeoPoint(position.latitude, position.longitude),
       });
       //print("update location");
     } catch (e) {
@@ -152,67 +174,69 @@ class _StartrideState extends State<Startride> {
 
   @override
   Widget build(BuildContext context) {
+    // Get today's date and day
+    String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String todayDay = DateFormat('EEEE').format(DateTime.now());
+
     return Scaffold(
-      appBar: customappbar(
-        context,
-        title: 'Start Ride',
+      appBar: AppBar(
+        title: const Text("Start Ride"),
         backgroundColor: Appcolors.primaryColor,
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _rideDetailsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No bookings available for this ride.'),
-            );
-          }
-
-          return Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "$todayDate ($todayDay)",
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
+                onPressed: _completeRide,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Appcolors.primaryColor, // Change the color here
+                ),
+                child: const Text('Complete Ride'),
+              ),
+              ElevatedButton(
                 onPressed: _startRide,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Appcolors.primaryColor, // Change the color here
+                ),
                 child: const Text('Start Ride'),
               ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Your location is being shared with the users.',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              if (_currentPosition != null)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Current Location: Lat: ${_currentPosition!.latitude}, Lon: ${_currentPosition!.longitude}',
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              if (_driverLocation !=
-                  null) // Display driver's live location from Firestore
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Live Location from Firestore: Lat: ${_driverLocation!.latitude}, Lon: ${_driverLocation!.longitude}',
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              Expanded(
-                child: ListView.builder(
+            ],
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _rideDetailsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('No bookings available for this ride.'),
+                  );
+                }
+
+                return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     var booking = snapshot.data![index];
                     return Card(
                       margin: const EdgeInsets.all(8.0),
-                      color: Appcolors.primaryColor,
+                      color: const Color.fromARGB(255, 9, 95, 110),
                       elevation: 4,
                       child: ListTile(
                         leading: const Icon(Icons.person, color: Colors.white),
@@ -256,11 +280,11 @@ class _StartrideState extends State<Startride> {
                       ),
                     );
                   },
-                ),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -269,6 +293,42 @@ class _StartrideState extends State<Startride> {
     List<Map<String, dynamic>> rideDetails = await _rideDetailsFuture;
     for (var booking in rideDetails) {
       _sendNotificationToUser(booking['userId'], booking['startLocation']);
+    }
+  }
+
+  void _completeRide() async {
+    // Get today's date
+    String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    // Fetch the user's ID and ride fare from Firestore
+    final List<Map<String, dynamic>> rideDetails = await _rideDetailsFuture;
+    if (rideDetails.isNotEmpty) {
+      final Map<String, dynamic> booking = rideDetails.first;
+      final String userId = booking['userId'];
+      final String rideFare = booking['rideFare'];
+
+      // Add payment information to Firestore
+      await FirebaseFirestore.instance.collection('Done-rides').add({
+        'Date': todayDate,
+        'amount': rideFare,
+        'rideid':
+            widget.rideid, // Use the actual ride ID instead of a fixed value
+        'userid': userId,
+      });
+
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ride completed and payment added.'),
+        ),
+      );
+    } else {
+      // Show an error message if ride details are not available
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error: Ride details not found.'),
+        ),
+      );
     }
   }
 }

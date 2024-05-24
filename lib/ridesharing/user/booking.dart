@@ -38,76 +38,75 @@ class booking extends StatelessWidget {
     );
   }
 
-  Widget _buildBookingCard(
-      BuildContext context, QueryDocumentSnapshot booking) {
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      elevation: 4.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Text('Start Location: ${booking['userstartlocation.address']}'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Text('Drop Location: ${booking['userdroplocation.address']}'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Ride Fare: ${booking['ridefare']} Rs'),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LiveLocation(bookingId: booking.id),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.directions,
-                  color: Colors.white, // Set icon color to white
-                ),
-                label: const Text(
-                  'Track Driver',
-                  style: TextStyle(
-                      color: Colors.white), // Set label color to white
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Set button color to green
-                ),
+ Widget _buildBookingCard(
+  BuildContext context, QueryDocumentSnapshot booking) {
+  String bookingId = booking.id; // Get the booking ID from the current snapshot
+
+  return Card(
+    margin: const EdgeInsets.all(8.0),
+    elevation: 4.0,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('Start Location: ${booking['userstartlocation.address']}'),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('Drop Location: ${booking['userdroplocation.address']}'),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('Ride Fare: ${booking['ridefare']} Rs'),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DriverLocationScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.directions,
+                color: Colors.white,
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  _deleteBooking(context, booking.id);
-                },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.white, // Set icon color to white
-                ),
-                label: const Text(
-                  'Delete',
-                  style: TextStyle(
-                      color: Colors.white), // Set label color to white
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red, // Set button color to green
-                ),
+              label: const Text(
+                'Track Driver',
+                style: TextStyle(color: Colors.white),
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                _deleteBooking(context, bookingId);
+              },
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+              label: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 
   void _deleteBooking(BuildContext context, String bookingId) {
     FirebaseFirestore.instance

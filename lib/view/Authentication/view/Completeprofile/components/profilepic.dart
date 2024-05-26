@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Completeprofileprovider/completeprofileprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
+
+import '../../../../../Providers/completeprofileprovider.dart';
 
 class Profilepic extends StatelessWidget {
   const Profilepic({super.key});
@@ -19,7 +20,7 @@ class Profilepic extends StatelessWidget {
             builder: (context, pic, child) => CircleAvatar(
               backgroundColor: Appcolors.neutralgrey200,
               backgroundImage: pic.image == null
-                  ? const AssetImage('assets/personimage.png')
+                  ? const AssetImage('assets/personimage.jpg')
                   : Image.file(
                       pic.image!,
                       fit: BoxFit.cover,

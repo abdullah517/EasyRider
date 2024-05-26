@@ -4,18 +4,21 @@ import 'package:ridemate/routing/routing.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/widgets/customtext.dart';
 
-PreferredSizeWidget customappbar(BuildContext context, {String title = ''}) {
+PreferredSizeWidget customappbar(BuildContext context,
+    {String title = '', Color backgroundColor = Colors.transparent}) {
   return AppBar(
     elevation: 0.0,
-    backgroundColor: Colors.transparent,
-    leading: IconButton(
-      onPressed: () => goback(context),
-      icon: Icon(
-        Icons.arrow_back_ios,
-        size: 20.sp,
-        color: Appcolors.contentPrimary,
-      ),
-    ),
+    backgroundColor: backgroundColor,
+    leading: title == 'Profile'
+        ? null
+        : IconButton(
+            onPressed: () => goback(context),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 20.sp,
+              color: Appcolors.contentPrimary,
+            ),
+          ),
     centerTitle: true,
     title: CustomText(
       title: title,

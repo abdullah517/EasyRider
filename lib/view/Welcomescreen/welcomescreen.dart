@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:ridemate/Providers/Googleauthprovider/googleauthprovider.dart';
 import 'package:ridemate/utils/appcolors.dart';
 import 'package:ridemate/utils/appimages.dart';
 import 'package:ridemate/view/Authentication/components/socialbutton.dart';
@@ -10,6 +9,7 @@ import 'package:ridemate/view/Authentication/view/joinviaphone/joinviaphone.dart
 import 'package:ridemate/widgets/custombutton.dart';
 import 'package:ridemate/widgets/customtext.dart';
 import 'package:ridemate/widgets/spacing.dart';
+import '../../Providers/googleauthprovider.dart';
 import '../../routing/routing.dart';
 
 class Welcomescreen extends StatelessWidget {

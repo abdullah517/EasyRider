@@ -1,4 +1,4 @@
-# ridemate
+# EasyRider
 
 A new Flutter project.
 
